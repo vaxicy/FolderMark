@@ -12,7 +12,7 @@ class EmptyFolderDetector {
    * @returns {Array} 空文件夹列表
    */
   static detectFromList(folders) {
-    return folders.filter(folder => folder.isEmpty);
+    return folders.filter(folder => folder.isEmpty && !folder.isRoot);
   }
 
   /**
@@ -22,7 +22,16 @@ class EmptyFolderDetector {
   static async detectRecursive() {
     const emptyFolders = [];
     await this.checkFolderRecursive('0', emptyFolders);
-    return emptyFolders;
+
+    // 过滤掉系统根文件夹（直接子节点 of '0'）
+    try {
+      const rootChildren = await BookmarkService.getChildren('0');
+      const rootFolderIds = new Set(rootChildren.map(c => c.id));
+      return emptyFolders.filter(f => !rootFolderIds.has(f.id));
+    } catch (error) {
+      console.error('Filter root folders failed:', error);
+      return emptyFolders;
+    }
   }
 
   /**

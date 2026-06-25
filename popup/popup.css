@@ -379,6 +379,133 @@ body {
   border-radius: var(--border-radius);
   padding: 7px;
   transition: all 0.2s;
+  position: relative;
+}
+
+/* 颜色点 */
+.folder-color-dot {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.folder-color-dot:hover {
+  background: var(--bg-tertiary);
+}
+
+.folder-color-dot .color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+}
+
+/* 颜色筛选下拉 */
+.color-filter-select {
+  width: auto;
+  min-width: 32px;
+  padding: 5px 4px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 10px;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.color-filter-select:focus {
+  border-color: var(--primary);
+}
+
+/* 颜色选择器面板 */
+.color-picker-panel {
+  position: fixed;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  min-width: 140px;
+}
+
+.color-picker-panel.hidden {
+  display: none;
+}
+
+.color-picker-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.color-picker-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.color-picker-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.color-picker-option:hover {
+  background: var(--bg-secondary);
+}
+
+.color-picker-option.no-color {
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+.color-picker-option .color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+}
+
+/* 自定义颜色 - 彩虹渐变圆点 */
+.custom-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid var(--border-color);
+  background: conic-gradient(
+    hsl(0, 80%, 60%),
+    hsl(30, 80%, 60%),
+    hsl(60, 80%, 60%),
+    hsl(120, 80%, 60%),
+    hsl(180, 80%, 60%),
+    hsl(240, 80%, 60%),
+    hsl(300, 80%, 60%),
+    hsl(360, 80%, 60%)
+  );
+}
+
+.color-picker-option .color-label {
+  flex: 1;
 }
 
 .folder-card.selected {
@@ -1054,6 +1181,100 @@ body {
   overflow-y: auto;
 }
 
+/* 失效书签检测 */
+.broken-progress {
+  margin-bottom: 8px;
+}
+
+.broken-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.broken-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.broken-progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+.broken-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.broken-bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  margin-bottom: 3px;
+  border-left: 3px solid var(--danger);
+}
+
+.broken-bookmark-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.broken-bookmark-title {
+  font-size: 10px;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.broken-bookmark-url {
+  font-size: 8px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.broken-bookmark-status {
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.broken-bookmark-status.timeout {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.broken-bookmark-status.unreachable {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.broken-bookmark-status.unknown {
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+}
+
 /* 重复书签 */
 .duplicate-bookmark-group {
   margin-bottom: 12px;
@@ -1235,4 +1456,99 @@ body {
   text-align: center;
   padding: 4px;
   font-style: italic;
+}
+
+.cleanup-suggestion-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cleanup-suggestion-actions .btn {
+  font-size: 9px;
+  padding: 3px 8px;
+}
+
+/* 健康分数仪表盘 */
+.health-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.health-score-circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.circular-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: var(--bg-tertiary);
+  stroke-width: 3;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease, stroke 0.5s ease;
+}
+
+.health-score-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.health-score-text span:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: block;
+  line-height: 1;
+}
+
+.health-score-label {
+  font-size: 8px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.health-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.health-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+}
+
+.health-stat-label {
+  color: var(--text-secondary);
+}
+
+.health-stat-value {
+  font-weight: 600;
+  color: var(--text-primary);
 }

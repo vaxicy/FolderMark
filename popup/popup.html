@@ -34,7 +34,7 @@
       <p class="tagline" data-i18n="tagline">Organize bookmarks faster.</p>
     </header>
 
-    <!-- 搜索栏 -->
+    <!-- 搜索栏 + 颜色筛选 -->
     <div class="search-container">
       <input type="text"
              id="searchInput"
@@ -45,6 +45,15 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
+      <select id="colorFilterSelect" class="color-filter-select" title="Filter by color">
+        <option value="">All Colors</option>
+        <option value="red">🔴 Red</option>
+        <option value="orange">🟠 Orange</option>
+        <option value="yellow">🟡 Yellow</option>
+        <option value="green">🟢 Green</option>
+        <option value="blue">🔵 Blue</option>
+        <option value="purple">🟣 Purple</option>
+      </select>
     </div>
 
     <!-- 统计卡片 -->
@@ -132,6 +141,57 @@
           <h2 data-i18n="smartTitle">Smart Features</h2>
         </div>
         
+        <!-- 健康分数仪表盘 -->
+        <div class="health-dashboard">
+          <div class="health-score-circle">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="circle" id="healthCircle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <div class="health-score-text">
+              <span id="healthScore">0</span>
+              <span class="health-score-label" data-i18n="healthScoreLabel">Score</span>
+            </div>
+          </div>
+          <div class="health-details">
+            <div class="health-stat">
+              <span class="health-stat-label" data-i18n="totalFolders">Folders</span>
+              <span class="health-stat-value" id="healthTotalFolders">0</span>
+            </div>
+            <div class="health-stat">
+              <span class="health-stat-label" data-i18n="issues">Issues</span>
+              <span class="health-stat-value" id="healthIssues">0</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 失效书签检测 -->
+        <div class="smart-section">
+          <div class="smart-section-header">
+            <h3 data-i18n="brokenBookmarks">Broken Bookmarks</h3>
+            <button id="scanBrokenBtn" class="btn btn-primary btn-sm" data-i18n="scanBroken">Scan</button>
+          </div>
+          <div id="brokenCheckProgress" class="broken-progress hidden">
+            <div class="broken-progress-bar">
+              <div class="broken-progress-fill" id="brokenProgressFill"></div>
+            </div>
+            <div class="broken-progress-text">
+              <span data-i18n="checking">Checking...</span>
+              <span id="brokenProgressCount">0 / 0</span>
+            </div>
+          </div>
+          <div id="brokenBookmarksList" class="smart-list">
+            <div class="empty-state" id="brokenBookmarksEmpty">
+              <div class="empty-state-icon">🔗</div>
+              <div class="empty-state-title" data-i18n="noBrokenBookmarks">Not scanned yet</div>
+              <div class="empty-state-desc" data-i18n="noBrokenBookmarksDesc">Click "Scan" to check for broken bookmarks.</div>
+            </div>
+          </div>
+          <div id="brokenBookmarksActions" class="broken-actions hidden">
+            <button id="cleanBrokenBtn" class="btn btn-danger btn-sm" data-i18n="cleanBroken">Delete All Broken</button>
+          </div>
+        </div>
+
         <!-- 重复书签检测 -->
         <div class="smart-section">
           <div class="smart-section-header">
@@ -219,6 +279,17 @@
         </div>
       </div>
     </main>
+
+    <!-- 颜色选择器面板（放在 #app 直接子级，避免被 .content 滚动容器裁剪） -->
+    <div id="colorPickerPanel" class="color-picker-panel hidden">
+      <div class="color-picker-title" data-i18n="selectColor">Select Color</div>
+      <div class="color-picker-options" id="colorPickerOptions">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+
+    <!-- 自定义颜色选择器（隐藏，由 JS 触发） -->
+    <input type="color" id="customColorInput" value="#3B82F6" style="position:absolute;visibility:hidden;width:0;height:0;pointer-events:none;">
 
     <!-- 批量操作底部栏 -->
     <div id="batchBar" class="batch-bar hidden">

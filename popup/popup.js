@@ -10,6 +10,8 @@ import EmptyFolderDetector from '../src/features/emptyFolderDetector.js';
 import DuplicateDetector from '../src/features/duplicateDetector.js';
 import DuplicateBookmarkDetector from '../src/features/duplicateBookmarkDetector.js';
 import SmartCleanupSuggestions from '../src/features/smartCleanupSuggestions.js';
+import BrokenBookmarkDetector from '../src/features/brokenBookmarkDetector.js';
+import FolderColorService from '../src/features/folderColorService.js';
 import FolderOperations from '../src/features/folderOperations.js';
 import NotesService from '../src/features/notesService.js';
 import { STORAGE_KEYS, TABS, SORT_TYPES } from '../src/utils/constants.js';
@@ -22,6 +24,12 @@ class App {
     this.emptyFolders = [];
     this.duplicates = [];
     this.duplicateBookmarks = []; // 重复书签
+    this.brokenBookmarks = []; // 失效书签
+    this.isCheckingBroken = false; // 是否正在检测失效书签
+    this.folderColors = {}; // 文件夹颜色 {folderId: colorValue}
+    this.colorFilter = ''; // 当前颜色筛选
+    this._colorPickerOpenTime = 0; // 颜色选择器打开时间戳（防止立即关闭）
+    this._customColorFolderId = ''; // 正在设置自定义颜色的目标文件夹 ID
     this.cleanupSuggestions = []; // 清理建议
     this.currentSort = SORT_TYPES.NAME;
     this.searchQuery = '';
@@ -198,6 +206,19 @@ class App {
       this.cleanDuplicateBookmarks();
     });
 
+    // 智能功能 - 扫描失效书签
+    document.getElementById('scanBrokenBtn').addEventListener('click', () => {
+      this.scanBrokenBookmarks();
+    });
+
+    // 智能功能 - 清理失效书签
+    const cleanBrokenBtn = document.getElementById('cleanBrokenBtn');
+    if (cleanBrokenBtn) {
+      cleanBrokenBtn.addEventListener('click', () => {
+        this.cleanBrokenBookmarks();
+      });
+    }
+
     // 统计卡片点击
     document.querySelectorAll('.stat-card').forEach(card => {
       card.addEventListener('click', () => {
@@ -209,6 +230,49 @@ class App {
     // 快捷键
     document.addEventListener('keydown', (e) => {
       this.handleKeyboard(e);
+    });
+
+    // 颜色筛选
+    const colorFilterSelect = document.getElementById('colorFilterSelect');
+    if (colorFilterSelect) {
+      colorFilterSelect.addEventListener('change', (e) => {
+        this.colorFilter = e.target.value;
+        this.renderFolders();
+      });
+    }
+
+    // 自定义颜色选择器 - 确认选择
+    const customColorInput = document.getElementById('customColorInput');
+    if (customColorInput) {
+      customColorInput.addEventListener('input', async (e) => {
+        const color = e.target.value;
+        const folderId = this._customColorFolderId;
+        if (!folderId || !color) return;
+        await FolderColorService.setColor(folderId, color);
+        this.folderColors = await FolderColorService.loadColors();
+        this.folders.forEach(f => {
+          f._color = this.folderColors[f.id] || '';
+        });
+        this.renderFolders();
+      });
+      // 取消选择时也要刷新（关闭颜色面板）
+      customColorInput.addEventListener('change', () => {
+        this._customColorFolderId = '';
+      });
+    }
+
+    // 颜色选择器 - 点击其他地方关闭（带防抖保护）
+    document.addEventListener('click', (e) => {
+      const picker = document.getElementById('colorPickerPanel');
+      if (!picker || picker.classList.contains('hidden')) return;
+      // 防抖：打开后 150ms 内不响应关闭
+      if (Date.now() - this._colorPickerOpenTime < 150) return;
+      // 检查点击是否在面板内部或颜色点上
+      const isColorDot = e.target.classList.contains('color-dot') ||
+                         e.target.closest('.folder-color-dot');
+      if (!picker.contains(e.target) && !isColorDot) {
+        picker.classList.add('hidden');
+      }
     });
   }
 
@@ -265,6 +329,12 @@ class App {
 
       this.emptyFolders = EmptyFolderDetector.detectFromList(this.folders);
       this.duplicates = DuplicateDetector.detect(this.folders);
+
+      // 加载文件夹颜色
+      this.folderColors = await FolderColorService.loadColors();
+      this.folders.forEach(folder => {
+        folder._color = this.folderColors[folder.id] || '';
+      });
       
       // 扫描重复书签
       const bookmarkTree = await this.getBookmarkTree();
@@ -368,6 +438,12 @@ class App {
   renderFolders() {
     const container = document.getElementById('foldersList');
     let folders = FolderScanner.searchFolders(this.folders, this.searchQuery);
+
+    // 颜色筛选
+    if (this.colorFilter) {
+      folders = folders.filter(f => f._color === this.colorFilter);
+    }
+
     folders = FolderScanner.sortFolders(folders, this.currentSort);
 
     if (folders.length === 0) {
@@ -381,18 +457,23 @@ class App {
   }
 
   /**
-   * 创建文件夹卡片 HTML（含复选框）
+   * 创建文件夹卡片 HTML（含复选框、颜色条）
    */
   createFolderCard(folder) {
     const isSelected = this.selectedFolderIds.has(folder.id);
     const isEmpty = folder.isEmpty;
+    const color = folder._color || '';
+    const colorStyle = color ? `border-left-color: ${FolderColorService.getHex(color)};` : '';
     return `
       <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
         <div class="folder-card-header">
           <label class="folder-checkbox">
             <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
           </label>
-          <div class="folder-header">
+          <div class="folder-color-dot" data-folder-id="${folder.id}" title="Set color">
+            ${color ? `<span class="color-dot" style="background:${FolderColorService.getHex(color)}"></span>` : '🎨'}
+          </div>
+          <div class="folder-header" style="${colorStyle}">
             <div>
               <div class="folder-name">
                 <span class="folder-icon">📁</span>
@@ -421,9 +502,110 @@ class App {
   }
 
   /**
+   * 显示颜色选择器
+   */
+  showColorPicker(folderId, targetEl) {
+    const panel = document.getElementById('colorPickerPanel');
+    const options = document.getElementById('colorPickerOptions');
+    const presets = FolderColorService.getPresets();
+
+    options.innerHTML = presets.map(p => {
+      // 自定义颜色选项：显示彩虹圆点
+      if (p.value === '__custom__') {
+        return `
+          <div class="color-picker-option custom-option" data-color="__custom__" data-folder-id="${folderId}">
+            <span class="color-dot custom-color-dot"></span>
+            <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+          </div>
+        `;
+      }
+      // 无颜色选项
+      if (p.value === '') {
+        return `
+          <div class="color-picker-option no-color" data-color="" data-folder-id="${folderId}">
+            <span style="font-size:12px;opacity:0.5;">✕</span>
+            <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+          </div>
+        `;
+      }
+      // 预设颜色
+      return `
+        <div class="color-picker-option" data-color="${p.value}" data-folder-id="${folderId}">
+          <span class="color-dot" style="background:${p.hex}"></span>
+          <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+        </div>
+      `;
+    }).join('');
+
+    // 绑定颜色选择事件
+    options.querySelectorAll('.color-picker-option').forEach(opt => {
+      opt.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const color = e.currentTarget.dataset.color;
+
+        // 自定义颜色：触发系统颜色选择器
+        if (color === '__custom__') {
+          this._customColorFolderId = folderId;
+          panel.classList.add('hidden');
+          // 如果文件夹已有自定义颜色，以该颜色作为默认值
+          const currentColor = this.folderColors[folderId] || '#3B82F6';
+          const colorInput = document.getElementById('customColorInput');
+          colorInput.value = currentColor.startsWith('#') ? currentColor : '#3B82F6';
+          colorInput.click();
+          return;
+        }
+
+        await FolderColorService.setColor(folderId, color);
+        this.folderColors = await FolderColorService.loadColors();
+        this.folders.forEach(f => {
+          f._color = this.folderColors[f.id] || '';
+        });
+        panel.classList.add('hidden');
+        this.renderFolders();
+      });
+    });
+
+    // 定位面板（带边界检测）
+    const rect = targetEl.getBoundingClientRect();
+    const panelWidth = 150;
+    const panelHeight = 200;
+
+    let top = rect.bottom + 4;
+    let left = rect.left;
+
+    // 边界检测：防止超出右边缘
+    if (left + panelWidth > window.innerWidth) {
+      left = window.innerWidth - panelWidth - 4;
+    }
+    if (left < 0) left = 4;
+
+    // 边界检测：防止超出底部，改为向上弹出
+    if (top + panelHeight > window.innerHeight) {
+      top = rect.top - panelHeight - 4;
+    }
+    if (top < 0) top = 4;
+
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+
+    // 标记打开时间（防止 document click 立即关闭）
+    this._colorPickerOpenTime = Date.now();
+    panel.classList.remove('hidden');
+  }
+
+  /**
    * 绑定文件夹卡片事件
    */
   bindFolderCardEvents() {
+    // 颜色点
+    document.querySelectorAll('.folder-color-dot').forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const folderId = e.currentTarget.dataset.folderId;
+        this.showColorPicker(folderId, e.currentTarget);
+      });
+    });
+
     // 复选框
     document.querySelectorAll('.folder-checkbox input').forEach(cb => {
       cb.addEventListener('change', (e) => {
@@ -965,10 +1147,230 @@ class App {
    * 渲染智能功能页面
    */
   renderSmartPage() {
+    this.updateHealthScore();
+    this.renderBrokenBookmarks();
     this.renderDuplicateBookmarks();
     this.renderCleanupSuggestions();
   }
   
+  /**
+   * 更新健康分数
+   */
+  updateHealthScore() {
+    if (this.folders.length === 0) return;
+    
+    // 计算平均健康分数
+    let totalScore = 0;
+    this.folders.forEach(folder => {
+      totalScore += SmartCleanupSuggestions.calculateHealthScore(folder);
+    });
+    const avgScore = Math.round(totalScore / this.folders.length);
+    
+    // 更新圆圈
+    const circle = document.getElementById('healthCircle');
+    if (circle) {
+      circle.setAttribute('stroke-dasharray', `${avgScore}, 100`);
+      
+      // 根据分数改变颜色
+      if (avgScore >= 80) {
+        circle.setAttribute('stroke', 'var(--success)');
+      } else if (avgScore >= 50) {
+        circle.setAttribute('stroke', 'var(--warning)');
+      } else {
+        circle.setAttribute('stroke', 'var(--danger)');
+      }
+    }
+    
+    // 更新分数文本
+    const scoreEl = document.getElementById('healthScore');
+    if (scoreEl) scoreEl.textContent = avgScore;
+    
+    // 更新统计
+    const totalFoldersEl = document.getElementById('healthTotalFolders');
+    if (totalFoldersEl) totalFoldersEl.textContent = this.folders.length;
+    
+    const issuesEl = document.getElementById('healthIssues');
+    if (issuesEl) issuesEl.textContent = this.emptyFolders.length + this.duplicates.length;
+  }
+  
+  /**
+   * 扫描失效书签
+   */
+  async scanBrokenBookmarks() {
+    if (this.isCheckingBroken) return;
+
+    this.isCheckingBroken = true;
+    const scanBtn = document.getElementById('scanBrokenBtn');
+    const progressEl = document.getElementById('brokenCheckProgress');
+    const fillEl = document.getElementById('brokenProgressFill');
+    const countEl = document.getElementById('brokenProgressCount');
+
+    scanBtn.disabled = true;
+    scanBtn.textContent = i18n.getMessage('checking') || 'Checking...';
+    progressEl.classList.remove('hidden');
+
+    try {
+      // 收集所有书签
+      const bookmarkTree = await this.getBookmarkTree();
+      const allBookmarks = BrokenBookmarkDetector.collectAllBookmarks(bookmarkTree);
+
+      if (allBookmarks.length === 0) {
+        showNotification('No bookmarks to check', 'info');
+        this.isCheckingBroken = false;
+        scanBtn.disabled = false;
+        scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
+        progressEl.classList.add('hidden');
+        return;
+      }
+
+      this.brokenBookmarks = [];
+      const total = allBookmarks.length;
+      let completed = 0;
+
+      const result = await BrokenBookmarkDetector.checkAllBookmarks(
+        allBookmarks,
+        (current, totalCount, itemResult) => {
+          completed = current;
+          if (fillEl) fillEl.style.width = `${Math.round((current / totalCount) * 100)}%`;
+          if (countEl) countEl.textContent = `${current} / ${totalCount}`;
+        },
+        5
+      );
+
+      this.brokenBookmarks = result.broken;
+
+      // 更新统计卡片中的书签总数（可选）
+      this.renderBrokenBookmarks();
+
+      showNotification(
+        `Scan complete: ${result.broken.length} broken, ${result.valid.length} valid`,
+        result.broken.length > 0 ? 'warning' : 'success'
+      );
+    } catch (error) {
+      console.error('Scan broken bookmarks failed:', error);
+      showNotification('Scan failed: ' + error.message, 'error');
+    } finally {
+      this.isCheckingBroken = false;
+      scanBtn.disabled = false;
+      scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
+      progressEl.classList.add('hidden');
+    }
+  }
+
+  /**
+   * 渲染失效书签列表
+   */
+  renderBrokenBookmarks() {
+    const container = document.getElementById('brokenBookmarksList');
+    const actionsEl = document.getElementById('brokenBookmarksActions');
+
+    if (this.brokenBookmarks.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" id="brokenBookmarksEmpty">
+          <div class="empty-state-icon">✅</div>
+          <div class="empty-state-title">${i18n.getMessage('noBrokenBookmarksFound') || 'No broken bookmarks!'}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noBrokenBookmarksFoundDesc') || 'All your bookmarks are accessible.'}</div>
+        </div>`;
+      actionsEl.classList.add('hidden');
+      return;
+    }
+
+    actionsEl.classList.remove('hidden');
+    container.innerHTML = this.brokenBookmarks.map((bookmark, index) => `
+      <div class="broken-bookmark-item">
+        <div class="broken-bookmark-info">
+          <span class="broken-bookmark-title">${this.escapeHtml(bookmark.title)}</span>
+          <span class="broken-bookmark-url">${this.escapeHtml(bookmark.url)}</span>
+        </div>
+        <span class="broken-bookmark-status ${bookmark.status}">${this.getBrokenStatusText(bookmark.status)}</span>
+        <button class="btn btn-danger btn-sm" data-action="delete-broken" data-bookmark-id="${bookmark.id}" title="Delete">×</button>
+      </div>
+    `).join('');
+
+    // 绑定删除按钮事件
+    container.querySelectorAll('[data-action="delete-broken"]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.dataset.bookmarkId;
+        await this.deleteBrokenBookmark(id);
+      });
+    });
+  }
+
+  /**
+   * 获取失效状态文本
+   */
+  getBrokenStatusText(status) {
+    const map = {
+      'timeout': i18n.getMessage('statusTimeout') || 'Timeout',
+      'unreachable': i18n.getMessage('statusUnreachable') || 'Unreachable',
+      'unknown': i18n.getMessage('statusUnknown') || 'Unknown'
+    };
+    return map[status] || status;
+  }
+
+  /**
+   * 删除单个失效书签
+   */
+  async deleteBrokenBookmark(bookmarkId) {
+    try {
+      await new Promise((resolve, reject) => {
+        chrome.bookmarks.remove(bookmarkId, () => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else {
+            resolve();
+          }
+        });
+      });
+
+      this.brokenBookmarks = this.brokenBookmarks.filter(b => b.id !== bookmarkId);
+      this.renderBrokenBookmarks();
+      showNotification('Bookmark deleted', 'success');
+    } catch (error) {
+      showNotification('Delete failed: ' + error.message, 'error');
+    }
+  }
+
+  /**
+   * 清理所有失效书签
+   */
+  async cleanBrokenBookmarks() {
+    if (this.brokenBookmarks.length === 0) {
+      showNotification('No broken bookmarks to clean', 'info');
+      return;
+    }
+
+    if (this.deleteConfirm) {
+      this.showConfirmModal(
+        i18n.getMessage('confirmCleanBroken') || 'Delete Broken Bookmarks',
+        (i18n.getMessage('confirmCleanBrokenMessage') || `Delete ${this.brokenBookmarks.length} broken bookmarks?`).replace('$1', this.brokenBookmarks.length),
+        async () => {
+          await this.doCleanBrokenBookmarks();
+        }
+      );
+    } else {
+      await this.doCleanBrokenBookmarks();
+    }
+  }
+
+  async doCleanBrokenBookmarks() {
+    try {
+      const result = await BrokenBookmarkDetector.removeBrokenBookmarks(this.brokenBookmarks);
+      showNotification(
+        `Deleted ${result.success} broken bookmarks${result.failed > 0 ? ', ' + result.failed + ' failed' : ''}`,
+        'success'
+      );
+      if (result.errors.length > 0) {
+        console.error('Clean broken errors:', result.errors);
+      }
+      this.brokenBookmarks = [];
+      this.renderBrokenBookmarks();
+      await this.scanBookmarks();
+    } catch (error) {
+      showNotification('Clean failed: ' + error.message, 'error');
+    }
+  }
+
   /**
    * 渲染重复书签列表
    */
@@ -1041,10 +1443,61 @@ class App {
           `).join('')}
           ${suggestion.folders.length > 5 ? `<div class="more-items">+${suggestion.folders.length - 5} more</div>` : ''}
         </div>
+        <div class="cleanup-suggestion-actions">
+          <button class="btn btn-sm ${suggestion.priority === 'high' ? 'btn-danger' : 'btn-secondary'}" 
+                  data-action="smart-action" data-suggestion-index="${index}">
+            ${this.getSuggestionButtonText(suggestion.type)}
+          </button>
+        </div>
       </div>
     `).join('');
+
+    // 绑定按钮事件
+    container.querySelectorAll('[data-action="smart-action"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const index = parseInt(e.target.dataset.suggestionIndex);
+        this.executeSuggestionAction(this.cleanupSuggestions[index]);
+      });
+    });
   }
   
+  /**
+   * 获取建议按钮文本
+   */
+  getSuggestionButtonText(type) {
+    const texts = {
+      'empty': i18n.getMessage('deleteAll') || 'Delete All',
+      'unused': i18n.getMessage('review') || 'Review',
+      'small': i18n.getMessage('merge') || 'Merge',
+      'duplicates': i18n.getMessage('mergeAll') || 'Merge All'
+    };
+    return texts[type] || i18n.getMessage('fix') || 'Fix';
+  }
+
+  /**
+   * 执行建议操作
+   */
+  async executeSuggestionAction(suggestion) {
+    switch (suggestion.type) {
+      case 'empty':
+        await this.cleanAllEmptyFolders();
+        break;
+      case 'unused':
+      case 'small':
+      case 'duplicates':
+        // 选中相关文件夹并切换到 Folders Tab
+        this.selectedFolderIds.clear();
+        suggestion.folders.forEach(f => this.selectedFolderIds.add(f.id));
+        this.switchTab(TABS.FOLDERS);
+        showNotification(
+          i18n.getMessage('foldersSelected').replace('$1', suggestion.folders.length) || 
+          `${suggestion.folders.length} folders selected. Use batch operations to manage them.`,
+          'info'
+        );
+        break;
+    }
+  }
+
   /**
    * 清理重复书签
    */

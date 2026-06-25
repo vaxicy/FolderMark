@@ -12,8 +12,8 @@ class SmartCleanupSuggestions {
   static generateSuggestions(folders, duplicates = []) {
     const suggestions = [];
     
-    // 1. 空文件夹建议
-    const emptyFolders = folders.filter(f => f.isEmpty);
+    // 1. 空文件夹建议（排除系统根文件夹）
+    const emptyFolders = folders.filter(f => f.isEmpty && !f.isRoot);
     if (emptyFolders.length > 0) {
       suggestions.push({
         type: 'empty',
@@ -78,8 +78,11 @@ class SmartCleanupSuggestions {
    * @returns {number} 分数（0-100，越高越好）
    */
   static calculateHealthScore(folder) {
+    // 系统根文件夹不计入健康分数（始终满分）
+    if (folder.isRoot) return 100;
+
     let score = 100;
-    
+
     // 空文件夹扣分
     if (folder.isEmpty) {
       score -= 50;

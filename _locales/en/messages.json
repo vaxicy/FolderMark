@@ -280,5 +280,92 @@
   },
   "smallDesc": {
     "message": "Found $1 folders with 2 or fewer bookmarks (consider merging)"
+  },
+  "deleteAll": {
+    "message": "Delete All"
+  },
+  "review": {
+    "message": "Review"
+  },
+  "mergeAll": {
+    "message": "Merge All"
+  },
+  "fix": {
+    "message": "Fix"
+  },
+  "foldersSelected": {
+    "message": "$1 folders selected. Use batch operations to manage them."
+  },
+  "healthScoreLabel": {
+    "message": "Score"
+  },
+  "issues": {
+    "message": "Issues"
+  },
+  "brokenBookmarks": {
+    "message": "Broken Bookmarks"
+  },
+  "scanBroken": {
+    "message": "Scan"
+  },
+  "checking": {
+    "message": "Checking..."
+  },
+  "noBrokenBookmarks": {
+    "message": "Not scanned yet"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "Click \"Scan\" to check for broken bookmarks."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "No broken bookmarks!"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "All your bookmarks are accessible."
+  },
+  "cleanBroken": {
+    "message": "Delete All Broken"
+  },
+  "confirmCleanBroken": {
+    "message": "Delete Broken Bookmarks"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "Delete $1 broken bookmarks?"
+  },
+  "statusTimeout": {
+    "message": "Timeout"
+  },
+  "statusUnreachable": {
+    "message": "Unreachable"
+  },
+  "statusUnknown": {
+    "message": "Unknown"
+  },
+  "selectColor": {
+    "message": "Select Color"
+  },
+  "colornone": {
+    "message": "None"
+  },
+  "colorcustom": {
+    "message": "Custom..."
+  },
+  "colorRed": {
+    "message": "Red"
+  },
+  "colorOrange": {
+    "message": "Orange"
+  },
+  "colorYellow": {
+    "message": "Yellow"
+  },
+  "colorGreen": {
+    "message": "Green"
+  },
+  "colorBlue": {
+    "message": "Blue"
+  },
+  "colorPurple": {
+    "message": "Purple"
   }
 }

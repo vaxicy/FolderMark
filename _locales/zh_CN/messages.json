@@ -280,5 +280,92 @@
   },
   "smallDesc": {
     "message": "发现 $1 个书签数 ≤ 2 的文件夹（建议合并）"
+  },
+  "deleteAll": {
+    "message": "全部删除"
+  },
+  "review": {
+    "message": "查看"
+  },
+  "mergeAll": {
+    "message": "全部合并"
+  },
+  "fix": {
+    "message": "修复"
+  },
+  "foldersSelected": {
+    "message": "已选中 $1 个文件夹。使用批量操作进行管理。"
+  },
+  "healthScoreLabel": {
+    "message": "分数"
+  },
+  "issues": {
+    "message": "问题"
+  },
+  "brokenBookmarks": {
+    "message": "失效书签"
+  },
+  "scanBroken": {
+    "message": "扫描"
+  },
+  "checking": {
+    "message": "检测中..."
+  },
+  "noBrokenBookmarks": {
+    "message": "尚未扫描"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "点击「扫描」按钮检测失效书签。"
+  },
+  "noBrokenBookmarksFound": {
+    "message": "未发现失效书签！"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "所有书签均可访问。"
+  },
+  "cleanBroken": {
+    "message": "全部删除"
+  },
+  "confirmCleanBroken": {
+    "message": "删除失效书签"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "删除 $1 个失效书签？"
+  },
+  "statusTimeout": {
+    "message": "超时"
+  },
+  "statusUnreachable": {
+    "message": "无法访问"
+  },
+  "statusUnknown": {
+    "message": "未知"
+  },
+  "selectColor": {
+    "message": "选择颜色"
+  },
+  "colornone": {
+    "message": "无颜色"
+  },
+  "colorcustom": {
+    "message": "自定义..."
+  },
+  "colorRed": {
+    "message": "红色"
+  },
+  "colorOrange": {
+    "message": "橙色"
+  },
+  "colorYellow": {
+    "message": "黄色"
+  },
+  "colorGreen": {
+    "message": "绿色"
+  },
+  "colorBlue": {
+    "message": "蓝色"
+  },
+  "colorPurple": {
+    "message": "紫色"
   }
 }
