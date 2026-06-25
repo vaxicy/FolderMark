@@ -141,10 +141,16 @@
     "message": "未找到文件夹"
   },
   "noEmptyFolders": {
-    "message": "无空文件夹"
+    "message": "没有空文件夹！"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "你的书签整理得很好。"
   },
   "noDuplicates": {
-    "message": "无重复文件夹"
+    "message": "没有重复文件夹！"
+  },
+  "noDuplicatesDesc": {
+    "message": "你的文件夹结构非常整洁。"
   },
   "loading": {
     "message": "加载中..."
@@ -172,5 +178,23 @@
   },
   "operations": {
     "message": "操作"
+  },
+  "data": {
+    "message": "数据"
+  },
+  "about": {
+    "message": "关于"
+  },
+  "importStructure": {
+    "message": "导入"
+  },
+  "restoreDefaults": {
+    "message": "恢复默认设置"
+  },
+  "confirmRestore": {
+    "message": "确定恢复默认设置？"
+  },
+  "restoreSuccess": {
+    "message": "已恢复默认设置"
   }
 }

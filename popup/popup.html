@@ -102,7 +102,9 @@
         </div>
         <div id="emptyFoldersList" class="folders-list">
           <div class="empty-state" id="emptyFoldersEmpty">
-            <p data-i18n="noEmptyFolders">No empty folders</p>
+            <div class="empty-state-icon">🎉</div>
+            <div class="empty-state-title" data-i18n="noEmptyFolders">No empty folders!</div>
+            <div class="empty-state-desc" data-i18n="noEmptyFoldersDesc">Your bookmarks are well organized.</div>
           </div>
         </div>
       </div>
@@ -114,7 +116,9 @@
         </div>
         <div id="duplicatesList" class="duplicates-list">
           <div class="empty-state" id="duplicatesEmpty">
-            <p data-i18n="noDuplicates">No duplicates</p>
+            <div class="empty-state-icon">🎉</div>
+            <div class="empty-state-title" data-i18n="noDuplicates">No duplicate folders!</div>
+            <div class="empty-state-desc" data-i18n="noDuplicatesDesc">Your folder structure is very tidy.</div>
           </div>
         </div>
       </div>
@@ -125,8 +129,8 @@
           <h2 data-i18n="settingsTitle">Settings</h2>
 
           <!-- 外观分组 -->
-          <div class="settings-group">
-            <div class="settings-group-title" data-i18n="appearance">Appearance</div>
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="appearance">Appearance</div>
             <div class="setting-item">
               <label data-i18n="theme">Theme</label>
               <select id="themeSelect">
@@ -145,19 +149,33 @@
           </div>
 
           <!-- 操作分组 -->
-          <div class="settings-group">
-            <div class="settings-group-title" data-i18n="operations">Operations</div>
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="operations">Operations</div>
             <div class="setting-item">
               <label data-i18n="deleteConfirm">Confirm Delete</label>
               <input type="checkbox" id="deleteConfirmToggle" checked>
             </div>
           </div>
 
-          <!-- 操作按钮横排 -->
-          <div class="settings-actions">
-            <button id="exportStructure" class="btn btn-secondary btn-sm" data-i18n="exportStructure">Export</button>
-            <button id="privacyInfo" class="btn btn-secondary btn-sm" data-i18n="privacyInfo">Privacy</button>
-            <button id="refreshData" class="btn btn-primary btn-sm" data-i18n="refresh">Refresh</button>
+          <!-- 数据分组 -->
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="data">Data</div>
+            <div class="settings-buttons">
+              <button id="importStructure" class="btn btn-secondary btn-sm" data-i18n="importStructure">Import</button>
+              <button id="exportStructure" class="btn btn-secondary btn-sm" data-i18n="exportStructure">Export</button>
+            </div>
+          </div>
+
+          <!-- 关于分组 -->
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="about">About</div>
+            <div class="settings-buttons">
+              <button id="refreshData" class="btn btn-primary btn-sm" data-i18n="refresh">Refresh</button>
+              <button id="privacyInfo" class="btn btn-secondary btn-sm" data-i18n="privacyInfo">Privacy</button>
+            </div>
+            <div class="danger-section">
+              <button id="restoreDefaults" class="btn btn-danger btn-sm" data-i18n="restoreDefaults">Restore Defaults</button>
+            </div>
           </div>
         </div>
       </div>

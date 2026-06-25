@@ -516,60 +516,87 @@ body {
   font-size: 9px;
 }
 
-/* 设置页面 */
+/* 设置页面 - 优化布局和视觉层级 */
 .settings-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  padding-bottom: 12px;
 }
 
 .settings-container h2 {
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
-.settings-group {
+/* 设置分组 */
+.settings-section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
 }
 
-.settings-group-title {
-  font-size: 9px;
-  font-weight: 600;
+.settings-section-title {
+  font-size: 10px;
+  font-weight: 700;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0 4px;
+  letter-spacing: 0.8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-color);
 }
 
+/* 设置项 */
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
+  min-height: 36px;
 }
 
 .setting-item label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.settings-actions {
+/* 设置按钮组 */
+.settings-buttons {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
-.settings-actions .btn {
+.settings-buttons .btn {
   flex: 1;
   justify-content: center;
   min-width: 0;
+  height: 32px;
+  font-size: 10px;
+}
+
+/* 危险操作区域 */
+.danger-section {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--danger-light);
+}
+
+.danger-section .btn-danger {
+  width: 100%;
+  height: 32px;
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .setting-item select {
@@ -747,12 +774,65 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* 空状态 */
+/* 空状态 - 优化留白和现代化设计 */
 .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 20px 12px;
-  color: var(--text-tertiary);
-  font-size: 11px;
+  padding: 32px 20px;
+  min-height: 180px;
+  animation: emptyStateFadeIn 0.4s ease forwards;
+}
+
+@keyframes emptyStateFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.empty-state-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+  line-height: 1;
+  animation: iconBounce 0.6s ease forwards;
+  filter: drop-shadow(0 2px 8px rgba(217, 119, 6, 0.2));
+}
+
+@keyframes iconBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+
+.empty-state-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 220px;
+  line-height: 1.6;
+  opacity: 0.85;
 }
 
 /* 通知 */

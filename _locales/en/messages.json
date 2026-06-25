@@ -141,10 +141,16 @@
     "message": "No folders found"
   },
   "noEmptyFolders": {
-    "message": "No empty folders"
+    "message": "No empty folders!"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "Your bookmarks are well organized."
   },
   "noDuplicates": {
-    "message": "No duplicates"
+    "message": "No duplicate folders!"
+  },
+  "noDuplicatesDesc": {
+    "message": "Your folder structure is very tidy."
   },
   "loading": {
     "message": "Loading..."
@@ -172,5 +178,23 @@
   },
   "operations": {
     "message": "Operations"
+  },
+  "data": {
+    "message": "Data"
+  },
+  "about": {
+    "message": "About"
+  },
+  "importStructure": {
+    "message": "Import"
+  },
+  "restoreDefaults": {
+    "message": "Restore Defaults"
+  },
+  "confirmRestore": {
+    "message": "Restore default settings?"
+  },
+  "restoreSuccess": {
+    "message": "Settings restored to defaults"
   }
 }

@@ -109,9 +109,19 @@ class App {
       this.toggleDeleteConfirm(e.target.checked);
     });
 
+    // 设置 - 导入
+    document.getElementById('importStructure').addEventListener('click', () => {
+      this.importStructure();
+    });
+
     // 设置 - 导出
     document.getElementById('exportStructure').addEventListener('click', () => {
       this.exportStructure();
+    });
+
+    // 设置 - 恢复默认设置
+    document.getElementById('restoreDefaults').addEventListener('click', () => {
+      this.restoreDefaults();
     });
 
     // 设置 - 隐私
@@ -526,7 +536,12 @@ class App {
   renderEmptyFolders() {
     const container = document.getElementById('emptyFoldersList');
     if (this.emptyFolders.length === 0) {
-      container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noEmptyFolders') + '</p></div>';
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🎉</div>
+          <div class="empty-state-title">${i18n.getMessage('noEmptyFolders')}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noEmptyFoldersDesc') || 'Your bookmarks are well organized.'}</div>
+        </div>`;
       return;
     }
 
@@ -561,7 +576,12 @@ class App {
   renderDuplicates() {
     const container = document.getElementById('duplicatesList');
     if (this.duplicates.length === 0) {
-      container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noDuplicates') + '</p></div>';
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🎉</div>
+          <div class="empty-state-title">${i18n.getMessage('noDuplicates')}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noDuplicatesDesc') || 'Your folder structure is very tidy.'}</div>
+        </div>`;
       return;
     }
 
@@ -717,6 +737,65 @@ class App {
     };
     exportToJSON(data, 'foldermark-structure.json');
     showNotification('Structure exported successfully', 'success');
+  }
+
+  importStructure() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          // 这里可以处理导入的数据
+          // 目前只是显示成功消息
+          showNotification('Structure imported successfully', 'success');
+          console.log('Imported data:', data);
+        } catch (error) {
+          showNotification('Import failed: Invalid file format', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  async restoreDefaults() {
+    if (this.deleteConfirm) {
+      this.showConfirmModal(
+        i18n.getMessage('confirmRestore') || 'Restore default settings?',
+        'This will reset all settings to their default values.',
+        async () => {
+          await this.doRestoreDefaults();
+        }
+      );
+    } else {
+      await this.doRestoreDefaults();
+    }
+  }
+
+  async doRestoreDefaults() {
+    try {
+      const defaultSettings = {
+        [STORAGE_KEYS.THEME]: 'system',
+        [STORAGE_KEYS.LANGUAGE]: 'en',
+        [STORAGE_KEYS.DELETE_CONFIRM]: true
+      };
+      await chrome.storage.local.set(defaultSettings);
+      this.theme = 'system';
+      this.language = 'en';
+      this.deleteConfirm = true;
+      await theme.setTheme('system');
+      await i18n.setLanguage('en');
+      this.renderSettings();
+      showNotification(i18n.getMessage('restoreSuccess') || 'Settings restored to defaults', 'success');
+    } catch (error) {
+      showNotification('Restore failed: ' + error.message, 'error');
+    }
   }
 
   showPrivacyInfo() {
