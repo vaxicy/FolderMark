@@ -16,7 +16,7 @@
           FolderMark
         </h1>
         <div class="header-actions">
-          <button id="themeToggle" class="icon-btn" title="Toggle theme">
+          <button id="themeToggle" class="icon-btn" data-i18n-title="toggleTheme">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="5"></circle>
               <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -45,14 +45,14 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <select id="colorFilterSelect" class="color-filter-select" title="Filter by color">
-        <option value="">All Colors</option>
-        <option value="red">🔴 Red</option>
-        <option value="orange">🟠 Orange</option>
-        <option value="yellow">🟡 Yellow</option>
-        <option value="green">🟢 Green</option>
-        <option value="blue">🔵 Blue</option>
-        <option value="purple">🟣 Purple</option>
+      <select id="colorFilterSelect" class="color-filter-select" data-i18n-title="filterByColor">
+        <option value="" data-i18n="allColors">All Colors</option>
+        <option value="red" data-i18n="colorRed">🔴 Red</option>
+        <option value="orange" data-i18n="colorOrange">🟠 Orange</option>
+        <option value="yellow" data-i18n="colorYellow">🟡 Yellow</option>
+        <option value="green" data-i18n="colorGreen">🟢 Green</option>
+        <option value="blue" data-i18n="colorBlue">🔵 Blue</option>
+        <option value="purple" data-i18n="colorPurple">🟣 Purple</option>
       </select>
     </div>
 
@@ -96,7 +96,7 @@
             <option value="path" data-i18n="sortByPath">Path</option>
             <option value="date" data-i18n="sortByDate">Date</option>
           </select>
-          <button id="newFolderBtn" class="btn btn-primary btn-sm" data-i18n="newFolder" title="New Folder">＋</button>
+          <button id="newFolderBtn" class="btn btn-primary btn-sm" data-i18n="newFolder" data-i18n-title="newFolder">＋</button>
         </div>
         <div id="foldersList" class="folders-list">
           <div class="loading" id="foldersLoading">
@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <!-- 重复文件夹页 -->
+      <!-- 重复文件夹/书签页 -->
       <div id="duplicatesPage" class="page">
         <div class="page-header">
           <h2 data-i18n="duplicatesTitle">Duplicates</h2>
@@ -131,6 +131,19 @@
             <div class="empty-state-icon">🎉</div>
             <div class="empty-state-title" data-i18n="noDuplicates">No duplicate folders!</div>
             <div class="empty-state-desc" data-i18n="noDuplicatesDesc">Your folder structure is very tidy.</div>
+          </div>
+        </div>
+
+        <!-- 重复书签 -->
+        <div class="page-header" style="margin-top: 24px;">
+          <h2 data-i18n="duplicateBookmarks">Duplicate Bookmarks</h2>
+          <button id="cleanDuplicatesBtn" class="btn btn-danger btn-sm" data-i18n="cleanDuplicates">Clean Duplicates</button>
+        </div>
+        <div id="duplicateBookmarksList" class="duplicates-list">
+          <div class="empty-state" id="duplicateBookmarksEmpty">
+            <div class="empty-state-icon">🎉</div>
+            <div class="empty-state-title" data-i18n="noDuplicateBookmarks">No duplicate bookmarks!</div>
+            <div class="empty-state-desc" data-i18n="noDuplicateBookmarksDesc">All your bookmarks are unique.</div>
           </div>
         </div>
       </div>
@@ -192,21 +205,6 @@
           </div>
         </div>
 
-        <!-- 重复书签检测 -->
-        <div class="smart-section">
-          <div class="smart-section-header">
-            <h3 data-i18n="duplicateBookmarks">Duplicate Bookmarks</h3>
-            <button id="cleanDuplicatesBtn" class="btn btn-danger btn-sm" data-i18n="cleanDuplicates">Clean Duplicates</button>
-          </div>
-          <div id="duplicateBookmarksList" class="smart-list">
-            <div class="empty-state" id="duplicateBookmarksEmpty">
-              <div class="empty-state-icon">🎉</div>
-              <div class="empty-state-title" data-i18n="noDuplicateBookmarks">No duplicate bookmarks!</div>
-              <div class="empty-state-desc" data-i18n="noDuplicateBookmarksDesc">All your bookmarks are unique.</div>
-            </div>
-          </div>
-        </div>
-        
         <!-- 智能清理建议 -->
         <div class="smart-section">
           <div class="smart-section-header">
@@ -305,6 +303,12 @@
           <button id="batchExportBtn" class="btn btn-secondary btn-sm" data-i18n="batchExport">Export</button>
         </div>
       </div>
+    </div>
+
+    <!-- 撤销 Toast -->
+    <div id="undoToast" class="undo-toast hidden">
+      <span class="undo-toast-text" id="undoToastText"></span>
+      <button id="undoBtn" class="undo-toast-btn" data-i18n="undo">Undo</button>
     </div>
   </div>
   <div id="confirmModal" class="modal hidden">

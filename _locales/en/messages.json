@@ -344,6 +344,24 @@
   "selectColor": {
     "message": "Select Color"
   },
+  "allColors": {
+    "message": "All Colors"
+  },
+  "filterByColor": {
+    "message": "Filter by color"
+  },
+  "setColor": {
+    "message": "Set color"
+  },
+  "toggleTheme": {
+    "message": "Toggle theme"
+  },
+  "keep": {
+    "message": "Keep"
+  },
+  "more": {
+    "message": "more"
+  },
   "colornone": {
     "message": "None"
   },
@@ -367,5 +385,20 @@
   },
   "colorPurple": {
     "message": "Purple"
+  },
+  "undo": {
+    "message": "Undo"
+  },
+  "folderDeleted": {
+    "message": "$1 deleted"
+  },
+  "foldersDeletedDesc": {
+    "message": "folders"
+  },
+  "undoSuccess": {
+    "message": "Restored $1 folders"
+  },
+  "undoFailed": {
+    "message": "$1 folders could not be restored (parent deleted)"
   }
 }

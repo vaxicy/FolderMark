@@ -14,6 +14,7 @@ import BrokenBookmarkDetector from '../src/features/brokenBookmarkDetector.js';
 import FolderColorService from '../src/features/folderColorService.js';
 import FolderOperations from '../src/features/folderOperations.js';
 import NotesService from '../src/features/notesService.js';
+import UndoService from '../src/features/undoService.js';
 import { STORAGE_KEYS, TABS, SORT_TYPES } from '../src/utils/constants.js';
 import { formatDate, debounce, showNotification, exportToJSON } from '../src/utils/helpers.js';
 
@@ -30,6 +31,7 @@ class App {
     this.colorFilter = ''; // 当前颜色筛选
     this._colorPickerOpenTime = 0; // 颜色选择器打开时间戳（防止立即关闭）
     this._customColorFolderId = ''; // 正在设置自定义颜色的目标文件夹 ID
+    this._undoToastTimer = null;      // 撤销 Toast 自动关闭定时器
     this.cleanupSuggestions = []; // 清理建议
     this.currentSort = SORT_TYPES.NAME;
     this.searchQuery = '';
@@ -274,6 +276,11 @@ class App {
         picker.classList.add('hidden');
       }
     });
+
+    // 撤销按钮
+    document.getElementById('undoBtn').addEventListener('click', async () => {
+      await this.executeUndo();
+    });
   }
 
   /**
@@ -470,7 +477,7 @@ class App {
           <label class="folder-checkbox">
             <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
           </label>
-          <div class="folder-color-dot" data-folder-id="${folder.id}" title="Set color">
+          <div class="folder-color-dot" data-folder-id="${folder.id}" title="${i18n.getMessage('setColor') || 'Set color'}">
             ${color ? `<span class="color-dot" style="background:${FolderColorService.getHex(color)}"></span>` : '🎨'}
           </div>
           <div class="folder-header" style="${colorStyle}">
@@ -755,14 +762,24 @@ class App {
   }
 
   async doBatchDelete(ids) {
+    // 删除前先快照所有文件夹
+    const snapshots = [];
+    for (const folderId of ids) {
+      const folder = this.folders.find(f => f.id === folderId);
+      if (!folder || folder.isRoot) continue;
+      const snap = await UndoService.snapshot(folderId);
+      if (snap) snapshots.push({ snap, title: folder.title });
+    }
+
+    // 执行删除
     let success = 0;
     let failed = 0;
-    
+
     for (const folderId of ids) {
       try {
         const folder = this.folders.find(f => f.id === folderId);
         if (!folder || folder.isRoot) continue;
-        
+
         if (folder.isEmpty) {
           await FolderOperations.deleteFolder(folderId, false, folder.isRoot);
         } else {
@@ -774,8 +791,19 @@ class App {
         console.error('Delete failed for ' + folderId + ':', error);
       }
     }
-    
-    showNotification(`Deleted ${success} folders${failed > 0 ? ', ' + failed + ' failed' : ''}`, 'success');
+
+    // 推入撤销栈并显示 Toast
+    if (snapshots.length > 0) {
+      UndoService.push(
+        snapshots.map(s => s.snap),
+        `${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders')
+      );
+      this.showUndoToast(`${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders'));
+    }
+
+    if (failed > 0) {
+      showNotification(`Deleted ${success}, ${failed} failed`, 'error');
+    }
     this.clearSelection();
     await this.scanBookmarks();
   }
@@ -1016,7 +1044,7 @@ class App {
   }
 
   /**
-   * 删除文件夹
+   * 删除文件夹（带撤销支持）
    */
   async deleteFolder(folderId) {
     const folder = this.folders.find(f => f.id === folderId);
@@ -1032,33 +1060,32 @@ class App {
       ? i18n.getMessage('confirmDelete')
       : i18n.getMessage('confirmDeleteNonEmpty').replace('$1', folder.bookmarkCount) || `Delete folder and all ${folder.bookmarkCount} bookmarks?`;
 
+    const doDelete = async () => {
+      // 删除前快照
+      const snap = await UndoService.snapshot(folderId);
+      // 执行删除
+      if (isEmpty) {
+        await FolderOperations.deleteFolder(folderId, false, folder.isRoot);
+      } else {
+        await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
+      }
+      // 推入撤销栈并显示 Toast
+      if (snap) {
+        UndoService.push([snap], folder.title);
+        this.showUndoToast(folder.title);
+      }
+      await this.scanBookmarks();
+    };
+
     if (this.deleteConfirm) {
       this.showConfirmModal(
         i18n.getMessage('confirmDeleteTitle') || 'Confirm Delete',
         message,
-        async () => {
-          try {
-            if (isEmpty) {
-              await FolderOperations.deleteFolder(folderId, false, folder.isRoot);
-            } else {
-              await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
-            }
-            showNotification('Folder deleted successfully', 'success');
-            await this.scanBookmarks();
-          } catch (error) {
-            showNotification('Delete failed: ' + error.message, 'error');
-          }
-        }
+        doDelete
       );
     } else {
       try {
-        if (isEmpty) {
-          await FolderOperations.deleteFolder(folderId, false, folder.isRoot);
-        } else {
-          await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
-        }
-        showNotification('Folder deleted successfully', 'success');
-        await this.scanBookmarks();
+        await doDelete();
       } catch (error) {
         showNotification('Delete failed: ' + error.message, 'error');
       }
@@ -1106,9 +1133,10 @@ class App {
   }
 
   /**
-   * 渲染重复文件夹列表
+   * 渲染重复文件夹列表 + 重复书签
    */
   renderDuplicates() {
+    // 渲染重复文件夹
     const container = document.getElementById('duplicatesList');
     if (this.duplicates.length === 0) {
       container.innerHTML = `
@@ -1117,30 +1145,32 @@ class App {
           <div class="empty-state-title">${i18n.getMessage('noDuplicates')}</div>
           <div class="empty-state-desc">${i18n.getMessage('noDuplicatesDesc') || 'Your folder structure is very tidy.'}</div>
         </div>`;
-      return;
+    } else {
+      container.innerHTML = this.duplicates.map(group => `
+        <div class="duplicate-group">
+          <div class="duplicate-header">📁 ${this.escapeHtml(group.displayName)}</div>
+          <div class="duplicate-count">${i18n.getMessage('duplicateCount').replace('$1', group.count) || group.count + ' duplicates'}</div>
+          <div class="duplicate-folders">
+            ${group.folders.map(folder => `
+              <div class="duplicate-folder">
+                <span>${this.escapeHtml(folder.path)} (${folder.bookmarkCount})</span>
+                <button class="btn btn-secondary btn-sm" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('[data-action="merge"]').forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.mergeFolder(e.target.dataset.folderId);
+        });
+      });
     }
 
-    container.innerHTML = this.duplicates.map(group => `
-      <div class="duplicate-group">
-        <div class="duplicate-header">📁 ${this.escapeHtml(group.displayName)}</div>
-        <div class="duplicate-count">${i18n.getMessage('duplicateCount').replace('$1', group.count) || group.count + ' duplicates'}</div>
-        <div class="duplicate-folders">
-          ${group.folders.map(folder => `
-            <div class="duplicate-folder">
-              <span>${this.escapeHtml(folder.path)} (${folder.bookmarkCount})</span>
-              <button class="btn btn-secondary btn-sm" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `).join('');
-
-    container.querySelectorAll('[data-action="merge"]').forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.mergeFolder(e.target.dataset.folderId);
-      });
-    });
+    // 渲染重复书签
+    this.renderDuplicateBookmarks();
   }
 
   /**
@@ -1149,7 +1179,6 @@ class App {
   renderSmartPage() {
     this.updateHealthScore();
     this.renderBrokenBookmarks();
-    this.renderDuplicateBookmarks();
     this.renderCleanupSuggestions();
   }
   
@@ -1283,7 +1312,7 @@ class App {
           <span class="broken-bookmark-url">${this.escapeHtml(bookmark.url)}</span>
         </div>
         <span class="broken-bookmark-status ${bookmark.status}">${this.getBrokenStatusText(bookmark.status)}</span>
-        <button class="btn btn-danger btn-sm" data-action="delete-broken" data-bookmark-id="${bookmark.id}" title="Delete">×</button>
+        <button class="btn btn-danger btn-sm" data-action="delete-broken" data-bookmark-id="${bookmark.id}" title="${i18n.getMessage('delete')}">×</button>
       </div>
     `).join('');
 
@@ -1391,7 +1420,7 @@ class App {
       <div class="duplicate-bookmark-group">
         <div class="duplicate-bookmark-header">
           <span class="duplicate-bookmark-url">${this.escapeHtml(group.url)}</span>
-          <span class="duplicate-bookmark-count">${group.count} duplicates</span>
+          <span class="duplicate-bookmark-count">${(i18n.getMessage('duplicateCount') || '$1 duplicates').replace('$1', group.count)}</span>
         </div>
         <div class="duplicate-bookmark-list">
           ${group.bookmarks.map((bookmark, idx) => `
@@ -1403,7 +1432,7 @@ class App {
                 <span class="duplicate-bookmark-title">${this.escapeHtml(bookmark.title)}</span>
                 <span class="duplicate-bookmark-path">${this.escapeHtml(bookmark.path)}</span>
               </div>
-              ${idx === 0 ? '<span class="keep-badge">Keep</span>' : ''}
+              ${idx === 0 ? `<span class="keep-badge">${i18n.getMessage('keep') || 'Keep'}</span>` : ''}
             </div>
           `).join('')}
         </div>
@@ -1441,7 +1470,7 @@ class App {
               <span class="folder-path">${this.escapeHtml(folder.path)}</span>
             </div>
           `).join('')}
-          ${suggestion.folders.length > 5 ? `<div class="more-items">+${suggestion.folders.length - 5} more</div>` : ''}
+          ${suggestion.folders.length > 5 ? `<div class="more-items">+${suggestion.folders.length - 5} ${i18n.getMessage('more') || 'more'}</div>` : ''}
         </div>
         <div class="cleanup-suggestion-actions">
           <button class="btn btn-sm ${suggestion.priority === 'high' ? 'btn-danger' : 'btn-secondary'}" 
@@ -1582,11 +1611,28 @@ class App {
 
   async doCleanAllEmpty() {
     try {
+      // 删除前先快照所有空文件夹
+      const snapshots = [];
+      for (const folder of this.emptyFolders) {
+        const snap = await UndoService.snapshot(folder.id);
+        if (snap) snapshots.push(snap);
+      }
+
       const results = await EmptyFolderDetector.deleteAllEmptyFolders(this.emptyFolders);
       showNotification(`Deleted ${results.success} folders, ${results.failed} failed`, 'success');
       if (results.errors.length > 0) {
         console.error('Delete errors:', results.errors);
       }
+
+      // 推入撤销栈并显示 Toast
+      if (snapshots.length > 0) {
+        UndoService.push(
+          snapshots,
+          `${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders')
+        );
+        this.showUndoToast(`${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders'));
+      }
+
       await this.scanBookmarks();
     } catch (error) {
       showNotification('Clean failed: ' + error.message, 'error');
@@ -1612,6 +1658,57 @@ class App {
     if (this.confirmCallback) {
       this.confirmCallback();
       this.closeModal();
+    }
+  }
+
+  /**
+   * 显示撤销 Toast
+   * @param {string} description - 已删除的内容描述
+   */
+  showUndoToast(description) {
+    const text = document.getElementById('undoToastText');
+    const msg = (i18n.getMessage('folderDeleted') || '$1 deleted').replace('$1', description);
+    text.textContent = msg;
+    document.getElementById('undoToast').classList.remove('hidden');
+
+    // 5 秒后自动关闭
+    if (this._undoToastTimer) clearTimeout(this._undoToastTimer);
+    this._undoToastTimer = setTimeout(() => this.hideUndoToast(), 5000);
+  }
+
+  /**
+   * 隐藏撤销 Toast
+   */
+  hideUndoToast() {
+    document.getElementById('undoToast').classList.add('hidden');
+    if (this._undoToastTimer) {
+      clearTimeout(this._undoToastTimer);
+      this._undoToastTimer = null;
+    }
+  }
+
+  /**
+   * 执行撤销操作
+   */
+  async executeUndo() {
+    this.hideUndoToast();
+    try {
+      const result = await UndoService.undo();
+      if (result.restored > 0) {
+        showNotification(
+          (i18n.getMessage('undoSuccess') || 'Restored $1 folders').replace('$1', result.restored),
+          'success'
+        );
+      }
+      if (result.failed > 0) {
+        showNotification(
+          (i18n.getMessage('undoFailed') || '$1 folders could not be restored (parent deleted)').replace('$1', result.failed),
+          'error'
+        );
+      }
+      await this.scanBookmarks();
+    } catch (error) {
+      showNotification('Undo failed: ' + error.message, 'error');
     }
   }
 

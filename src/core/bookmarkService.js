@@ -23,6 +23,25 @@ class BookmarkService {
   }
 
   /**
+   * 新建书签
+   * @param {string} title - 书签标题
+   * @param {string} url - 书签 URL
+   * @param {string} parentId - 父文件夹 ID
+   * @returns {Promise<Object>} 新建的书签节点
+   */
+  static createBookmark(title, url, parentId) {
+    return new Promise((resolve, reject) => {
+      chrome.bookmarks.create({ title, url, parentId }, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+
+  /**
    * 获取完整书签树
    * @returns {Promise<Array>} 书签树
    */

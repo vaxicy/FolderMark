@@ -344,6 +344,24 @@
   "selectColor": {
     "message": "选择颜色"
   },
+  "allColors": {
+    "message": "全部颜色"
+  },
+  "filterByColor": {
+    "message": "按颜色筛选"
+  },
+  "setColor": {
+    "message": "设置颜色"
+  },
+  "toggleTheme": {
+    "message": "切换主题"
+  },
+  "keep": {
+    "message": "保留"
+  },
+  "more": {
+    "message": "更多"
+  },
   "colornone": {
     "message": "无颜色"
   },
@@ -367,5 +385,20 @@
   },
   "colorPurple": {
     "message": "紫色"
+  },
+  "undo": {
+    "message": "撤销"
+  },
+  "folderDeleted": {
+    "message": "$1 已删除"
+  },
+  "foldersDeletedDesc": {
+    "message": "个文件夹"
+  },
+  "undoSuccess": {
+    "message": "已恢复 $1 个文件夹"
+  },
+  "undoFailed": {
+    "message": "$1 个文件夹无法恢复（父文件夹已删除）"
   }
 }
