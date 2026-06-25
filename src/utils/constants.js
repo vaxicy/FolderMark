@@ -9,7 +9,8 @@ export const STORAGE_KEYS = {
   LANGUAGE: 'foldermark_language',
   DELETE_CONFIRM: 'foldermark_delete_confirm',
   LAST_SCAN: 'foldermark_last_scan',
-  SCAN_RESULT: 'foldermark_scan_result'
+  SCAN_RESULT: 'foldermark_scan_result',
+  FOLDER_NOTES: 'foldermark_folder_notes'
 };
 
 // 主题类型
@@ -40,6 +41,7 @@ export const TABS = {
   FOLDERS: 'folders',
   EMPTY: 'empty',
   DUPLICATES: 'duplicates',
+  SMART: 'smart',
   SETTINGS: 'settings'
 };
 

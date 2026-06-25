@@ -15,19 +15,21 @@
           <span class="folder-emoji">📁</span>
           FolderMark
         </h1>
-        <button id="themeToggle" class="icon-btn" title="Toggle theme">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        </button>
+        <div class="header-actions">
+          <button id="themeToggle" class="icon-btn" title="Toggle theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+        </div>
       </div>
       <p class="tagline" data-i18n="tagline">Organize bookmarks faster.</p>
     </header>
@@ -70,6 +72,7 @@
       <button class="tab active" data-tab="folders" data-i18n="tabFolders">Folders</button>
       <button class="tab" data-tab="empty" data-i18n="tabEmpty">Empty</button>
       <button class="tab" data-tab="duplicates" data-i18n="tabDuplicates">Duplicates</button>
+      <button class="tab" data-tab="smart" data-i18n="tabSmart">Smart</button>
       <button class="tab" data-tab="settings" data-i18n="tabSettings">Settings</button>
     </nav>
 
@@ -119,6 +122,42 @@
             <div class="empty-state-icon">🎉</div>
             <div class="empty-state-title" data-i18n="noDuplicates">No duplicate folders!</div>
             <div class="empty-state-desc" data-i18n="noDuplicatesDesc">Your folder structure is very tidy.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 智能功能页 -->
+      <div id="smartPage" class="page">
+        <div class="page-header">
+          <h2 data-i18n="smartTitle">Smart Features</h2>
+        </div>
+        
+        <!-- 重复书签检测 -->
+        <div class="smart-section">
+          <div class="smart-section-header">
+            <h3 data-i18n="duplicateBookmarks">Duplicate Bookmarks</h3>
+            <button id="cleanDuplicatesBtn" class="btn btn-danger btn-sm" data-i18n="cleanDuplicates">Clean Duplicates</button>
+          </div>
+          <div id="duplicateBookmarksList" class="smart-list">
+            <div class="empty-state" id="duplicateBookmarksEmpty">
+              <div class="empty-state-icon">🎉</div>
+              <div class="empty-state-title" data-i18n="noDuplicateBookmarks">No duplicate bookmarks!</div>
+              <div class="empty-state-desc" data-i18n="noDuplicateBookmarksDesc">All your bookmarks are unique.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 智能清理建议 -->
+        <div class="smart-section">
+          <div class="smart-section-header">
+            <h3 data-i18n="cleanupSuggestions">Cleanup Suggestions</h3>
+          </div>
+          <div id="cleanupSuggestionsList" class="smart-list">
+            <div class="empty-state" id="cleanupSuggestionsEmpty">
+              <div class="empty-state-icon">✨</div>
+              <div class="empty-state-title" data-i18n="noSuggestions">No suggestions yet</div>
+              <div class="empty-state-desc" data-i18n="noSuggestionsDesc">Click scan to get cleanup suggestions.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -180,9 +219,23 @@
         </div>
       </div>
     </main>
-  </div>
 
-  <!-- 确认删除弹窗 -->
+    <!-- 批量操作底部栏 -->
+    <div id="batchBar" class="batch-bar hidden">
+      <div class="batch-bar-inner">
+        <label class="batch-select-all">
+          <input type="checkbox" id="selectAllCheckbox">
+          <span data-i18n="selectAll">Select All</span>
+        </label>
+        <span class="batch-count" id="batchCount">0 selected</span>
+        <div class="batch-actions">
+          <button id="batchMergeBtn" class="btn btn-secondary btn-sm" data-i18n="batchMerge">Merge...</button>
+          <button id="batchDeleteBtn" class="btn btn-danger btn-sm" data-i18n="batchDelete">Delete</button>
+          <button id="batchExportBtn" class="btn btn-secondary btn-sm" data-i18n="batchExport">Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="confirmModal" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">

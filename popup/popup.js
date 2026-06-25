@@ -8,7 +8,10 @@ import theme from '../src/ui/theme.js';
 import FolderScanner from '../src/core/scanner.js';
 import EmptyFolderDetector from '../src/features/emptyFolderDetector.js';
 import DuplicateDetector from '../src/features/duplicateDetector.js';
+import DuplicateBookmarkDetector from '../src/features/duplicateBookmarkDetector.js';
+import SmartCleanupSuggestions from '../src/features/smartCleanupSuggestions.js';
 import FolderOperations from '../src/features/folderOperations.js';
+import NotesService from '../src/features/notesService.js';
 import { STORAGE_KEYS, TABS, SORT_TYPES } from '../src/utils/constants.js';
 import { formatDate, debounce, showNotification, exportToJSON } from '../src/utils/helpers.js';
 
@@ -18,9 +21,12 @@ class App {
     this.folders = [];
     this.emptyFolders = [];
     this.duplicates = [];
+    this.duplicateBookmarks = []; // 重复书签
+    this.cleanupSuggestions = []; // 清理建议
     this.currentSort = SORT_TYPES.NAME;
     this.searchQuery = '';
-    this._mergeSourceId = null; // 合并操作的源文件夹 ID
+    this._mergeSourceId = null;
+    this.selectedFolderIds = new Set(); // 批量选择
     this.init();
   }
 
@@ -69,7 +75,7 @@ class App {
       });
     });
 
-    // 搜索（使用 debounce）
+    // 搜索
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', debounce((e) => {
       this.searchQuery = e.target.value;
@@ -144,33 +150,52 @@ class App {
       this.cleanAllEmptyFolders();
     });
 
-    // 确认弹窗 - 取消
+    // 批量操作 - 全选
+    document.getElementById('selectAllCheckbox').addEventListener('change', (e) => {
+      this.toggleSelectAll(e.target.checked);
+    });
+
+    // 批量操作 - 删除
+    document.getElementById('batchDeleteBtn').addEventListener('click', () => {
+      this.batchDelete();
+    });
+
+    // 批量操作 - 合并
+    document.getElementById('batchMergeBtn').addEventListener('click', () => {
+      this.batchMerge();
+    });
+
+    // 批量操作 - 导出
+    document.getElementById('batchExportBtn').addEventListener('click', () => {
+      this.batchExport();
+    });
+
+    // 确认弹窗
     document.getElementById('modalCancel').addEventListener('click', () => {
       this.closeModal();
     });
-
-    // 确认弹窗 - 确认
     document.getElementById('modalConfirm').addEventListener('click', () => {
       this.executeConfirmAction();
     });
-
-    // 确认弹窗 - 点击遮罩关闭
     document.getElementById('confirmModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-overlay')) {
         this.closeModal();
       }
     });
 
-    // 合并弹窗 - 取消
+    // 合并弹窗
     document.getElementById('mergeCancel').addEventListener('click', () => {
       this.closeMergeModal();
     });
-
-    // 合并弹窗 - 点击遮罩关闭
     document.getElementById('mergeModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('merge-modal-overlay')) {
         this.closeMergeModal();
       }
+    });
+
+    // 智能功能 - 清理重复书签
+    document.getElementById('cleanDuplicatesBtn').addEventListener('click', () => {
+      this.cleanDuplicateBookmarks();
     });
 
     // 统计卡片点击
@@ -180,6 +205,47 @@ class App {
         this.handleStatCardClick(stat);
       });
     });
+
+    // 快捷键
+    document.addEventListener('keydown', (e) => {
+      this.handleKeyboard(e);
+    });
+  }
+
+  /**
+   * 快捷键处理
+   */
+  handleKeyboard(e) {
+    // 忽略在输入框中的按键
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+      return;
+    }
+
+    switch (e.key) {
+      case 'Delete':
+      case 'Backspace':
+        if (this.selectedFolderIds.size > 0) {
+          e.preventDefault();
+          this.batchDelete();
+        }
+        break;
+      case 'F2':
+        e.preventDefault();
+        break;
+      case 'a':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.toggleSelectAll(true);
+          document.getElementById('selectAllCheckbox').checked = true;
+        }
+        break;
+      case 'Escape':
+        if (this.selectedFolderIds.size > 0) {
+          e.preventDefault();
+          this.clearSelection();
+        }
+        break;
+    }
   }
 
   /**
@@ -191,9 +257,24 @@ class App {
       const scanner = new FolderScanner();
       const result = await scanner.scanAll();
       this.folders = result.folders;
+
+      const notes = await NotesService.loadNotes();
+      this.folders.forEach(folder => {
+        folder.note = notes[folder.id] || '';
+      });
+
       this.emptyFolders = EmptyFolderDetector.detectFromList(this.folders);
       this.duplicates = DuplicateDetector.detect(this.folders);
+      
+      // 扫描重复书签
+      const bookmarkTree = await this.getBookmarkTree();
+      this.duplicateBookmarks = DuplicateBookmarkDetector.detect(bookmarkTree);
+      
+      // 生成清理建议（传入已计算的 duplicates）
+      this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates);
+      
       this.updateStats();
+      this.clearSelection();
       this.renderCurrentPage();
       this.showLoading(false);
     } catch (error) {
@@ -202,32 +283,36 @@ class App {
       showNotification('Scan failed: ' + error.message, 'error');
     }
   }
+  
+  /**
+   * 获取书签树
+   */
+  async getBookmarkTree() {
+    return new Promise((resolve, reject) => {
+      chrome.bookmarks.getTree((bookmarkTreeNodes) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else {
+          resolve(bookmarkTreeNodes);
+        }
+      });
+    });
+  }
 
   /**
-   * 切换 Tab（带动画）
+   * 切换 Tab
    */
   switchTab(tab) {
-    if (this.currentTab === tab) return; // 避免重复切换
-
+    if (this.currentTab === tab) return;
     const oldPage = document.getElementById(`${this.currentTab}Page`);
     const newPage = document.getElementById(`${tab}Page`);
-
-    // 移除旧页面的 active，添加动画结束后的清理
-    if (oldPage) {
-      oldPage.classList.remove('active');
-    }
-
-    // 更新 Tab 按钮状态
+    if (oldPage) oldPage.classList.remove('active');
     document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === tab);
     });
-
-    // 显示新页面并触发动画
-    if (newPage) {
-      newPage.classList.add('active');
-    }
-
+    if (newPage) newPage.classList.add('active');
     this.currentTab = tab;
+    this.clearSelection();
     this.renderCurrentPage();
   }
 
@@ -268,6 +353,9 @@ class App {
       case TABS.DUPLICATES:
         this.renderDuplicates();
         break;
+      case TABS.SMART:
+        this.renderSmartPage();
+        break;
       case TABS.SETTINGS:
         this.renderSettings();
         break;
@@ -275,7 +363,7 @@ class App {
   }
 
   /**
-   * 渲染文件夹列表
+   * 渲染文件夹列表（含复选框）
    */
   renderFolders() {
     const container = document.getElementById('foldersList');
@@ -289,22 +377,29 @@ class App {
 
     container.innerHTML = folders.map(folder => this.createFolderCard(folder)).join('');
     this.bindFolderCardEvents();
+    this.restoreSelectionState();
   }
 
   /**
-   * 创建文件夹卡片 HTML
+   * 创建文件夹卡片 HTML（含复选框）
    */
   createFolderCard(folder) {
+    const isSelected = this.selectedFolderIds.has(folder.id);
     const isEmpty = folder.isEmpty;
     return `
-      <div class="folder-card" data-folder-id="${folder.id}">
-        <div class="folder-header">
-          <div>
-            <div class="folder-name">
-              <span class="folder-icon">📁</span>
-              <span>${this.escapeHtml(folder.title)}</span>
+      <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
+        <div class="folder-card-header">
+          <label class="folder-checkbox">
+            <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
+          </label>
+          <div class="folder-header">
+            <div>
+              <div class="folder-name">
+                <span class="folder-icon">📁</span>
+                <span>${this.escapeHtml(folder.title)}</span>
+              </div>
+              <div class="folder-path">${this.escapeHtml(folder.path)}</div>
             </div>
-            <div class="folder-path">${this.escapeHtml(folder.path)}</div>
           </div>
         </div>
         <div class="folder-stats">
@@ -318,6 +413,9 @@ class App {
           <button class="btn btn-secondary btn-sm" data-action="rename" data-folder-id="${folder.id}">${i18n.getMessage('rename')}</button>
           ${!folder.isRoot ? `<button class="btn btn-danger btn-sm" data-action="delete" data-folder-id="${folder.id}">${i18n.getMessage('delete')}</button>` : ''}
         </div>
+        <div class="folder-notes">
+          <textarea class="notes-input" data-folder-id="${folder.id}" placeholder="${i18n.getMessage('addNote') || 'Add a note...'}" rows="2">${folder.note || ''}</textarea>
+        </div>
       </div>
     `;
   }
@@ -326,6 +424,16 @@ class App {
    * 绑定文件夹卡片事件
    */
   bindFolderCardEvents() {
+    // 复选框
+    document.querySelectorAll('.folder-checkbox input').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const folderId = e.target.dataset.folderId;
+        this.toggleFolderSelection(folderId, e.target.checked);
+      });
+    });
+
+    // 操作按钮
     document.querySelectorAll('[data-action]').forEach(button => {
       button.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -334,6 +442,261 @@ class App {
         this.handleFolderAction(action, folderId);
       });
     });
+
+    // 备注输入
+    const foldersList = document.getElementById('foldersList');
+    if (foldersList) {
+      foldersList.addEventListener('blur', (e) => {
+        if (e.target.classList.contains('notes-input')) {
+          const folderId = e.target.dataset.folderId;
+          const note = e.target.value;
+          this.saveFolderNote(folderId, note);
+        }
+      }, true);
+    }
+  }
+
+  /**
+   * 切换文件夹选中状态
+   */
+  toggleFolderSelection(folderId, selected) {
+    if (selected) {
+      this.selectedFolderIds.add(folderId);
+    } else {
+      this.selectedFolderIds.delete(folderId);
+    }
+    this.updateBatchBar();
+  }
+
+  /**
+   * 全选/取消全选
+   */
+  toggleSelectAll(selectAll) {
+    const container = document.getElementById('foldersList');
+    const folderCards = container.querySelectorAll('.folder-card');
+    
+    if (selectAll) {
+      folderCards.forEach(card => {
+        const id = card.dataset.folderId;
+        this.selectedFolderIds.add(id);
+      });
+    } else {
+      this.selectedFolderIds.clear();
+    }
+    
+    // 更新复选框状态
+    folderCards.forEach(card => {
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = selectAll;
+    });
+    
+    this.updateBatchBar();
+  }
+
+  /**
+   * 清除选择
+   */
+  clearSelection() {
+    this.selectedFolderIds.clear();
+    document.getElementById('selectAllCheckbox').checked = false;
+    this.updateBatchBar();
+  }
+
+  /**
+   * 恢复选择状态（重新渲染后）
+   */
+  restoreSelectionState() {
+    const container = document.getElementById('foldersList');
+    if (!container) return;
+    
+    container.querySelectorAll('.folder-card').forEach(card => {
+      const id = card.dataset.folderId;
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (this.selectedFolderIds.has(id)) {
+        card.classList.add('selected');
+        if (cb) cb.checked = true;
+      } else {
+        card.classList.remove('selected');
+        if (cb) cb.checked = false;
+      }
+    });
+    
+    this.updateBatchBar();
+  }
+
+  /**
+   * 更新批量操作栏
+   */
+  updateBatchBar() {
+    const bar = document.getElementById('batchBar');
+    const count = this.selectedFolderIds.size;
+    
+    if (count > 0 && this.currentTab === TABS.FOLDERS) {
+      bar.classList.remove('hidden');
+    } else {
+      bar.classList.add('hidden');
+    }
+    
+    document.getElementById('batchCount').textContent = 
+      count + ' ' + (i18n.getMessage('selected') || 'selected');
+    
+    // 更新全选复选框
+    const container = document.getElementById('foldersList');
+    if (container) {
+      const total = container.querySelectorAll('.folder-card').length;
+      document.getElementById('selectAllCheckbox').checked = (count > 0 && count === total);
+      document.getElementById('selectAllCheckbox').indeterminate = (count > 0 && count < total);
+    }
+  }
+
+  /**
+   * 批量删除
+   */
+  async batchDelete() {
+    const ids = Array.from(this.selectedFolderIds);
+    if (ids.length === 0) return;
+
+    const message = i18n.getMessage('confirmBatchDelete').replace('$1', ids.length) || 
+      `Delete ${ids.length} folders?`;
+
+    if (this.deleteConfirm) {
+      this.showConfirmModal(
+        i18n.getMessage('confirmDeleteTitle') || 'Confirm Delete',
+        message,
+        async () => {
+          await this.doBatchDelete(ids);
+        }
+      );
+    } else {
+      await this.doBatchDelete(ids);
+    }
+  }
+
+  async doBatchDelete(ids) {
+    let success = 0;
+    let failed = 0;
+    
+    for (const folderId of ids) {
+      try {
+        const folder = this.folders.find(f => f.id === folderId);
+        if (!folder || folder.isRoot) continue;
+        
+        if (folder.isEmpty) {
+          await FolderOperations.deleteFolder(folderId, false, folder.isRoot);
+        } else {
+          await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
+        }
+        success++;
+      } catch (error) {
+        failed++;
+        console.error('Delete failed for ' + folderId + ':', error);
+      }
+    }
+    
+    showNotification(`Deleted ${success} folders${failed > 0 ? ', ' + failed + ' failed' : ''}`, 'success');
+    this.clearSelection();
+    await this.scanBookmarks();
+  }
+
+  /**
+   * 批量合并（合并到同一目标）
+   */
+  async batchMerge() {
+    const ids = Array.from(this.selectedFolderIds);
+    if (ids.length === 0) return;
+    if (ids.length < 2) {
+      showNotification(i18n.getMessage('batchMergeMin') || 'Select at least 2 folders to merge', 'info');
+      return;
+    }
+
+    const targetFolders = this.folders.filter(f => !ids.includes(f.id));
+    if (targetFolders.length === 0) {
+      showNotification(i18n.getMessage('noTargetFolder') || 'No target folder available', 'info');
+      return;
+    }
+
+    this._batchMergeIds = ids;
+    const listContainer = document.getElementById('mergeFolderList');
+    listContainer.innerHTML = targetFolders.map(f => `
+      <div class="merge-folder-item" data-target-id="${f.id}">
+        <strong>${this.escapeHtml(f.title)}</strong>
+        <span style="color:var(--text-tertiary);font-size:9px;">${this.escapeHtml(f.path)}</span>
+      </div>
+    `).join('');
+
+    listContainer.querySelectorAll('.merge-folder-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        await this.executeBatchMerge(item.dataset.targetId);
+      });
+    });
+
+    document.getElementById('mergeModal').classList.remove('hidden');
+  }
+
+  async executeBatchMerge(targetId) {
+    this.closeMergeModal();
+    const ids = this._batchMergeIds || [];
+    
+    let moved = 0;
+    let failed = 0;
+    
+    for (const folderId of ids) {
+      try {
+        const result = await FolderOperations.moveAllBookmarks(folderId, targetId);
+        await FolderOperations.deleteFolder(folderId);
+        moved += result.moved;
+      } catch (error) {
+        failed++;
+        console.error('Merge failed for ' + folderId + ':', error);
+      }
+    }
+    
+    showNotification(
+      i18n.getMessage('batchMergeSuccess').replace('$1', moved) || `Moved ${moved} bookmarks`,
+      'success'
+    );
+    
+    this._batchMergeIds = null;
+    this.clearSelection();
+    await this.scanBookmarks();
+  }
+
+  /**
+   * 批量导出
+   */
+  batchExport() {
+    const ids = Array.from(this.selectedFolderIds);
+    if (ids.length === 0) return;
+
+    const folders = this.folders.filter(f => ids.includes(f.id));
+    const data = {
+      exportDate: new Date().toISOString(),
+      count: folders.length,
+      folders: folders.map(f => ({
+        name: f.title,
+        path: f.path,
+        bookmarkCount: f.bookmarkCount,
+        subfolderCount: f.subfolderCount
+      }))
+    };
+    
+    exportToJSON(data, 'foldermark-batch-export.json');
+    showNotification(
+      (i18n.getMessage('batchExportSuccess') || 'Exported $1 folders').replace('$1', folders.length),
+      'success'
+    );
+  }
+
+  /**
+   * 保存文件夹备注
+   */
+  async saveFolderNote(folderId, note) {
+    try {
+      await NotesService.saveNote(folderId, note);
+      showNotification(i18n.getMessage('noteSaved') || 'Note saved', 'success');
+    } catch (error) {
+      showNotification('Save note failed: ' + error.message, 'error');
+    }
   }
 
   /**
@@ -397,13 +760,12 @@ class App {
   }
 
   /**
-   * 合并文件夹 - 显示目标选择弹窗
+   * 合并文件夹
    */
   async mergeFolder(folderId) {
     const sourceFolder = this.folders.find(f => f.id === folderId);
     if (!sourceFolder) return;
 
-    // 过滤掉自身和空文件夹列表（可以合并到任何文件夹）
     const targetFolders = this.folders.filter(f => f.id !== folderId);
     if (targetFolders.length === 0) {
       showNotification(i18n.getMessage('noTargetFolder') || 'No target folder available', 'info');
@@ -419,7 +781,6 @@ class App {
       </div>
     `).join('');
 
-    // 绑定选择事件
     listContainer.querySelectorAll('.merge-folder-item').forEach(item => {
       item.addEventListener('click', async () => {
         const targetId = item.dataset.targetId;
@@ -430,9 +791,6 @@ class App {
     document.getElementById('mergeModal').classList.remove('hidden');
   }
 
-  /**
-   * 执行合并：将源文件夹内容移动到目标文件夹
-   */
   async executeMerge(sourceId, targetId) {
     this.closeMergeModal();
     const sourceFolder = this.folders.find(f => f.id === sourceId);
@@ -450,13 +808,9 @@ class App {
     }
   }
 
-  /**
-   * 实际执行合并操作
-   */
   async doMerge(sourceId, targetId) {
     try {
       const result = await FolderOperations.moveAllBookmarks(sourceId, targetId);
-      // 合并后删除空源文件夹
       await FolderOperations.deleteFolder(sourceId);
       showNotification(
         i18n.getMessage('mergeSuccess').replace('$1', result.moved) || `Moved ${result.moved} bookmarks`,
@@ -469,7 +823,7 @@ class App {
   }
 
   /**
-   * 打开文件夹（在新标签页中打开所有书签）
+   * 打开文件夹
    */
   async openFolder(folderId) {
     try {
@@ -480,15 +834,14 @@ class App {
   }
 
   /**
-   * 删除文件夹（支持非空文件夹）
+   * 删除文件夹
    */
   async deleteFolder(folderId) {
     const folder = this.folders.find(f => f.id === folderId);
     if (!folder) return;
 
-    // 检查是否为 Chrome 系统根文件夹（书签栏、其他书签等）
     if (folder.isRoot) {
-      showNotification(i18n.getMessage('cannotDeleteRoot') || 'Cannot delete system root folders (Bookmarks Bar, Other Bookmarks, etc.)', 'error');
+      showNotification(i18n.getMessage('cannotDeleteRoot') || 'Cannot delete system root folders', 'error');
       return;
     }
 
@@ -609,6 +962,128 @@ class App {
   }
 
   /**
+   * 渲染智能功能页面
+   */
+  renderSmartPage() {
+    this.renderDuplicateBookmarks();
+    this.renderCleanupSuggestions();
+  }
+  
+  /**
+   * 渲染重复书签列表
+   */
+  renderDuplicateBookmarks() {
+    const container = document.getElementById('duplicateBookmarksList');
+    
+    if (this.duplicateBookmarks.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" id="duplicateBookmarksEmpty">
+          <div class="empty-state-icon">🎉</div>
+          <div class="empty-state-title">${i18n.getMessage('noDuplicateBookmarks')}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noDuplicateBookmarksDesc') || 'All your bookmarks are unique.'}</div>
+        </div>`;
+      return;
+    }
+    
+    container.innerHTML = this.duplicateBookmarks.map((group, index) => `
+      <div class="duplicate-bookmark-group">
+        <div class="duplicate-bookmark-header">
+          <span class="duplicate-bookmark-url">${this.escapeHtml(group.url)}</span>
+          <span class="duplicate-bookmark-count">${group.count} duplicates</span>
+        </div>
+        <div class="duplicate-bookmark-list">
+          ${group.bookmarks.map((bookmark, idx) => `
+            <div class="duplicate-bookmark-item ${idx === 0 ? 'keep' : ''}">
+              <label class="duplicate-bookmark-checkbox">
+                <input type="checkbox" data-group-index="${index}" data-bookmark-index="${idx}" ${idx === 0 ? 'checked disabled' : ''}>
+              </label>
+              <div class="duplicate-bookmark-info">
+                <span class="duplicate-bookmark-title">${this.escapeHtml(bookmark.title)}</span>
+                <span class="duplicate-bookmark-path">${this.escapeHtml(bookmark.path)}</span>
+              </div>
+              ${idx === 0 ? '<span class="keep-badge">Keep</span>' : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  /**
+   * 渲染清理建议
+   */
+  renderCleanupSuggestions() {
+    const container = document.getElementById('cleanupSuggestionsList');
+    
+    if (this.cleanupSuggestions.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" id="cleanupSuggestionsEmpty">
+          <div class="empty-state-icon">✨</div>
+          <div class="empty-state-title">${i18n.getMessage('noSuggestions')}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noSuggestionsDesc') || 'Your bookmarks are well organized.'}</div>
+        </div>`;
+      return;
+    }
+    
+    container.innerHTML = this.cleanupSuggestions.map((suggestion, index) => `
+      <div class="cleanup-suggestion-group priority-${suggestion.priority}">
+        <div class="cleanup-suggestion-header">
+          <span class="cleanup-suggestion-title">${i18n.getMessage(suggestion.type + 'Title') || suggestion.title}</span>
+          <span class="cleanup-suggestion-count">${suggestion.count}</span>
+        </div>
+        <div class="cleanup-suggestion-desc">${i18n.getMessage(suggestion.type + 'Desc') || suggestion.description}</div>
+        <div class="cleanup-suggestion-folders">
+          ${suggestion.folders.slice(0, 5).map(folder => `
+            <div class="cleanup-suggestion-folder">
+              <span class="folder-name">${this.escapeHtml(folder.title)}</span>
+              <span class="folder-path">${this.escapeHtml(folder.path)}</span>
+            </div>
+          `).join('')}
+          ${suggestion.folders.length > 5 ? `<div class="more-items">+${suggestion.folders.length - 5} more</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  /**
+   * 清理重复书签
+   */
+  async cleanDuplicateBookmarks() {
+    if (this.duplicateBookmarks.length === 0) {
+      showNotification('No duplicate bookmarks to clean', 'info');
+      return;
+    }
+    
+    if (this.deleteConfirm) {
+      this.showConfirmModal(
+        i18n.getMessage('confirmCleanDuplicates') || 'Clean Duplicate Bookmarks',
+        i18n.getMessage('confirmCleanDuplicatesMessage') || `Delete ${this.duplicateBookmarks.reduce((sum, g) => sum + g.count - 1, 0)} duplicate bookmarks?`,
+        async () => {
+          await this.doCleanDuplicateBookmarks();
+        }
+      );
+    } else {
+      await this.doCleanDuplicateBookmarks();
+    }
+  }
+  
+  async doCleanDuplicateBookmarks() {
+    try {
+      const result = await DuplicateBookmarkDetector.removeDuplicates(this.duplicateBookmarks, 0);
+      showNotification(
+        `Deleted ${result.success} duplicate bookmarks${result.failed > 0 ? ', ' + result.failed + ' failed' : ''}`,
+        'success'
+      );
+      if (result.errors.length > 0) {
+        console.error('Clean duplicates errors:', result.errors);
+      }
+      await this.scanBookmarks();
+    } catch (error) {
+      showNotification('Clean failed: ' + error.message, 'error');
+    }
+  }
+
+  /**
    * 渲染设置页面
    */
   renderSettings() {
@@ -712,7 +1187,6 @@ class App {
     this.language = language;
     await i18n.setLanguage(language);
     await chrome.storage.local.set({ [STORAGE_KEYS.LANGUAGE]: language });
-    // 重新渲染当前页面以更新翻译
     this.renderCurrentPage();
   }
 
@@ -751,8 +1225,6 @@ class App {
       reader.onload = (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          // 这里可以处理导入的数据
-          // 目前只是显示成功消息
           showNotification('Structure imported successfully', 'success');
           console.log('Imported data:', data);
         } catch (error) {
@@ -802,6 +1274,9 @@ class App {
     alert(i18n.getMessage('privacyMessage'));
   }
 
+  /**
+   * 显示/隐藏加载状态
+   */
   showLoading(show) {
     const loading = document.getElementById('foldersLoading');
     if (loading) {
@@ -809,6 +1284,9 @@ class App {
     }
   }
 
+  /**
+   * 转义 HTML
+   */
   escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -816,5 +1294,4 @@ class App {
   }
 }
 
-// 启动应用
 const app = new App();

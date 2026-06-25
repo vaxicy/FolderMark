@@ -179,6 +179,12 @@
   "operations": {
     "message": "操作"
   },
+  "addNote": {
+    "message": "添加备注..."
+  },
+  "noteSaved": {
+    "message": "备注已保存"
+  },
   "data": {
     "message": "数据"
   },
@@ -196,5 +202,83 @@
   },
   "restoreSuccess": {
     "message": "已恢复默认设置"
+  },
+  "selectAll": {
+    "message": "全选"
+  },
+  "selected": {
+    "message": "已选中"
+  },
+  "batchMerge": {
+    "message": "合并..."
+  },
+  "batchDelete": {
+    "message": "删除"
+  },
+  "batchExport": {
+    "message": "导出"
+  },
+  "batchMergeMin": {
+    "message": "请至少选择 2 个文件夹进行合并"
+  },
+  "batchMergeSuccess": {
+    "message": "成功移动 $1 个书签"
+  },
+  "batchExportSuccess": {
+    "message": "已导出 $1 个文件夹"
+  },
+  "confirmBatchDelete": {
+    "message": "确定删除 $1 个文件夹？"
+  },
+  "tabSmart": {
+    "message": "智能"
+  },
+  "smartTitle": {
+    "message": "智能功能"
+  },
+  "duplicateBookmarks": {
+    "message": "重复书签"
+  },
+  "cleanDuplicates": {
+    "message": "清理重复"
+  },
+  "noDuplicateBookmarks": {
+    "message": "没有重复书签！"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "所有书签都是唯一的。"
+  },
+  "cleanupSuggestions": {
+    "message": "清理建议"
+  },
+  "noSuggestions": {
+    "message": "暂无建议"
+  },
+  "noSuggestionsDesc": {
+    "message": "你的书签整理得很好。"
+  },
+  "confirmCleanDuplicates": {
+    "message": "清理重复书签"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "删除 $1 个重复书签？"
+  },
+  "emptyTitle": {
+    "message": "空文件夹"
+  },
+  "emptyDesc": {
+    "message": "发现 $1 个空文件夹可以删除"
+  },
+  "unusedTitle": {
+    "message": "未使用文件夹"
+  },
+  "unusedDesc": {
+    "message": "发现 $1 个超过 6 个月未修改的文件夹"
+  },
+  "smallTitle": {
+    "message": "小文件夹"
+  },
+  "smallDesc": {
+    "message": "发现 $1 个书签数 ≤ 2 的文件夹（建议合并）"
   }
 }

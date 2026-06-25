@@ -179,6 +179,12 @@
   "operations": {
     "message": "Operations"
   },
+  "addNote": {
+    "message": "Add a note..."
+  },
+  "noteSaved": {
+    "message": "Note saved"
+  },
   "data": {
     "message": "Data"
   },
@@ -196,5 +202,83 @@
   },
   "restoreSuccess": {
     "message": "Settings restored to defaults"
+  },
+  "selectAll": {
+    "message": "Select All"
+  },
+  "selected": {
+    "message": "selected"
+  },
+  "batchMerge": {
+    "message": "Merge..."
+  },
+  "batchDelete": {
+    "message": "Delete"
+  },
+  "batchExport": {
+    "message": "Export"
+  },
+  "batchMergeMin": {
+    "message": "Select at least 2 folders to merge"
+  },
+  "batchMergeSuccess": {
+    "message": "Moved $1 bookmarks"
+  },
+  "batchExportSuccess": {
+    "message": "Exported $1 folders"
+  },
+  "confirmBatchDelete": {
+    "message": "Delete $1 folders?"
+  },
+  "tabSmart": {
+    "message": "Smart"
+  },
+  "smartTitle": {
+    "message": "Smart Features"
+  },
+  "duplicateBookmarks": {
+    "message": "Duplicate Bookmarks"
+  },
+  "cleanDuplicates": {
+    "message": "Clean Duplicates"
+  },
+  "noDuplicateBookmarks": {
+    "message": "No duplicate bookmarks!"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "All your bookmarks are unique."
+  },
+  "cleanupSuggestions": {
+    "message": "Cleanup Suggestions"
+  },
+  "noSuggestions": {
+    "message": "No suggestions yet"
+  },
+  "noSuggestionsDesc": {
+    "message": "Your bookmarks are well organized."
+  },
+  "confirmCleanDuplicates": {
+    "message": "Clean Duplicate Bookmarks"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "Delete $1 duplicate bookmarks?"
+  },
+  "emptyTitle": {
+    "message": "Empty Folders"
+  },
+  "emptyDesc": {
+    "message": "Found $1 empty folders that can be deleted"
+  },
+  "unusedTitle": {
+    "message": "Unused Folders"
+  },
+  "unusedDesc": {
+    "message": "Found $1 folders not modified in over 6 months"
+  },
+  "smallTitle": {
+    "message": "Small Folders"
+  },
+  "smallDesc": {
+    "message": "Found $1 folders with 2 or fewer bookmarks (consider merging)"
   }
 }
