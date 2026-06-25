@@ -162,6 +162,14 @@ class App {
         this.closeMergeModal();
       }
     });
+
+    // 统计卡片点击
+    document.querySelectorAll('.stat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const stat = card.dataset.stat;
+        this.handleStatCardClick(stat);
+      });
+    });
   }
 
   /**
@@ -186,17 +194,54 @@ class App {
   }
 
   /**
-   * 切换 Tab
+   * 切换 Tab（带动画）
    */
   switchTab(tab) {
-    this.currentTab = tab;
+    if (this.currentTab === tab) return; // 避免重复切换
+
+    const oldPage = document.getElementById(`${this.currentTab}Page`);
+    const newPage = document.getElementById(`${tab}Page`);
+
+    // 移除旧页面的 active，添加动画结束后的清理
+    if (oldPage) {
+      oldPage.classList.remove('active');
+    }
+
+    // 更新 Tab 按钮状态
     document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === tab);
     });
-    document.querySelectorAll('.page').forEach(p => {
-      p.classList.toggle('active', p.id === `${tab}Page`);
-    });
+
+    // 显示新页面并触发动画
+    if (newPage) {
+      newPage.classList.add('active');
+    }
+
+    this.currentTab = tab;
     this.renderCurrentPage();
+  }
+
+  /**
+   * 处理统计卡片点击
+   */
+  handleStatCardClick(stat) {
+    switch (stat) {
+      case 'folders':
+        this.switchTab(TABS.FOLDERS);
+        break;
+      case 'bookmarks':
+        this.switchTab(TABS.FOLDERS);
+        this.currentSort = SORT_TYPES.BOOKMARK_COUNT;
+        document.getElementById('sortSelect').value = SORT_TYPES.BOOKMARK_COUNT;
+        this.renderFolders();
+        break;
+      case 'empty':
+        this.switchTab(TABS.EMPTY);
+        break;
+      case 'duplicates':
+        this.switchTab(TABS.DUPLICATES);
+        break;
+    }
   }
 
   /**

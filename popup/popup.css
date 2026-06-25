@@ -210,10 +210,17 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .stat-card:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.stat-card:active {
+  transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
 
@@ -296,6 +303,18 @@ body {
 
 .page.active {
   display: block;
+  animation: fadeInPage 0.2s ease forwards;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 页面工具栏 */
