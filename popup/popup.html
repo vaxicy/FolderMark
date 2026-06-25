@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FolderMark</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- 头部 -->
+    <header class="header">
+      <div class="logo-container">
+        <h1 class="logo">
+          <span class="folder-emoji">📁</span>
+          FolderMark
+        </h1>
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+      <p class="tagline" data-i18n="tagline">Organize bookmarks faster.</p>
+    </header>
+
+    <!-- 搜索栏 -->
+    <div class="search-container">
+      <input type="text"
+             id="searchInput"
+             class="search-input"
+             placeholder="Search folders..."
+             data-i18n-placeholder="searchPlaceholder">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number" id="totalFolders">0</div>
+        <div class="stat-label" data-i18n="totalFolders">Folders</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalBookmarks">0</div>
+        <div class="stat-label" data-i18n="totalBookmarks">Bookmarks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="emptyFolders">0</div>
+        <div class="stat-label" data-i18n="emptyFolders">Empty</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="duplicateFolders">0</div>
+        <div class="stat-label" data-i18n="duplicates">Duplicates</div>
+      </div>
+    </div>
+
+    <!-- Tab 导航 -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="folders" data-i18n="tabFolders">Folders</button>
+      <button class="tab" data-tab="empty" data-i18n="tabEmpty">Empty</button>
+      <button class="tab" data-tab="duplicates" data-i18n="tabDuplicates">Duplicates</button>
+      <button class="tab" data-tab="settings" data-i18n="tabSettings">Settings</button>
+    </nav>
+
+    <!-- 内容区域 -->
+    <main class="content">
+      <!-- 文件夹列表页 -->
+      <div id="foldersPage" class="page active">
+        <div class="page-toolbar" style="display:flex;gap:6px;align-items:center;">
+          <select id="sortSelect" class="sort-select" style="flex:1;">
+            <option value="name" data-i18n="sortByName">Name</option>
+            <option value="bookmarkCount" data-i18n="sortByCount">Count</option>
+            <option value="path" data-i18n="sortByPath">Path</option>
+            <option value="date" data-i18n="sortByDate">Date</option>
+          </select>
+          <button id="newFolderBtn" class="btn btn-primary btn-sm" data-i18n="newFolder" title="New Folder">＋</button>
+        </div>
+        <div id="foldersList" class="folders-list">
+          <div class="loading" id="foldersLoading">
+            <div class="spinner"></div>
+            <span data-i18n="loading">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 空文件夹页 -->
+      <div id="emptyFoldersPage" class="page">
+        <div class="page-header">
+          <h2 data-i18n="emptyFoldersTitle">Empty Folders</h2>
+          <button id="cleanAllEmpty" class="btn btn-danger btn-sm" data-i18n="cleanAllEmpty">Clean All</button>
+        </div>
+        <div id="emptyFoldersList" class="folders-list">
+          <div class="empty-state" id="emptyFoldersEmpty">
+            <p data-i18n="noEmptyFolders">No empty folders</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 重复文件夹页 -->
+      <div id="duplicatesPage" class="page">
+        <div class="page-header">
+          <h2 data-i18n="duplicatesTitle">Duplicates</h2>
+        </div>
+        <div id="duplicatesList" class="duplicates-list">
+          <div class="empty-state" id="duplicatesEmpty">
+            <p data-i18n="noDuplicates">No duplicates</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 设置页 -->
+      <div id="settingsPage" class="page">
+        <div class="settings-container">
+          <h2 data-i18n="settingsTitle">Settings</h2>
+
+          <!-- 外观分组 -->
+          <div class="settings-group">
+            <div class="settings-group-title" data-i18n="appearance">Appearance</div>
+            <div class="setting-item">
+              <label data-i18n="theme">Theme</label>
+              <select id="themeSelect">
+                <option value="system" data-i18n="themeSystem">System</option>
+                <option value="light" data-i18n="themeLight">Light</option>
+                <option value="dark" data-i18n="themeDark">Dark</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label data-i18n="language">Language</label>
+              <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="zh_CN">中文</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 操作分组 -->
+          <div class="settings-group">
+            <div class="settings-group-title" data-i18n="operations">Operations</div>
+            <div class="setting-item">
+              <label data-i18n="deleteConfirm">Confirm Delete</label>
+              <input type="checkbox" id="deleteConfirmToggle" checked>
+            </div>
+          </div>
+
+          <!-- 操作按钮横排 -->
+          <div class="settings-actions">
+            <button id="exportStructure" class="btn btn-secondary btn-sm" data-i18n="exportStructure">Export</button>
+            <button id="privacyInfo" class="btn btn-secondary btn-sm" data-i18n="privacyInfo">Privacy</button>
+            <button id="refreshData" class="btn btn-primary btn-sm" data-i18n="refresh">Refresh</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 确认删除弹窗 -->
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <p id="modalMessage"></p>
+      <div class="modal-actions">
+        <button id="modalCancel" class="btn btn-secondary btn-sm" data-i18n="cancel">Cancel</button>
+        <button id="modalConfirm" class="btn btn-danger btn-sm" data-i18n="confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 合并文件夹选择弹窗 -->
+  <div id="mergeModal" class="merge-modal hidden">
+    <div class="merge-modal-overlay"></div>
+    <div class="merge-modal-content">
+      <h3 data-i18n="selectTargetFolder">Select target folder</h3>
+      <div id="mergeFolderList" class="merge-folder-list">
+        <!-- 动态填充文件夹列表 -->
+      </div>
+      <div class="merge-actions">
+        <button id="mergeCancel" class="btn btn-secondary btn-sm" data-i18n="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知容器 -->
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

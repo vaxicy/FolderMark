@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FolderMark 图标生成器</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #FDE68A 0%, #FEF3C7 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #78350F;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #92400E;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .preview-section {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .preview-item {
+      text-align: center;
+    }
+
+    .preview-item p {
+      margin-top: 8px;
+      color: #78350F;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .preview-item canvas {
+      border: 2px solid #FDE68A;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .controls {
+      background: #FFFBEB;
+      border: 2px solid #FDE68A;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .control-group {
+      margin-bottom: 16px;
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-group label {
+      display: block;
+      color: #78350F;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .color-input {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .color-input input[type="color"] {
+      width: 48px;
+      height: 36px;
+      border: 2px solid #FDE68A;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .color-input span {
+      color: #92400E;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #D97706, #F59E0B);
+      color: white;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
+    }
+
+    .btn-secondary {
+      background: #FDE68A;
+      color: #78350F;
+      border: 2px solid #FBBF24;
+    }
+
+    .btn-secondary:hover {
+      background: #FBBF24;
+    }
+
+    .instructions {
+      background: #FEF3C7;
+      border-left: 4px solid #D97706;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+    }
+
+    .instructions h3 {
+      color: #78350F;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .instructions ol {
+      color: #92400E;
+      font-size: 13px;
+      line-height: 1.6;
+      padding-left: 20px;
+    }
+
+    .instructions li {
+      margin-bottom: 4px;
+    }
+
+    code {
+      background: #FDE68A;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 FolderMark 图标生成器</h1>
+    <p class="subtitle">自定义并生成 Chrome 扩展图标</p>
+
+    <div class="preview-section">
+      <div class="preview-item">
+        <canvas id="preview16" width="64" height="64"></canvas>
+        <p>16×16 (预览)</p>
+      </div>
+      <div class="preview-item">
+        <canvas id="preview48" width="64" height="64"></canvas>
+        <p>48×48 (预览)</p>
+      </div>
+      <div class="preview-item">
+        <canvas id="preview128" width="64" height="64"></canvas>
+        <p>128×128 (预览)</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>📁 文件夹颜色</label>
+        <div class="color-input">
+          <input type="color" id="folderColor" value="#FBBF24">
+          <span id="folderColorText">#FBBF24</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>🏷️ 标签颜色</label>
+        <div class="color-input">
+          <input type="color" id="tabColor" value="#F59E0B">
+          <span id="tabColorText">#F59E0B</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>💡 高光强度</label>
+        <input type="range" id="highlightRange" min="0" max="100" value="30" style="width: 100%;">
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" onclick="generateAndDownloadAll()">📥 生成并下载全部图标</button>
+      <button class="btn-secondary" onclick="resetColors()">🔄 重置为默认</button>
+    </div>
+
+    <div class="instructions">
+      <h3>📋 使用说明</h3>
+      <ol>
+        <li>调整上方颜色选择器，实时预览图标效果</li>
+        <li>点击"生成并下载全部图标"按钮</li>
+        <li>将下载的 3 个 PNG 文件放入扩展的 <code>icons</code> 文件夹</li>
+        <li>在 Chrome 扩展管理页面刷新扩展</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const folderColorInput = document.getElementById('folderColor');
+    const tabColorInput = document.getElementById('tabColor');
+    const highlightRange = document.getElementById('highlightRange');
+
+    const folderColorText = document.getElementById('folderColorText');
+    const tabColorText = document.getElementById('tabColorText');
+
+    // 更新颜色文本
+    folderColorInput.addEventListener('input', (e) => {
+      folderColorText.textContent = e.target.value;
+      updatePreviews();
+    });
+
+    tabColorInput.addEventListener('input', (e) => {
+      tabColorText.textContent = e.target.value;
+      updatePreviews();
+    });
+
+    highlightRange.addEventListener('input', () => {
+      updatePreviews();
+    });
+
+    // 绘制文件夹图标（无文字）
+    function drawFolderIcon(ctx, size, folderColor, tabColor, highlightOpacity) {
+      const padding = size * 0.08;
+      const tabWidth = size * 0.35;
+      const tabHeight = size * 0.18;
+      const folderHeight = size - padding * 2 - tabHeight;
+      const x = padding;
+      const y = padding + tabHeight;
+      const radius = size * 0.06;
+
+      // 绘制阴影
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      ctx.beginPath();
+      roundRect(ctx, x + 2, y + 3, size - padding * 2, folderHeight, radius);
+      ctx.fill();
+
+      // 绘制标签（Tab）
+      ctx.fillStyle = tabColor;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + tabWidth, y);
+      ctx.lineTo(x + tabWidth + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y);
+      ctx.closePath();
+      ctx.fill();
+
+      // 绘制标签阴影
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + tabWidth, y);
+      ctx.lineTo(x + tabWidth + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y);
+      ctx.closePath();
+      ctx.fill();
+
+      // 重新绘制标签（覆盖阴影）
+      ctx.fillStyle = tabColor;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + tabWidth, y);
+      ctx.lineTo(x + tabWidth + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y - tabHeight);
+      ctx.lineTo(x + size * 0.06, y);
+      ctx.closePath();
+      ctx.fill();
+
+      // 绘制文件夹主体
+      ctx.fillStyle = folderColor;
+      ctx.beginPath();
+      roundRect(ctx, x, y, size - padding * 2, folderHeight, radius);
+      ctx.fill();
+
+      // 绘制文件夹高光（渐变）
+      const gradient = ctx.createLinearGradient(x, y, x, y + folderHeight * 0.7);
+      gradient.addColorStop(0, `rgba(255, 255, 255, ${highlightOpacity / 100})`);
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      roundRect(ctx, x, y, size - padding * 2, folderHeight * 0.7, radius);
+      ctx.fill();
+
+      // 绘制文件夹底部阴影线
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y + folderHeight - radius);
+      ctx.lineTo(x + size - padding * 2 - radius, y + folderHeight - radius);
+      ctx.stroke();
+    }
+
+    // 辅助函数：绘制圆角矩形
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    // 更新预览
+    function updatePreviews() {
+      const folderColor = folderColorInput.value;
+      const tabColor = tabColorInput.value;
+      const highlightOpacity = highlightRange.value;
+
+      const sizes = [16, 48, 128];
+      sizes.forEach((size, index) => {
+        const canvas = document.getElementById(`preview${size}`);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 64, 64);
+        
+        // 在 64x64 的画布上绘制放大的预览
+        drawFolderIcon(ctx, 64, folderColor, tabColor, highlightOpacity);
+      });
+    }
+
+    // 生成并下载图标
+    function generateAndDownloadAll() {
+      const folderColor = folderColorInput.value;
+      const tabColor = tabColorInput.value;
+      const highlightOpacity = highlightRange.value;
+
+      const sizes = [16, 48, 128];
+      sizes.forEach(size => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        
+        drawFolderIcon(ctx, size, folderColor, tabColor, highlightOpacity);
+        
+        // 下载
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `icon${size}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      });
+
+      alert('✅ 图标已生成并开始下载！\n\n请将下载的 3 个文件（icon16.png、icon48.png、icon128.png）放入扩展的 icons 文件夹。');
+    }
+
+    // 重置颜色
+    function resetColors() {
+      folderColorInput.value = '#FBBF24';
+      tabColorInput.value = '#F59E0B';
+      highlightRange.value = 30;
+      
+      folderColorText.textContent = '#FBBF24';
+      tabColorText.textContent = '#F59E0B';
+      
+      updatePreviews();
+    }
+
+    // 初始化预览
+    updatePreviews();
+  </script>
+</body>
+</html>

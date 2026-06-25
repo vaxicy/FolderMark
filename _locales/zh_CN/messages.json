@@ -1,0 +1,176 @@
+{
+  "extensionName": {
+    "message": "FolderMark"
+  },
+  "extensionDescription": {
+    "message": "更快整理书签"
+  },
+  "tagline": {
+    "message": "更快整理书签"
+  },
+  "searchPlaceholder": {
+    "message": "搜索文件夹..."
+  },
+  "totalFolders": {
+    "message": "文件夹"
+  },
+  "totalBookmarks": {
+    "message": "书签"
+  },
+  "emptyFolders": {
+    "message": "空文件夹"
+  },
+  "duplicates": {
+    "message": "重复"
+  },
+  "tabFolders": {
+    "message": "文件夹"
+  },
+  "tabEmpty": {
+    "message": "空文件夹"
+  },
+  "tabDuplicates": {
+    "message": "重复"
+  },
+  "tabSettings": {
+    "message": "设置"
+  },
+  "sortByName": {
+    "message": "按名称"
+  },
+  "sortByCount": {
+    "message": "按数量"
+  },
+  "sortByPath": {
+    "message": "按路径"
+  },
+  "sortByDate": {
+    "message": "按日期"
+  },
+  "emptyFoldersTitle": {
+    "message": "空文件夹"
+  },
+  "cleanAllEmpty": {
+    "message": "清理所有"
+  },
+  "duplicatesTitle": {
+    "message": "重复文件夹"
+  },
+  "settingsTitle": {
+    "message": "设置"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "themeSystem": {
+    "message": "系统"
+  },
+  "themeLight": {
+    "message": "浅色"
+  },
+  "themeDark": {
+    "message": "深色"
+  },
+  "language": {
+    "message": "语言"
+  },
+  "deleteConfirm": {
+    "message": "删除确认"
+  },
+  "exportStructure": {
+    "message": "导出"
+  },
+  "privacyInfo": {
+    "message": "隐私"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "confirm": {
+    "message": "确认"
+  },
+  "delete": {
+    "message": "删除"
+  },
+  "rename": {
+    "message": "重命名"
+  },
+  "merge": {
+    "message": "合并"
+  },
+  "open": {
+    "message": "打开"
+  },
+  "copyPath": {
+    "message": "复制"
+  },
+  "selectTargetFolder": {
+    "message": "选择目标文件夹"
+  },
+  "noTargetFolder": {
+    "message": "无可用目标文件夹"
+  },
+  "confirmMerge": {
+    "message": "确认合并"
+  },
+  "confirmMergeMessage": {
+    "message": "将文件夹 \"$1\" 合并到所选文件夹？"
+  },
+  "mergeSuccess": {
+    "message": "成功移动 $1 个书签"
+  },
+  "confirmDeleteTitle": {
+    "message": "确认删除"
+  },
+  "confirmDelete": {
+    "message": "确定删除此空文件夹？"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "确定删除此文件夹及其全部 $1 个书签？"
+  },
+  "confirmDeleteAll": {
+    "message": "确定删除所有空文件夹？"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "确定删除全部 $1 个空文件夹？"
+  },
+  "duplicateCount": {
+    "message": "$1 个重复"
+  },
+  "noFoldersFound": {
+    "message": "未找到文件夹"
+  },
+  "noEmptyFolders": {
+    "message": "无空文件夹"
+  },
+  "noDuplicates": {
+    "message": "无重复文件夹"
+  },
+  "loading": {
+    "message": "加载中..."
+  },
+  "privacyMessage": {
+    "message": "所有数据仅在本地处理。不会上传到服务器。隐私完全保护。"
+  },
+  "refresh": {
+    "message": "刷新"
+  },
+  "cannotDeleteRoot": {
+    "message": "无法删除系统根文件夹（书签栏、其他书签等）"
+  },
+  "newFolder": {
+    "message": "新建"
+  },
+  "newFolderPlaceholder": {
+    "message": "输入文件夹名称："
+  },
+  "folderCreated": {
+    "message": "文件夹创建成功"
+  },
+  "appearance": {
+    "message": "外观"
+  },
+  "operations": {
+    "message": "操作"
+  }
+}

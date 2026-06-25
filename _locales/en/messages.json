@@ -1,0 +1,176 @@
+{
+  "extensionName": {
+    "message": "FolderMark"
+  },
+  "extensionDescription": {
+    "message": "Organize bookmarks faster."
+  },
+  "tagline": {
+    "message": "Organize bookmarks faster."
+  },
+  "searchPlaceholder": {
+    "message": "Search folders..."
+  },
+  "totalFolders": {
+    "message": "Folders"
+  },
+  "totalBookmarks": {
+    "message": "Bookmarks"
+  },
+  "emptyFolders": {
+    "message": "Empty"
+  },
+  "duplicates": {
+    "message": "Duplicates"
+  },
+  "tabFolders": {
+    "message": "Folders"
+  },
+  "tabEmpty": {
+    "message": "Empty"
+  },
+  "tabDuplicates": {
+    "message": "Duplicates"
+  },
+  "tabSettings": {
+    "message": "Settings"
+  },
+  "sortByName": {
+    "message": "Name"
+  },
+  "sortByCount": {
+    "message": "Count"
+  },
+  "sortByPath": {
+    "message": "Path"
+  },
+  "sortByDate": {
+    "message": "Date"
+  },
+  "emptyFoldersTitle": {
+    "message": "Empty Folders"
+  },
+  "cleanAllEmpty": {
+    "message": "Clean All"
+  },
+  "duplicatesTitle": {
+    "message": "Duplicates"
+  },
+  "settingsTitle": {
+    "message": "Settings"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "themeDark": {
+    "message": "Dark"
+  },
+  "language": {
+    "message": "Language"
+  },
+  "deleteConfirm": {
+    "message": "Confirm Delete"
+  },
+  "exportStructure": {
+    "message": "Export"
+  },
+  "privacyInfo": {
+    "message": "Privacy"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "confirm": {
+    "message": "Confirm"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "rename": {
+    "message": "Rename"
+  },
+  "merge": {
+    "message": "Merge"
+  },
+  "open": {
+    "message": "Open"
+  },
+  "copyPath": {
+    "message": "Copy"
+  },
+  "selectTargetFolder": {
+    "message": "Select target folder"
+  },
+  "noTargetFolder": {
+    "message": "No target folder available"
+  },
+  "confirmMerge": {
+    "message": "Confirm Merge"
+  },
+  "confirmMergeMessage": {
+    "message": "Merge folder \"$1\" into selected folder?"
+  },
+  "mergeSuccess": {
+    "message": "Moved $1 bookmarks successfully"
+  },
+  "confirmDeleteTitle": {
+    "message": "Confirm Delete"
+  },
+  "confirmDelete": {
+    "message": "Delete this empty folder?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "Delete folder and all $1 bookmarks?"
+  },
+  "confirmDeleteAll": {
+    "message": "Delete all empty folders?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "Delete all $1 empty folders?"
+  },
+  "duplicateCount": {
+    "message": "$1 duplicates"
+  },
+  "noFoldersFound": {
+    "message": "No folders found"
+  },
+  "noEmptyFolders": {
+    "message": "No empty folders"
+  },
+  "noDuplicates": {
+    "message": "No duplicates"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "privacyMessage": {
+    "message": "All data processed locally. No data uploaded. Privacy protected."
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "cannotDeleteRoot": {
+    "message": "Cannot delete system root folders (Bookmarks Bar, Other Bookmarks, etc.)"
+  },
+  "newFolder": {
+    "message": "New"
+  },
+  "newFolderPlaceholder": {
+    "message": "Enter folder name:"
+  },
+  "folderCreated": {
+    "message": "Folder created successfully"
+  },
+  "appearance": {
+    "message": "Appearance"
+  },
+  "operations": {
+    "message": "Operations"
+  }
+}
