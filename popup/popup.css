@@ -465,7 +465,7 @@ body {
 .folder-card {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-left: 3px solid var(--primary);
+  border-left: 3px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: 7px;
   transition: all 0.2s;
@@ -687,8 +687,13 @@ body {
 
 /* 文件夹标题文本（不含图标） */
 .folder-title-text {
-  flex: 1;
+  font-weight: 600;
+  color: var(--text-primary);
   word-break: break-word;
+}
+
+.folder-card.compact {
+  padding: 6px 8px;
 }
 
 .folder-card.selected {
@@ -701,18 +706,13 @@ body {
   outline-offset: -2px;
 }
 
-.folder-card.focused {
-  box-shadow: 0 0 0 2px var(--primary);
-}
-
 .folder-card-header {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  align-items: center;
+  gap: 5px;
 }
 
 .folder-checkbox {
-  padding-top: 2px;
   flex-shrink: 0;
 }
 
@@ -725,57 +725,93 @@ body {
 
 .folder-card:hover {
   background: var(--bg-secondary);
-  border-left-color: var(--primary-hover);
   box-shadow: var(--shadow-sm);
 }
 
+/* 紧凑布局：标题 + 路径 纵向堆叠，占据剩余空间 */
 .folder-header {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 4px;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 4px;
 }
 
 .folder-name {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-primary);
-  word-break: break-word;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
 }
 
 .folder-path {
   font-size: 8px;
   color: var(--text-tertiary);
-  margin-top: 1px;
-  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.folder-stats {
+/* Stats 内联到 header 右侧 */
+.folder-stats-inline {
   display: flex;
   gap: 6px;
-  margin-top: 3px;
+  flex-shrink: 0;
   font-size: 9px;
-  color: var(--text-secondary);
-  flex-wrap: wrap;
+  color: var(--text-tertiary);
+  margin-left: auto;
+  padding-left: 6px;
 }
 
-.folder-stat {
-  display: flex;
-  align-items: center;
-  gap: 1px;
+.folder-stat-inline {
+  white-space: nowrap;
 }
 
-/* 文件夹操作按钮 - 优化布局 */
-.folder-actions {
-  display: flex;
+/* Hover 时显示的操作按钮栏 */
+.folder-actions-bar {
+  display: none;
   gap: 3px;
-  margin-top: 6px;
+  padding: 4px 0 2px;
   flex-wrap: wrap;
 }
 
-/* 文件夹备注 */
-.folder-notes {
-  margin-top: 6px;
+.folder-card:hover .folder-actions-bar {
+  display: flex;
+}
+
+.btn-xs {
+  padding: 2px 6px;
+  font-size: 9px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.btn-xs:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* 备注摘要 */
+.folder-note-badge {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folder-note-badge:hover {
+  background: var(--bg-tertiary);
 }
 
 /* 展开/收起按钮 */
@@ -810,8 +846,9 @@ body {
   transition: transform 0.2s;
 }
 
-.expand-chevron.chevron-right::before {
-  content: '';
+/* 展开时箭头顺时针旋转 90° */
+.folder-expand-btn.expanded .expand-chevron {
+  transform: rotate(90deg);
 }
 
 /* 文件夹详情面板 */
@@ -957,10 +994,18 @@ body {
 }
 
 .details-more {
-  padding: 3px 6px;
+  padding: 4px 8px;
   font-size: 9px;
-  color: var(--text-tertiary);
-  font-style: italic;
+  color: var(--primary);
+  font-style: normal;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.details-more:hover {
+  background: var(--bg-secondary);
+  text-decoration: underline;
 }
 
 .notes-input {
@@ -1991,10 +2036,18 @@ body {
 
 .more-items {
   font-size: 9px;
-  color: var(--text-tertiary);
+  color: var(--primary);
   text-align: center;
-  padding: 4px;
-  font-style: italic;
+  padding: 4px 8px;
+  font-style: normal;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.more-items:hover {
+  background: var(--bg-secondary);
+  text-decoration: underline;
 }
 
 .cleanup-suggestion-actions {

@@ -565,5 +565,11 @@
   },
   "bookmarkDeleted": {
     "message": "Bookmark deleted"
+  },
+  "collapse": {
+    "message": "Collapse"
+  },
+  "hideRootFolders": {
+    "message": "Hide root folders (Bookmarks Bar, Other Bookmarks)"
   }
 }

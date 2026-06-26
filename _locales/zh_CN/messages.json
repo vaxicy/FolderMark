@@ -565,5 +565,11 @@
   },
   "bookmarkDeleted": {
     "message": "书签已删除"
+  },
+  "collapse": {
+    "message": "收起"
+  },
+  "hideRootFolders": {
+    "message": "隐藏根文件夹（书签栏、其他书签）"
   }
 }

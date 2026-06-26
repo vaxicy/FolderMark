@@ -82,7 +82,6 @@
     <!-- Tab 导航 -->
     <nav class="tabs">
       <button class="tab active" data-tab="folders" data-i18n="tabFolders">Folders</button>
-      <button class="tab" data-tab="empty" data-i18n="tabEmpty">Empty</button>
       <button class="tab" data-tab="duplicates" data-i18n="tabDuplicates">Duplicates</button>
       <button class="tab" data-tab="smart" data-i18n="tabSmart">Smart</button>
       <button class="tab" data-tab="settings" data-i18n="tabSettings">Settings</button>
@@ -109,22 +108,9 @@
         </div>
       </div>
 
-      <!-- 空文件夹页 -->
-      <div id="emptyFoldersPage" class="page">
-        <div class="page-header">
-          <h2 data-i18n="emptyFoldersTitle">Empty Folders</h2>
-          <button id="cleanAllEmpty" class="btn btn-danger btn-sm" data-i18n="cleanAllEmpty">Clean All</button>
-        </div>
-        <div id="emptyFoldersList" class="folders-list">
-          <div class="empty-state" id="emptyFoldersEmpty">
-            <div class="empty-state-icon">🎉</div>
-            <div class="empty-state-title" data-i18n="noEmptyFolders">No empty folders!</div>
-            <div class="empty-state-desc" data-i18n="noEmptyFoldersDesc">Your bookmarks are well organized.</div>
-          </div>
-        </div>
-      </div>
+      <!-- 空文件夹页 --    </div>
 
-      <!-- 重复文件夹/书签页 -->
+    <!-- 重复文件夹/书签页 -->
       <div id="duplicatesPage" class="page">
         <div class="page-header">
           <h2 data-i18n="duplicatesTitle">Duplicates</h2>
@@ -208,6 +194,21 @@
           </div>
         </div>
 
+        <!-- 空文件夹区域（从 Empty Tab 合并而来） -->
+        <div class="smart-section" id="emptyFoldersSection">
+          <div class="smart-section-header">
+            <h3 data-i18n="emptyFolders">Empty Folders</h3>
+            <button id="cleanAllEmpty" class="btn btn-danger btn-sm" data-i18n="cleanAllEmpty">Clean All</button>
+          </div>
+          <div id="emptyFoldersList" class="smart-list">
+            <div class="empty-state" id="emptyFoldersEmpty">
+              <div class="empty-state-icon">🎉</div>
+              <div class="empty-state-title" data-i18n="noEmptyFolders">No empty folders!</div>
+              <div class="empty-state-desc" data-i18n="noEmptyFoldersDesc">Your bookmarks are well organized.</div>
+            </div>
+          </div>
+        </div>
+
         <!-- 智能清理建议 -->
         <div class="smart-section">
           <div class="smart-section-header">
@@ -254,6 +255,10 @@
             <div class="setting-item">
               <label data-i18n="deleteConfirm">Confirm Delete</label>
               <input type="checkbox" id="deleteConfirmToggle" checked>
+            </div>
+            <div class="setting-item">
+              <label data-i18n="hideRootFolders">隐藏根文件夹</label>
+              <input type="checkbox" id="hideRootFoldersToggle">
             </div>
           </div>
 

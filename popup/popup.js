@@ -45,6 +45,7 @@ class App {
     this.searchQuery = '';
     this._mergeSourceId = null;
     this.selectedFolderIds = new Set(); // 批量选择
+    this.hideRootFolders = false; // 是否隐藏根文件夹
     this.init();
   }
 
@@ -144,11 +145,13 @@ class App {
       chrome.storage.local.get([
         STORAGE_KEYS.THEME,
         STORAGE_KEYS.LANGUAGE,
-        STORAGE_KEYS.DELETE_CONFIRM
+        STORAGE_KEYS.DELETE_CONFIRM,
+        STORAGE_KEYS.HIDE_ROOT_FOLDERS
       ], (result) => {
         this.theme = result[STORAGE_KEYS.THEME] || 'system';
         this.language = result[STORAGE_KEYS.LANGUAGE] || 'en';
         this.deleteConfirm = result[STORAGE_KEYS.DELETE_CONFIRM] !== false;
+        this.hideRootFolders = result[STORAGE_KEYS.HIDE_ROOT_FOLDERS] === true;
         resolve();
       });
     });
@@ -214,6 +217,15 @@ class App {
     deleteConfirmToggle.addEventListener('change', (e) => {
       this.toggleDeleteConfirm(e.target.checked);
     });
+
+    // 设置 - 隐藏根文件夹
+    const hideRootFoldersToggle = document.getElementById('hideRootFoldersToggle');
+    if (hideRootFoldersToggle) {
+      hideRootFoldersToggle.checked = this.hideRootFolders;
+      hideRootFoldersToggle.addEventListener('change', (e) => {
+        this.toggleHideRootFolders(e.target.checked);
+      });
+    }
 
     // 设置 - 导入
     document.getElementById('importStructure').addEventListener('click', () => {
@@ -542,7 +554,7 @@ class App {
       case '4':
         // 数字键切换 Tab
         if (!inInput && !e.ctrlKey && !e.metaKey && !e.altKey) {
-          const tabs = ['folders', 'empty', 'duplicates', 'settings'];
+          const tabs = ['folders', 'duplicates', 'smart', 'settings'];
           const tabIndex = parseInt(e.key) - 1;
           if (tabIndex < tabs.length) {
             this.switchTab(tabs[tabIndex]);
@@ -706,7 +718,12 @@ class App {
         this.renderFolders();
         break;
       case 'empty':
-        this.switchTab(TABS.EMPTY);
+        this.switchTab(TABS.SMART);
+        // 滚动到空文件夹区域
+        setTimeout(() => {
+          const section = document.getElementById('emptyFoldersSection');
+          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
         break;
       case 'duplicates':
         this.switchTab(TABS.DUPLICATES);
@@ -742,9 +759,6 @@ class App {
       case TABS.FOLDERS:
         this.renderFolders();
         break;
-      case TABS.EMPTY:
-        this.renderEmptyFolders();
-        break;
       case TABS.DUPLICATES:
         this.renderDuplicates();
         break;
@@ -772,6 +786,10 @@ class App {
         list = list.filter(f => f._color === this.colorFilter);
       }
       folders = FolderScanner.sortFolders(list, this.currentSort);
+      // 过滤根文件夹
+      if (this.hideRootFolders) {
+        folders = folders.filter(f => !f.isRoot);
+      }
     } else if (this.searchMode === 'bookmark' && this.searchQuery) {
       // 书签内容搜索
       await this.renderBookmarkSearchResults(container);
@@ -827,6 +845,18 @@ class App {
         }
       }
 
+      // 过滤根文件夹
+      if (this.hideRootFolders) {
+        let i = 0;
+        while (i < folderInfos.length) {
+          if (folderInfos[i].folder.isRoot) {
+            folderInfos.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+      }
+
       if (folderInfos.length === 0) {
         container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p></div>';
         return;
@@ -859,11 +889,6 @@ class App {
           }
           if (btnEl) {
             btnEl.classList.add('expanded');
-            const chevron = btnEl.querySelector('.expand-chevron');
-            if (chevron) {
-              chevron.classList.remove('chevron-right');
-              chevron.classList.add('chevron-down');
-            }
           }
         }, 100);
       }
@@ -880,16 +905,25 @@ class App {
     const contentEl = document.querySelector(`.folder-details-content[data-content-for="${folderId}"]`);
     if (!contentEl) return;
 
-    let html = `<div class="details-section">
+    const isExpanded = contentEl.dataset.bookmarkExpanded === 'true';
+    const displayBookmarks = isExpanded ? bookmarks : bookmarks.slice(0, 30);
+
+    let html = `<div class="details-section" data-section="bookmarks">
       <div class="details-section-title">🔗 ${i18n.getMessage('matchingBookmarks') || 'Matching Bookmarks'} (${bookmarks.length})</div>
-      ${bookmarks.slice(0, 30).map(b => `
+      ${displayBookmarks.map(b => `
         <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
           <span style="color:var(--primary);">★</span>
           <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
           <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
         </div>
       `).join('')}
-      ${bookmarks.length > 30 ? `<div class="details-more">+${bookmarks.length - 30} more...</div>` : ''}
+      ${bookmarks.length > 30 ? `
+        <div class="details-more" data-folder-id="${folderId}" data-action="${isExpanded ? 'collapse' : 'expand'}" data-total="${bookmarks.length}">
+          ${isExpanded
+            ? `↑ ${i18n.getMessage('collapse') || 'Collapse'}`
+            : `+${bookmarks.length - 30} ${i18n.getMessage('more') || 'more'}...`}
+        </div>
+      ` : ''}
     </div>`;
 
     contentEl.innerHTML = html;
@@ -899,26 +933,34 @@ class App {
   }
 
   /**
-   * 创建文件夹卡片 HTML（含复选框、颜色条、图标、展开按钮）
+   * 创建文件夹卡片 HTML（紧凑布局）
    */
   createFolderCard(folder) {
     const isSelected = this.selectedFolderIds.has(folder.id);
-    const isEmpty = folder.isEmpty;
     const color = folder._color || '';
-    const colorStyle = color ? `border-left-color: ${FolderColorService.getHex(color)};` : '';
-    const icon = this.folderIcons[folder.id] || ''; // 自定义图标
-    const displayIcon = icon || '📁'; // 默认图标
+    const icon = this.folderIcons[folder.id] || '';
+    const displayIcon = icon || '📁';
     const isExpanded = this.expandedFolders.has(folder.id);
     const expandClass = isExpanded ? 'expanded' : '';
-    const chevronClass = isExpanded ? 'chevron-down' : 'chevron-right';
+    const hasNote = folder.note && folder.note.trim().length > 0;
+
+    // Stats 内联到 header 尾部
+    const statsHtml = `
+      <span class="folder-stat-inline" title="${i18n.getMessage('bookmarks') || 'Bookmarks'}">📄${folder.bookmarkCount}</span>
+      <span class="folder-stat-inline" title="${i18n.getMessage('subfolders') || 'Subfolders'}">📁${folder.subfolderCount}</span>
+      ${folder.dateGroupModified ? `<span class="folder-stat-inline" title="${i18n.getMessage('lastModified') || 'Last modified'}">🕒${formatDate(folder.dateGroupModified)}</span>` : ''}
+    `;
+
+    const colorStyle = color ? `border-left-color:${FolderColorService.getHex(color)};` : '';
     return `
-      <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}" tabindex="0">
+      <div class="folder-card compact ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}" tabindex="0" style="${colorStyle}">
+        <!-- 单行 Header：checkbox + 展开 + 图标 + 标题路径 + stats -->
         <div class="folder-card-header">
           <label class="folder-checkbox">
             <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
           </label>
           <button class="folder-expand-btn ${expandClass}" data-folder-id="${folder.id}" title="${i18n.getMessage('toggleExpand') || 'Expand'}">
-            <span class="expand-chevron ${chevronClass}">▸</span>
+            <span class="expand-chevron">▸</span>
           </button>
           <div class="folder-icon-btn" data-folder-id="${folder.id}" title="${i18n.getMessage('setIcon') || 'Set icon'}">
             <span class="folder-icon-display">${displayIcon}</span>
@@ -926,29 +968,31 @@ class App {
           <div class="folder-color-dot" data-folder-id="${folder.id}" title="${i18n.getMessage('setColor') || 'Set color'}">
             ${color ? `<span class="color-dot" style="background:${FolderColorService.getHex(color)}"></span>` : '🎨'}
           </div>
-          <div class="folder-header" style="${colorStyle}">
-            <div>
-              <div class="folder-name">
-                <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
-              </div>
-              <div class="folder-path">${this.escapeHtml(folder.path)}</div>
+          <div class="folder-header">
+            <div class="folder-name">
+              <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
+              <span class="folder-path">${this.escapeHtml(folder.path)}</span>
             </div>
           </div>
+          <div class="folder-stats-inline">${statsHtml}</div>
         </div>
-        <div class="folder-stats">
-          <span class="folder-stat">📄 ${folder.bookmarkCount}</span>
-          <span class="folder-stat">📁 ${folder.subfolderCount}</span>
-          ${folder.dateGroupModified ? '<span class="folder-stat">🕒 ' + formatDate(folder.dateGroupModified) + '</span>' : ''}
+
+        <!-- Hover 时显示的操作按钮 -->
+        <div class="folder-actions-bar">
+          <button class="btn btn-secondary btn-xs" data-action="open" data-folder-id="${folder.id}">${i18n.getMessage('open')}</button>
+          <button class="btn btn-secondary btn-xs" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
+          <button class="btn btn-secondary btn-xs" data-action="rename" data-folder-id="${folder.id}">${i18n.getMessage('rename')}</button>
+          ${!folder.isRoot ? `<button class="btn btn-danger btn-xs" data-action="delete" data-folder-id="${folder.id}">${i18n.getMessage('delete')}</button>` : ''}
         </div>
-        <div class="folder-actions">
-          <button class="btn btn-secondary btn-sm" data-action="open" data-folder-id="${folder.id}">${i18n.getMessage('open')}</button>
-          <button class="btn btn-secondary btn-sm" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
-          <button class="btn btn-secondary btn-sm" data-action="rename" data-folder-id="${folder.id}">${i18n.getMessage('rename')}</button>
-          ${!folder.isRoot ? `<button class="btn btn-danger btn-sm" data-action="delete" data-folder-id="${folder.id}">${i18n.getMessage('delete')}</button>` : ''}
-        </div>
-        <div class="folder-notes">
-          <textarea class="notes-input" data-folder-id="${folder.id}" placeholder="${i18n.getMessage('addNote') || 'Add a note...'}" rows="2">${folder.note || ''}</textarea>
-        </div>
+
+        <!-- 备注：有备注时显示摘要，点击展开 -->
+        ${hasNote ? `
+          <div class="folder-note-badge" data-folder-id="${folder.id}" title="${this.escapeHtml(folder.note)}">
+            📝 ${this.escapeHtml(folder.note.slice(0, 30))}${folder.note.length > 30 ? '...' : ''}
+          </div>
+        ` : ''}
+
+        <!-- 展开详情 -->
         <div class="folder-details ${isExpanded ? 'open' : 'hidden'}" data-details-for="${folder.id}">
           <div class="folder-details-loading" style="display:none;">
             <div class="spinner" style="width:12px;height:12px;"></div>
@@ -1203,11 +1247,6 @@ class App {
       detailsEl.classList.add('hidden');
       if (btnEl) {
         btnEl.classList.remove('expanded');
-        const chevron = btnEl.querySelector('.expand-chevron');
-        if (chevron) {
-          chevron.classList.remove('chevron-down');
-          chevron.classList.add('chevron-right');
-        }
       }
       return;
     }
@@ -1218,11 +1257,6 @@ class App {
     detailsEl.classList.add('open');
     if (btnEl) {
       btnEl.classList.add('expanded');
-      const chevron = btnEl.querySelector('.expand-chevron');
-      if (chevron) {
-        chevron.classList.remove('chevron-right');
-        chevron.classList.add('chevron-down');
-      }
     }
 
     // 记录访问
@@ -1275,16 +1309,24 @@ class App {
 
       // 书签列表
       if (bookmarks.length > 0) {
-        html += `<div class="details-section">
+        const isExpanded = contentEl.dataset.bookmarkExpanded === 'true';
+        const displayBookmarks = isExpanded ? bookmarks : bookmarks.slice(0, 20);
+        html += `<div class="details-section" data-section="bookmarks">
           <div class="details-section-title">📄 ${i18n.getMessage('bookmarks') || 'Bookmarks'} (${bookmarks.length})</div>
-          ${bookmarks.slice(0, 20).map(b => `
+          ${displayBookmarks.map(b => `
             <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
               <span class="details-bookmark-favicon">🔗</span>
               <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
               <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
             </div>
           `).join('')}
-          ${bookmarks.length > 20 ? `<div class="details-more">+${bookmarks.length - 20} ${i18n.getMessage('more') || 'more'}...</div>` : ''}
+          ${bookmarks.length > 20 ? `
+            <div class="details-more" data-folder-id="${folderId}" data-action="${isExpanded ? 'collapse' : 'expand'}" data-total="${bookmarks.length}">
+              ${isExpanded
+                ? `↑ ${i18n.getMessage('collapse') || 'Collapse'}`
+                : `+${bookmarks.length - 20} ${i18n.getMessage('more') || 'more'}...`}
+            </div>
+          ` : ''}
         </div>`;
       }
 
@@ -1341,6 +1383,20 @@ class App {
           );
         } else {
           await doDelete();
+        }
+        return;
+      }
+
+      // 检查是否点击了"更多"/"收起"按钮
+      const moreBtn = e.target.closest('.details-more');
+      if (moreBtn) {
+        const action = moreBtn.dataset.action;
+        if (action === 'expand') {
+          contentEl.dataset.bookmarkExpanded = 'true';
+          await this.renderFolderDetails(folderId);
+        } else if (action === 'collapse') {
+          contentEl.dataset.bookmarkExpanded = 'false';
+          await this.renderFolderDetails(folderId);
         }
         return;
       }
@@ -2051,7 +2107,58 @@ class App {
   renderSmartPage() {
     this.updateHealthScore();
     this.renderBrokenBookmarks();
+    this.renderEmptyFoldersInSmart(); // 空文件夹合并到 Smart Tab
     this.renderCleanupSuggestions();
+  }
+
+  /**
+   * 在 Smart Tab 中渲染空文件夹列表
+   */
+  renderEmptyFoldersInSmart() {
+    const container = document.getElementById('emptyFoldersList');
+    if (!container) return;
+
+    // 过滤根文件夹
+    var emptyFoldersToShow = [];
+    for (var i = 0; i < this.emptyFolders.length; i++) {
+      if (!this.hideRootFolders || !this.emptyFolders[i].isRoot) {
+        emptyFoldersToShow.push(this.emptyFolders[i]);
+      }
+    }
+
+    if (emptyFoldersToShow.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" id="emptyFoldersEmpty">
+          <div class="empty-state-icon">🎉</div>
+          <div class="empty-state-title">${i18n.getMessage('noEmptyFolders')}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noEmptyFoldersDesc') || 'Your bookmarks are well organized.'}</div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = emptyFoldersToShow.map(folder => {
+      const colorStyle = folder._color ? `border-left-color:${FolderColorService.getHex(folder._color)};` : '';
+      return `
+      <div class="folder-card compact" data-folder-id="${folder.id}" style="${colorStyle}">
+        <div class="folder-card-header">
+          <span class="folder-icon-display">📁</span>
+          <div class="folder-header">
+            <div class="folder-name">
+              <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
+            </div>
+            <div class="folder-path">${this.escapeHtml(folder.path)}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" data-action="delete" data-folder-id="${folder.id}" style="margin-left:auto;">${i18n.getMessage('delete')}</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    container.querySelectorAll('[data-action="delete"]').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteFolder(e.target.dataset.folderId);
+      });
+    });
   }
   
   /**
@@ -2362,36 +2469,54 @@ class App {
       return;
     }
     
-    container.innerHTML = this.cleanupSuggestions.map((suggestion, index) => `
+    container.innerHTML = this.cleanupSuggestions.map((suggestion, index) => {
+      const isExpanded = suggestion._expanded;
+      const displayFolders = isExpanded ? suggestion.folders : suggestion.folders.slice(0, 5);
+      return `
       <div class="cleanup-suggestion-group priority-${suggestion.priority}">
         <div class="cleanup-suggestion-header">
           <span class="cleanup-suggestion-title">${i18n.getMessage(suggestion.type + 'Title') || suggestion.title}</span>
           <span class="cleanup-suggestion-count">${suggestion.count}</span>
         </div>
-        <div class="cleanup-suggestion-desc">${i18n.getMessage(suggestion.type + 'Desc') || suggestion.description}</div>
+        <div class="cleanup-suggestion-desc">${i18n.getMessage(suggestion.type + 'Desc', suggestion.count) || suggestion.description}</div>
         <div class="cleanup-suggestion-folders">
-          ${suggestion.folders.slice(0, 5).map(folder => `
+          ${displayFolders.map(folder => `
             <div class="cleanup-suggestion-folder">
               <span class="folder-name">${this.escapeHtml(folder.title)}</span>
               <span class="folder-path">${this.escapeHtml(folder.path)}</span>
             </div>
           `).join('')}
-          ${suggestion.folders.length > 5 ? `<div class="more-items">+${suggestion.folders.length - 5} ${i18n.getMessage('more') || 'more'}</div>` : ''}
+          ${suggestion.folders.length > 5 ? `
+            <div class="more-items" data-action="toggle-suggestion" data-suggestion-index="${index}">
+              ${isExpanded
+                ? `↑ ${i18n.getMessage('collapse') || 'Collapse'}`
+                : `+${suggestion.folders.length - 5} ${i18n.getMessage('more') || 'more'}`}
+            </div>
+          ` : ''}
         </div>
         <div class="cleanup-suggestion-actions">
-          <button class="btn btn-sm ${suggestion.priority === 'high' ? 'btn-danger' : 'btn-secondary'}" 
+          <button class="btn btn-sm ${suggestion.priority === 'high' ? 'btn-danger' : 'btn-secondary'}"
                   data-action="smart-action" data-suggestion-index="${index}">
             ${this.getSuggestionButtonText(suggestion.type)}
           </button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
 
     // 绑定按钮事件
     container.querySelectorAll('[data-action="smart-action"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const index = parseInt(e.target.dataset.suggestionIndex);
+        const index = parseInt(e.currentTarget.dataset.suggestionIndex);
         this.executeSuggestionAction(this.cleanupSuggestions[index]);
+      });
+    });
+
+    // 绑定展开/收起事件
+    container.querySelectorAll('[data-action="toggle-suggestion"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const index = parseInt(e.currentTarget.dataset.suggestionIndex);
+        this.cleanupSuggestions[index]._expanded = !this.cleanupSuggestions[index]._expanded;
+        this.renderCleanupSuggestions();
       });
     });
   }
@@ -2511,6 +2636,10 @@ class App {
     languageSelect.value = this.language;
     const deleteConfirmToggle = document.getElementById('deleteConfirmToggle');
     deleteConfirmToggle.checked = this.deleteConfirm;
+    const hideRootFoldersToggle = document.getElementById('hideRootFoldersToggle');
+    if (hideRootFoldersToggle) {
+      hideRootFoldersToggle.checked = this.hideRootFolders;
+    }
   }
 
   /**
@@ -2681,6 +2810,12 @@ class App {
     await chrome.storage.local.set({ [STORAGE_KEYS.DELETE_CONFIRM]: enabled });
   }
 
+  async toggleHideRootFolders(enabled) {
+    this.hideRootFolders = enabled;
+    await chrome.storage.local.set({ [STORAGE_KEYS.HIDE_ROOT_FOLDERS]: enabled });
+    this.renderFolders();
+  }
+
   /**
    * 导出配置（颜色、图标、备注、设置等）
    */
@@ -2693,7 +2828,8 @@ class App {
       const settings = {
         theme: this.theme,
         language: this.language,
-        deleteConfirm: this.deleteConfirm
+        deleteConfirm: this.deleteConfirm,
+        hideRootFolders: this.hideRootFolders
       };
 
       const data = {
@@ -2795,6 +2931,12 @@ class App {
               const deleteConfirmToggle = document.getElementById('deleteConfirmToggle');
               if (deleteConfirmToggle) deleteConfirmToggle.checked = this.deleteConfirm;
             }
+            if (data.settings.hideRootFolders !== undefined) {
+              this.hideRootFolders = data.settings.hideRootFolders;
+              const hideRootFoldersToggle = document.getElementById('hideRootFoldersToggle');
+              if (hideRootFoldersToggle) hideRootFoldersToggle.checked = this.hideRootFolders;
+              this.renderFolders();
+            }
           }
 
           showNotification(
@@ -2836,12 +2978,14 @@ class App {
       const defaultSettings = {
         [STORAGE_KEYS.THEME]: 'system',
         [STORAGE_KEYS.LANGUAGE]: 'en',
-        [STORAGE_KEYS.DELETE_CONFIRM]: true
+        [STORAGE_KEYS.DELETE_CONFIRM]: true,
+        [STORAGE_KEYS.HIDE_ROOT_FOLDERS]: false
       };
       await chrome.storage.local.set(defaultSettings);
       this.theme = 'system';
       this.language = 'en';
       this.deleteConfirm = true;
+      this.hideRootFolders = false;
       await theme.setTheme('system');
       await i18n.setLanguage('en');
       this.renderSettings();

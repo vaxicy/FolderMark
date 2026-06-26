@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   THEME: 'foldermark_theme',
   LANGUAGE: 'foldermark_language',
   DELETE_CONFIRM: 'foldermark_delete_confirm',
+  HIDE_ROOT_FOLDERS: 'foldermark_hide_root_folders',
   LAST_SCAN: 'foldermark_last_scan',
   SCAN_RESULT: 'foldermark_scan_result',
   FOLDER_NOTES: 'foldermark_folder_notes',
@@ -25,7 +26,8 @@ export const THEMES = {
 export const DEFAULT_SETTINGS = {
   theme: THEMES.SYSTEM,
   language: 'en',
-  deleteConfirm: true
+  deleteConfirm: true,
+  hideRootFolders: false
 };
 
 // 事件类型定义
@@ -40,7 +42,6 @@ export const EVENTS = {
 // Tab 类型
 export const TABS = {
   FOLDERS: 'folders',
-  EMPTY: 'empty',
   DUPLICATES: 'duplicates',
   SMART: 'smart',
   SETTINGS: 'settings'

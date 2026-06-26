@@ -21,12 +21,12 @@ class SmartCleanupSuggestions {
         type: 'empty',
         priority: 'high',
         title: 'Empty Folders',
-        description: `Found ${emptyFolders.length} empty folders that can be deleted`,
+        description: '', // 由 i18n 在渲染时替换 $1
         count: emptyFolders.length,
         folders: emptyFolders
       });
     }
-    
+
     // 2. 长时间未使用的文件夹（使用访问数据或 dateGroupModified）
     let unusedFolders = [];
     if (accessData) {
@@ -51,7 +51,7 @@ class SmartCleanupSuggestions {
         type: 'unused',
         priority: 'medium',
         title: 'Unused Folders',
-        description: `Found ${unusedFolders.length} folders not used in over 6 months`,
+        description: '', // 由 i18n 在渲染时替换 $1
         count: unusedFolders.length,
         folders: unusedFolders.sort((a, b) => {
           // 按最后访问时间排序（从未访问的排最前）
@@ -61,7 +61,7 @@ class SmartCleanupSuggestions {
         })
       });
     }
-    
+
     // 3. 书签数量少的文件夹（可以合并）
     const smallFolders = folders.filter(f => !f.isEmpty && f.bookmarkCount <= 2 && !f.isRoot);
     if (smallFolders.length > 1) {
@@ -69,19 +69,19 @@ class SmartCleanupSuggestions {
         type: 'small',
         priority: 'low',
         title: 'Small Folders',
-        description: `Found ${smallFolders.length} folders with 2 or fewer bookmarks (consider merging)`,
+        description: '', // 由 i18n 在渲染时替换 $1
         count: smallFolders.length,
         folders: smallFolders
       });
     }
-    
+
     // 4. 重复文件夹（由外部传入）
     if (duplicates && duplicates.length > 0) {
       suggestions.push({
         type: 'duplicates',
         priority: 'high',
         title: 'Duplicate Folders',
-        description: `Found ${duplicates.length} duplicate folder groups`,
+        description: '', // 由 i18n 在渲染时替换 $1
         count: duplicates.length,
         folders: duplicates
       });
