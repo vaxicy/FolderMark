@@ -556,5 +556,14 @@
   },
   "matchingBookmarks": {
     "message": "匹配的书签"
+  },
+  "confirmDeleteBookmark": {
+    "message": "删除书签"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "确定删除此书签？"
+  },
+  "bookmarkDeleted": {
+    "message": "书签已删除"
   }
 }

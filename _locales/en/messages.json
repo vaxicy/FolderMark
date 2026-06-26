@@ -556,5 +556,14 @@
   },
   "matchingBookmarks": {
     "message": "Matching Bookmarks"
+  },
+  "confirmDeleteBookmark": {
+    "message": "Delete Bookmark"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "Delete this bookmark?"
+  },
+  "bookmarkDeleted": {
+    "message": "Bookmark deleted"
   }
 }

@@ -897,6 +897,50 @@ body {
   font-size: 10px;
 }
 
+/* 书签项可点击 */
+.details-bookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.details-bookmark-item:hover {
+  background: var(--bg-secondary);
+}
+
+/* 书签项名称（flex 占满剩余空间） */
+.details-bookmark-item .details-item-name {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 删除按钮 */
+.details-item-delete {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.details-item-delete:hover {
+  color: var(--danger);
+  background: rgba(255, 0, 0, 0.1);
+}
+
 .details-empty {
   padding: 8px;
   text-align: center;
@@ -1329,17 +1373,6 @@ body {
 #batchNoteInput::placeholder {
   color: var(--text-tertiary);
   opacity: 0.7;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  border: 1px solid var(--primary);
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
 }
 
 /* 加载状态 */

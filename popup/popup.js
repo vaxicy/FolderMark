@@ -883,15 +883,19 @@ class App {
     let html = `<div class="details-section">
       <div class="details-section-title">🔗 ${i18n.getMessage('matchingBookmarks') || 'Matching Bookmarks'} (${bookmarks.length})</div>
       ${bookmarks.slice(0, 30).map(b => `
-        <div class="details-item details-bookmark-item" title="${this.escapeHtml(b.url)}">
+        <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
           <span style="color:var(--primary);">★</span>
           <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
+          <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
         </div>
       `).join('')}
       ${bookmarks.length > 30 ? `<div class="details-more">+${bookmarks.length - 30} more...</div>` : ''}
     </div>`;
 
     contentEl.innerHTML = html;
+
+    // 绑定事件委托（打开 + 删除）
+    this.bindDetailsEvents(folderId);
   }
 
   /**
@@ -1274,9 +1278,10 @@ class App {
         html += `<div class="details-section">
           <div class="details-section-title">📄 ${i18n.getMessage('bookmarks') || 'Bookmarks'} (${bookmarks.length})</div>
           ${bookmarks.slice(0, 20).map(b => `
-            <div class="details-item details-bookmark-item" title="${this.escapeHtml(b.url)}">
+            <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
               <span class="details-bookmark-favicon">🔗</span>
               <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
+              <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
             </div>
           `).join('')}
           ${bookmarks.length > 20 ? `<div class="details-more">+${bookmarks.length - 20} ${i18n.getMessage('more') || 'more'}...</div>` : ''}
@@ -1288,12 +1293,67 @@ class App {
       }
 
       contentEl.innerHTML = html;
+
+      // 绑定事件委托（打开 + 删除）
+      this.bindDetailsEvents(folderId);
     } catch (error) {
       console.error('Render folder details failed:', error);
       contentEl.innerHTML = `<div class="details-error">${i18n.getMessage('loadFailed') || 'Load failed'}</div>`;
     } finally {
       if (loadingEl) loadingEl.style.display = 'none';
     }
+  }
+
+  /**
+   * 为文件夹详情面板绑定事件委托（打开书签 + 删除书签）
+   * 使用事件委托，只绑定一次
+   * @param {string} folderId - 文件夹 ID
+   */
+  bindDetailsEvents(folderId) {
+    const contentEl = document.querySelector(`.folder-details-content[data-content-for="${folderId}"]`);
+    if (!contentEl || contentEl.dataset.eventsBound) return;
+
+    contentEl.dataset.eventsBound = 'true';
+    contentEl.addEventListener('click', async (e) => {
+      // 检查是否点击了删除按钮
+      const deleteBtn = e.target.closest('.details-item-delete');
+      if (deleteBtn) {
+        e.stopPropagation();
+        const bookmarkId = deleteBtn.dataset.bookmarkId;
+        if (!bookmarkId) return;
+
+        const doDelete = async () => {
+          try {
+            await BookmarkService.removeNode(bookmarkId);
+            showNotification(i18n.getMessage('bookmarkDeleted') || 'Bookmark deleted', 'success');
+            // 刷新面板
+            await this.renderFolderDetails(folderId);
+          } catch (error) {
+            showNotification('Delete failed: ' + error.message, 'error');
+          }
+        };
+
+        if (this.deleteConfirm) {
+          this.showConfirmModal(
+            i18n.getMessage('confirmDeleteBookmark') || 'Delete Bookmark',
+            i18n.getMessage('confirmDeleteBookmarkMessage') || 'Delete this bookmark?',
+            doDelete
+          );
+        } else {
+          await doDelete();
+        }
+        return;
+      }
+
+      // 检查是否点击了书签项（打开书签）
+      const bookmarkItem = e.target.closest('.details-bookmark-item');
+      if (bookmarkItem) {
+        const url = bookmarkItem.dataset.bookmarkUrl;
+        if (url) {
+          chrome.tabs.create({ url });
+        }
+      }
+    });
   }
 
   /**
