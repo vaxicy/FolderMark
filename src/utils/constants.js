@@ -10,7 +10,8 @@ export const STORAGE_KEYS = {
   DELETE_CONFIRM: 'foldermark_delete_confirm',
   LAST_SCAN: 'foldermark_last_scan',
   SCAN_RESULT: 'foldermark_scan_result',
-  FOLDER_NOTES: 'foldermark_folder_notes'
+  FOLDER_NOTES: 'foldermark_folder_notes',
+  FOLDER_ICONS: 'foldermark_folder_icons'
 };
 
 // 主题类型

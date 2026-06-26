@@ -442,5 +442,86 @@
   },
   "save": {
     "message": "保存"
+  },
+  "setIcon": {
+    "message": "设置图标"
+  },
+  "selectIcon": {
+    "message": "选择图标"
+  },
+  "iconNone": {
+    "message": "默认"
+  },
+  "iconOpenFolder": {
+    "message": "打开的文件夹"
+  },
+  "iconCardFileBox": {
+    "message": "文件盒"
+  },
+  "iconChart": {
+    "message": "图表"
+  },
+  "iconMemo": {
+    "message": "备忘录"
+  },
+  "iconPin": {
+    "message": "固定"
+  },
+  "iconStar": {
+    "message": "星标"
+  },
+  "iconBookmark": {
+    "message": "书签"
+  },
+  "iconHome": {
+    "message": "主页"
+  },
+  "iconBriefcase": {
+    "message": "工作"
+  },
+  "iconTarget": {
+    "message": "目标"
+  },
+  "iconTools": {
+    "message": "工具"
+  },
+  "iconBooks": {
+    "message": "书籍"
+  },
+  "iconArt": {
+    "message": "艺术"
+  },
+  "iconWrench": {
+    "message": "设置"
+  },
+  "iconIdea": {
+    "message": "想法"
+  },
+  "iconMusic": {
+    "message": "音乐"
+  },
+  "iconMovie": {
+    "message": "电影"
+  },
+  "iconLightning": {
+    "message": "重要"
+  },
+  "iconLock": {
+    "message": "私密"
+  },
+  "iconGlobe": {
+    "message": "网页"
+  },
+  "iconEmail": {
+    "message": "邮件"
+  },
+  "iconImage": {
+    "message": "图片"
+  },
+  "iconVideo": {
+    "message": "视频"
+  },
+  "iconFileBox": {
+    "message": "归档"
   }
 }

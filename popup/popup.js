@@ -12,6 +12,7 @@ import DuplicateBookmarkDetector from '../src/features/duplicateBookmarkDetector
 import SmartCleanupSuggestions from '../src/features/smartCleanupSuggestions.js';
 import BrokenBookmarkDetector from '../src/features/brokenBookmarkDetector.js';
 import FolderColorService from '../src/features/folderColorService.js';
+import FolderIconService from '../src/features/folderIconService.js';
 import FolderOperations from '../src/features/folderOperations.js';
 import NotesService from '../src/features/notesService.js';
 import UndoService from '../src/features/undoService.js';
@@ -26,10 +27,11 @@ class App {
     this.duplicates = [];
     this.duplicateBookmarks = []; // 重复书签
     this.brokenBookmarks = []; // 失效书签
-    this.isCheckingBroken = false; // 是否正在检测失效书签
     this.folderColors = {}; // 文件夹颜色 {folderId: colorValue}
+    this.folderIcons = {}; // 文件夹图标 {folderId: iconValue}
     this.colorFilter = ''; // 当前颜色筛选
     this._colorPickerOpenTime = 0; // 颜色选择器打开时间戳（防止立即关闭）
+    this._iconPickerOpenTime = 0; // 图标选择器打开时间戳（防止立即关闭）
     this._customColorFolderId = ''; // 正在设置自定义颜色的目标文件夹 ID
     this._undoToastTimer = null;      // 撤销 Toast 自动关闭定时器
     this.cleanupSuggestions = []; // 清理建议
@@ -49,6 +51,11 @@ class App {
       await i18n.init(this.language);
       await theme.init(this.theme);
       this.bindEvents();
+
+      // 加载颜色和图标
+      this.folderColors = await FolderColorService.loadColors();
+      this.folderIcons = await FolderIconService.loadIcons();
+
       await this.scanBookmarks();
 
       // 检查是否有待保存的页面（从右键菜单触发）
@@ -405,6 +412,20 @@ class App {
       }
     });
 
+    // 图标选择器 - 点击其他地方关闭（带防抖保护）
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('iconPickerPanel');
+      if (!panel || panel.classList.contains('hidden')) return;
+      // 防抖：打开后 150ms 内不响应关闭
+      if (Date.now() - this._iconPickerOpenTime < 150) return;
+      // 检查点击是否在面板内部或图标按钮上
+      const isIconBtn = e.target.classList.contains('folder-icon-display') ||
+                        e.target.closest('.folder-icon-btn');
+      if (!panel.contains(e.target) && !isIconBtn) {
+        panel.classList.add('hidden');
+      }
+    });
+
     // 撤销按钮
     document.getElementById('undoBtn').addEventListener('click', async () => {
       await this.executeUndo();
@@ -660,27 +681,31 @@ class App {
   }
 
   /**
-   * 创建文件夹卡片 HTML（含复选框、颜色条）
+   * 创建文件夹卡片 HTML（含复选框、颜色条、图标）
    */
   createFolderCard(folder) {
     const isSelected = this.selectedFolderIds.has(folder.id);
     const isEmpty = folder.isEmpty;
     const color = folder._color || '';
     const colorStyle = color ? `border-left-color: ${FolderColorService.getHex(color)};` : '';
+    const icon = this.folderIcons[folder.id] || ''; // 自定义图标
+    const displayIcon = icon || '📁'; // 默认图标
     return `
       <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
         <div class="folder-card-header">
           <label class="folder-checkbox">
             <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
           </label>
+          <div class="folder-icon-btn" data-folder-id="${folder.id}" title="${i18n.getMessage('setIcon') || 'Set icon'}">
+            <span class="folder-icon-display">${displayIcon}</span>
+          </div>
           <div class="folder-color-dot" data-folder-id="${folder.id}" title="${i18n.getMessage('setColor') || 'Set color'}">
             ${color ? `<span class="color-dot" style="background:${FolderColorService.getHex(color)}"></span>` : '🎨'}
           </div>
           <div class="folder-header" style="${colorStyle}">
             <div>
               <div class="folder-name">
-                <span class="folder-icon">📁</span>
-                <span>${this.escapeHtml(folder.title)}</span>
+                <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
               </div>
               <div class="folder-path">${this.escapeHtml(folder.path)}</div>
             </div>
@@ -797,11 +822,90 @@ class App {
   }
 
   /**
+   * 显示图标选择器
+   */
+  showIconPicker(folderId, targetEl) {
+    const panel = document.getElementById('iconPickerPanel');
+    const options = document.getElementById('iconPickerOptions');
+    const presets = FolderIconService.getPresets();
+
+    options.innerHTML = presets.map(p => {
+      // 构造 i18n key：label 首字母大写以匹配 locale 文件中的 PascalCase key
+      const iconKey = 'icon' + p.label.charAt(0).toUpperCase() + p.label.slice(1);
+      // 无图标选项（使用默认 📁）
+      if (p.value === '') {
+        return `
+          <div class="icon-picker-option no-icon" data-icon="" data-folder-id="${folderId}">
+            <span class="icon-display">📁</span>
+            <span class="icon-label">${i18n.getMessage(iconKey) || 'Default'}</span>
+          </div>
+        `;
+      }
+      // 预设图标
+      return `
+        <div class="icon-picker-option" data-icon="${p.value}" data-folder-id="${folderId}">
+          <span class="icon-display">${p.icon}</span>
+          <span class="icon-label">${i18n.getMessage(iconKey) || p.label}</span>
+        </div>
+      `;
+    }).join('');
+
+    // 绑定图标选择事件
+    options.querySelectorAll('.icon-picker-option').forEach(opt => {
+      opt.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const icon = e.currentTarget.dataset.icon;
+
+        await FolderIconService.setIcon(folderId, icon);
+        this.folderIcons = await FolderIconService.loadIcons();
+        panel.classList.add('hidden');
+        this.renderFolders();
+      });
+    });
+
+    // 定位面板（带边界检测）
+    const rect = targetEl.getBoundingClientRect();
+    const panelWidth = 200;
+    const panelHeight = 250;
+
+    let top = rect.bottom + 4;
+    let left = rect.left;
+
+    // 边界检测：防止超出右边缘
+    if (left + panelWidth > window.innerWidth) {
+      left = window.innerWidth - panelWidth - 4;
+    }
+    if (left < 0) left = 4;
+
+    // 边界检测：防止超出底部，改为向上弹出
+    if (top + panelHeight > window.innerHeight) {
+      top = rect.top - panelHeight - 4;
+    }
+    if (top < 0) top = 4;
+
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+
+    // 标记打开时间（防止 document click 立即关闭）
+    this._iconPickerOpenTime = Date.now();
+    panel.classList.remove('hidden');
+  }
+
+  /**
    * 绑定文件夹卡片事件
    */
   bindFolderCardEvents() {
     const container = document.getElementById('foldersList');
     if (!container) return;
+
+    // 图标按钮
+    document.querySelectorAll('.folder-icon-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const folderId = e.currentTarget.dataset.folderId;
+        this.showIconPicker(folderId, e.currentTarget);
+      });
+    });
 
     // 颜色点
     document.querySelectorAll('.folder-color-dot').forEach(dot => {
@@ -989,6 +1093,14 @@ class App {
         console.error('Delete failed for ' + folderId + ':', error);
       }
     }
+
+    // 删除图标和备注
+    await FolderIconService.deleteIcons(ids);
+    await NotesService.deleteNotes(ids);
+    // 更新本地图标和备注数据
+    ids.forEach(id => {
+      delete this.folderIcons[id];
+    });
 
     // 推入撤销栈并显示 Toast
     if (snapshots.length > 0) {
@@ -1411,6 +1523,11 @@ class App {
       } else {
         await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
       }
+      // 删除图标和备注
+      await FolderIconService.deleteIcons([folderId]);
+      await NotesService.deleteNotes([folderId]);
+      // 更新本地图标数据
+      delete this.folderIcons[folderId];
       // 推入撤销栈并显示 Toast
       if (snap) {
         UndoService.push([snap], folder.title);
@@ -2152,12 +2269,13 @@ class App {
   }
 
   /**
-   * 导出配置（颜色、备注、设置等）
+   * 导出配置（颜色、图标、备注、设置等）
    */
   async exportStructure() {
     try {
       // 收集所有配置数据
       const colors = await FolderColorService.loadColors();
+      const icons = await FolderIconService.loadIcons();
       const notes = await NotesService.loadNotes();
       const settings = {
         theme: this.theme,
@@ -2169,6 +2287,7 @@ class App {
         version: '1.0',
         exportDate: new Date().toISOString(),
         colors: colors,
+        icons: icons,
         notes: notes,
         settings: settings
       };
@@ -2227,6 +2346,13 @@ class App {
           if (data.colors) {
             for (const [folderId, color] of Object.entries(data.colors)) {
               await FolderColorService.setColor(folderId, color);
+            }
+          }
+
+          // 导入图标
+          if (data.icons) {
+            for (const [folderId, icon] of Object.entries(data.icons)) {
+              await FolderIconService.setIcon(folderId, icon);
             }
           }
 

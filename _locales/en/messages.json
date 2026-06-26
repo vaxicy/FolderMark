@@ -442,5 +442,86 @@
   },
   "save": {
     "message": "Save"
+  },
+  "setIcon": {
+    "message": "Set icon"
+  },
+  "selectIcon": {
+    "message": "Select Icon"
+  },
+  "iconNone": {
+    "message": "Default"
+  },
+  "iconOpenFolder": {
+    "message": "Open Folder"
+  },
+  "iconCardFileBox": {
+    "message": "File Box"
+  },
+  "iconChart": {
+    "message": "Chart"
+  },
+  "iconMemo": {
+    "message": "Memo"
+  },
+  "iconPin": {
+    "message": "Pin"
+  },
+  "iconStar": {
+    "message": "Star"
+  },
+  "iconBookmark": {
+    "message": "Bookmark"
+  },
+  "iconHome": {
+    "message": "Home"
+  },
+  "iconBriefcase": {
+    "message": "Work"
+  },
+  "iconTarget": {
+    "message": "Target"
+  },
+  "iconTools": {
+    "message": "Tools"
+  },
+  "iconBooks": {
+    "message": "Books"
+  },
+  "iconArt": {
+    "message": "Art"
+  },
+  "iconWrench": {
+    "message": "Settings"
+  },
+  "iconIdea": {
+    "message": "Idea"
+  },
+  "iconMusic": {
+    "message": "Music"
+  },
+  "iconMovie": {
+    "message": "Movie"
+  },
+  "iconLightning": {
+    "message": "Important"
+  },
+  "iconLock": {
+    "message": "Private"
+  },
+  "iconGlobe": {
+    "message": "Web"
+  },
+  "iconEmail": {
+    "message": "Email"
+  },
+  "iconImage": {
+    "message": "Images"
+  },
+  "iconVideo": {
+    "message": "Videos"
+  },
+  "iconFileBox": {
+    "message": "Archive"
   }
 }

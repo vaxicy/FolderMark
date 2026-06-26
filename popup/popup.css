@@ -471,6 +471,28 @@ body {
   border: 1px solid var(--border-color);
 }
 
+/* 文件夹图标按钮 */
+.folder-icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.folder-icon-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+.folder-icon-display {
+  font-size: 14px;
+  line-height: 1;
+}
+
 /* 颜色筛选下拉 */
 .color-filter-select {
   width: auto;
@@ -572,6 +594,77 @@ body {
   flex: 1;
 }
 
+/* 图标选择器面板 */
+.icon-picker-panel {
+  position: fixed;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  min-width: 180px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.icon-picker-panel.hidden {
+  display: none;
+}
+
+.icon-picker-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.icon-picker-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.icon-picker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 9px;
+  color: var(--text-secondary);
+  transition: background 0.15s;
+}
+
+.icon-picker-option:hover {
+  background: var(--bg-secondary);
+}
+
+.icon-picker-option.no-icon {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.icon-display {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.icon-label {
+  text-align: center;
+  word-break: break-word;
+}
+
+/* 文件夹标题文本（不含图标） */
+.folder-title-text {
+  flex: 1;
+  word-break: break-word;
+}
+
 .folder-card.selected {
   border-color: var(--primary);
   background: var(--bg-secondary);
@@ -612,15 +705,7 @@ body {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 3px;
   word-break: break-word;
-}
-
-.folder-icon {
-  font-size: 13px;
-  flex-shrink: 0;
 }
 
 .folder-path {
