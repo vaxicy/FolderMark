@@ -247,6 +247,35 @@ class App {
       this.batchExport();
     });
 
+    // 批量操作 - 应用颜色
+    document.getElementById('batchColorBtn').addEventListener('click', () => {
+      this.batchSetColor();
+    });
+
+    // 批量操作 - 添加备注
+    document.getElementById('batchNoteBtn').addEventListener('click', () => {
+      this.batchAddNote();
+    });
+
+    // 批量颜色弹窗 - 关闭
+    document.getElementById('batchColorCancel').addEventListener('click', () => {
+      this.closeBatchColorModal();
+    });
+    document.getElementById('batchColorOverlay').addEventListener('click', () => {
+      this.closeBatchColorModal();
+    });
+
+    // 批量备注弹窗 - 关闭/保存
+    document.getElementById('batchNoteCancel').addEventListener('click', () => {
+      this.closeBatchNoteModal();
+    });
+    document.getElementById('batchNoteOverlay').addEventListener('click', () => {
+      this.closeBatchNoteModal();
+    });
+    document.getElementById('batchNoteSave').addEventListener('click', () => {
+      this.saveBatchNote();
+    });
+
     // 确认弹窗
     document.getElementById('modalCancel').addEventListener('click', () => {
       this.closeModal();
@@ -317,6 +346,10 @@ class App {
         const color = e.target.value;
         const folderId = this._customColorFolderId;
         if (!folderId || !color) return;
+
+        // 批量模式
+        if (folderId === '_batch_') return;
+
         await FolderColorService.setColor(folderId, color);
         this.folderColors = await FolderColorService.loadColors();
         this.folders.forEach(f => {
@@ -325,7 +358,35 @@ class App {
         this.renderFolders();
       });
       // 取消选择时也要刷新（关闭颜色面板）
-      customColorInput.addEventListener('change', () => {
+      customColorInput.addEventListener('change', async (e) => {
+        const color = e.target.value;
+        const folderId = this._customColorFolderId;
+
+        if (folderId === '_batch_') {
+          // 批量模式：应用自定义颜色到所有选中文件夹
+          const ids = Array.from(this.selectedFolderIds);
+          let success = 0;
+          for (const id of ids) {
+            try {
+              await FolderColorService.setColor(id, color);
+              success++;
+            } catch (error) {
+              console.error('Set color failed for ' + id + ':', error);
+            }
+          }
+
+          this._customColorFolderId = '';
+
+          if (success > 0) {
+            showNotification(
+              (i18n.getMessage('batchColorSuccess') || 'Set color for $1 folders').replace('$1', success),
+              'success'
+            );
+            await this.scanBookmarks();
+          }
+          return;
+        }
+
         this._customColorFolderId = '';
       });
     }
@@ -369,7 +430,7 @@ class App {
         // Ctrl+Z / Cmd+Z 撤销
         if ((e.ctrlKey || e.metaKey) && !inInput) {
           e.preventDefault();
-          if (UndoService.canUndo()) {
+          if (UndoService && UndoService.canUndo()) {
             this.executeUndo();
           }
         }
@@ -388,18 +449,29 @@ class App {
         if ((e.ctrlKey || e.metaKey) && !inInput) {
           e.preventDefault();
           this.toggleSelectAll(true);
-          document.getElementById('selectAllCheckbox').checked = true;
+          const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+          if (selectAllCheckbox) selectAllCheckbox.checked = true;
         }
         break;
       case 'Escape':
         // 优先关闭弹窗
-        if (!document.getElementById('confirmModal').classList.contains('hidden')) {
+        const confirmModal = document.getElementById('confirmModal');
+        const mergeModal = document.getElementById('mergeModal');
+        if (confirmModal && confirmModal.style.display === 'flex') {
           this.closeModal();
-        } else if (!document.getElementById('mergeModal').classList.contains('hidden')) {
+        } else if (mergeModal && mergeModal.style.display === 'flex') {
           this.closeMergeModal();
         } else if (this.selectedFolderIds.size > 0) {
           e.preventDefault();
           this.clearSelection();
+        } else {
+          // 清除搜索
+          const searchInput = document.getElementById('searchInput');
+          if (searchInput && searchInput.value) {
+            searchInput.value = '';
+            this.searchQuery = '';
+            this.renderFolders();
+          }
         }
         break;
       case '/':
@@ -409,6 +481,35 @@ class App {
           const searchInput = document.getElementById('searchInput');
           searchInput.focus();
           searchInput.select();
+        }
+        break;
+      case 'f':
+        // Ctrl+F / Cmd+F 聚焦搜索框
+        if ((e.ctrlKey || e.metaKey) && !inInput) {
+          e.preventDefault();
+          const searchInput = document.getElementById('searchInput');
+          searchInput.focus();
+          searchInput.select();
+        }
+        break;
+      case 'n':
+        // Ctrl+N / Cmd+N 新建文件夹
+        if ((e.ctrlKey || e.metaKey) && !inInput) {
+          e.preventDefault();
+          this.createFolder();
+        }
+        break;
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+        // 数字键切换 Tab
+        if (!inInput && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          const tabs = ['folders', 'empty', 'duplicates', 'settings'];
+          const tabIndex = parseInt(e.key) - 1;
+          if (tabIndex < tabs.length) {
+            this.switchTab(tabs[tabIndex]);
+          }
         }
         break;
     }
@@ -903,6 +1004,150 @@ class App {
     }
     this.clearSelection();
     await this.scanBookmarks();
+  }
+
+  /**
+   * 显示批量颜色选择弹窗
+   */
+  async batchSetColor() {
+    const ids = Array.from(this.selectedFolderIds);
+    if (ids.length === 0) return;
+
+    const modal = document.getElementById('batchColorModal');
+    const options = document.getElementById('batchColorOptions');
+    const count = document.getElementById('batchColorCount');
+    const presets = FolderColorService.getPresets();
+
+    count.textContent = ids.length;
+
+    // 填充颜色选项（复用单文件夹颜色选择器的样式）
+    options.innerHTML = presets.map(p => {
+      if (p.value === '__custom__') {
+        return `
+          <div class="color-picker-option custom-option" data-color="__custom__">
+            <span class="color-dot custom-color-dot"></span>
+            <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+          </div>
+        `;
+      }
+      if (p.value === '') {
+        return `
+          <div class="color-picker-option no-color" data-color="">
+            <span style="font-size:12px;opacity:0.5;">✕</span>
+            <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+          </div>
+        `;
+      }
+      return `
+        <div class="color-picker-option" data-color="${p.value}">
+          <span class="color-dot" style="background:${p.hex}"></span>
+          <span class="color-label">${i18n.getMessage('color' + p.label) || p.label}</span>
+        </div>
+      `;
+    }).join('');
+
+    // 绑定颜色选择事件
+    options.querySelectorAll('.color-picker-option').forEach(opt => {
+      opt.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const color = e.currentTarget.dataset.color;
+
+        // 自定义颜色
+        if (color === '__custom__') {
+          this._customColorFolderId = '_batch_'; // 标记批量模式
+          modal.classList.add('hidden');
+          const colorInput = document.getElementById('customColorInput');
+          colorInput.value = '#3B82F6';
+          colorInput.click();
+          return;
+        }
+
+        // 应用颜色到所有选中文件夹
+        let success = 0;
+        for (const folderId of ids) {
+          try {
+            await FolderColorService.setColor(folderId, color);
+            success++;
+          } catch (error) {
+            console.error('Set color failed for ' + folderId + ':', error);
+          }
+        }
+
+        this.closeBatchColorModal();
+
+        if (success > 0) {
+          showNotification(
+            (i18n.getMessage('batchColorSuccess') || 'Set color for $1 folders').replace('$1', success),
+            'success'
+          );
+          await this.scanBookmarks();
+        }
+      });
+    });
+
+    modal.classList.remove('hidden');
+  }
+
+  /**
+   * 关闭批量颜色弹窗
+   */
+  closeBatchColorModal() {
+    const modal = document.getElementById('batchColorModal');
+    modal.classList.add('hidden');
+  }
+
+  /**
+   * 显示批量添加备注弹窗
+   */
+  async batchAddNote() {
+    const ids = Array.from(this.selectedFolderIds);
+    if (ids.length === 0) return;
+
+    const modal = document.getElementById('batchNoteModal');
+    const input = document.getElementById('batchNoteInput');
+
+    input.value = '';
+    modal.classList.remove('hidden');
+    input.focus();
+  }
+
+  /**
+   * 关闭批量备注弹窗
+   */
+  closeBatchNoteModal() {
+    const modal = document.getElementById('batchNoteModal');
+    modal.classList.add('hidden');
+  }
+
+  /**
+   * 保存批量备注
+   */
+  async saveBatchNote() {
+    const ids = Array.from(this.selectedFolderIds);
+    const note = document.getElementById('batchNoteInput').value;
+
+    if (ids.length === 0) return;
+
+    // 保存备注
+    let success = 0;
+    for (const folderId of ids) {
+      try {
+        await NotesService.saveNote(folderId, note);
+        success++;
+      } catch (error) {
+        console.error('Save note failed for ' + folderId + ':', error);
+      }
+    }
+
+    this.closeBatchNoteModal();
+
+    if (success > 0) {
+      showNotification(
+        (i18n.getMessage('batchNoteSuccess') || 'Added note to $1 folders').replace('$1', success),
+        'success'
+      );
+      await this.scanBookmarks();
+    }
   }
 
   /**
@@ -1906,24 +2151,56 @@ class App {
     await chrome.storage.local.set({ [STORAGE_KEYS.DELETE_CONFIRM]: enabled });
   }
 
-  exportStructure() {
-    const data = {
-      exportDate: new Date().toISOString(),
-      totalFolders: this.folders.length,
-      totalBookmarks: this.folders.reduce((sum, f) => sum + f.bookmarkCount, 0),
-      emptyFolders: this.emptyFolders.length,
-      duplicates: this.duplicates.length,
-      folders: this.folders.map(f => ({
-        name: f.title,
-        path: f.path,
-        bookmarkCount: f.bookmarkCount,
-        subfolderCount: f.subfolderCount
-      }))
-    };
-    exportToJSON(data, 'foldermark-structure.json');
-    showNotification('Structure exported successfully', 'success');
+  /**
+   * 导出配置（颜色、备注、设置等）
+   */
+  async exportStructure() {
+    try {
+      // 收集所有配置数据
+      const colors = await FolderColorService.loadColors();
+      const notes = await NotesService.loadNotes();
+      const settings = {
+        theme: this.theme,
+        language: this.language,
+        deleteConfirm: this.deleteConfirm
+      };
+
+      const data = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        colors: colors,
+        notes: notes,
+        settings: settings
+      };
+
+      // 导出为 JSON 文件
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `foldermark-config-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      showNotification(
+        i18n.getMessage('exportSuccess') || 'Configuration exported successfully',
+        'success'
+      );
+    } catch (error) {
+      console.error('Export failed:', error);
+      showNotification(
+        (i18n.getMessage('exportFailed') || 'Export failed') + ': ' + error.message,
+        'error'
+      );
+    }
   }
 
+  /**
+   * 导入配置（颜色、备注、设置等）
+   */
   importStructure() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -1936,30 +2213,64 @@ class App {
       reader.onload = async (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          if (!data.folders || !Array.isArray(data.folders)) {
-            showNotification('Import failed: Invalid file format', 'error');
+
+          // 验证文件格式
+          if (!data.version || !data.colors) {
+            showNotification(
+              i18n.getMessage('importInvalidFormat') || 'Invalid file format',
+              'error'
+            );
             return;
           }
 
-          // 创建文件夹（按路径层级创建）
-          let created = 0;
-          for (const folder of data.folders) {
-            try {
-              // 简化导入：直接在书签栏下创建
-              await BookmarkService.createFolder(folder.name || folder.title, '1');
-              created++;
-            } catch (err) {
-              console.error('Import folder failed:', err);
+          // 导入颜色
+          if (data.colors) {
+            for (const [folderId, color] of Object.entries(data.colors)) {
+              await FolderColorService.setColor(folderId, color);
+            }
+          }
+
+          // 导入备注
+          if (data.notes) {
+            for (const [folderId, note] of Object.entries(data.notes)) {
+              await NotesService.saveNote(folderId, note);
+            }
+          }
+
+          // 导入设置
+          if (data.settings) {
+            if (data.settings.theme) {
+              await theme.setTheme(data.settings.theme);
+              this.theme = data.settings.theme;
+              const themeSelect = document.getElementById('themeSelect');
+              if (themeSelect) themeSelect.value = this.theme;
+            }
+            if (data.settings.language) {
+              this.language = data.settings.language;
+              await i18n.init(this.language);
+              const languageSelect = document.getElementById('languageSelect');
+              if (languageSelect) languageSelect.value = this.language;
+            }
+            if (data.settings.deleteConfirm !== undefined) {
+              this.deleteConfirm = data.settings.deleteConfirm;
+              const deleteConfirmToggle = document.getElementById('deleteConfirmToggle');
+              if (deleteConfirmToggle) deleteConfirmToggle.checked = this.deleteConfirm;
             }
           }
 
           showNotification(
-            (i18n.getMessage('importSuccess') || 'Imported $1 folders').replace('$1', created),
+            i18n.getMessage('importSuccess') || 'Configuration imported successfully',
             'success'
           );
+
+          // 刷新界面
           await this.scanBookmarks();
         } catch (error) {
-          showNotification('Import failed: ' + error.message, 'error');
+          console.error('Import failed:', error);
+          showNotification(
+            (i18n.getMessage('importFailed') || 'Import failed') + ': ' + error.message,
+            'error'
+          );
         }
       };
       reader.readAsText(file);

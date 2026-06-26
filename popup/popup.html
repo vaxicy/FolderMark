@@ -298,6 +298,8 @@
         </label>
         <span class="batch-count" id="batchCount">0 selected</span>
         <div class="batch-actions">
+          <button id="batchColorBtn" class="btn btn-secondary btn-sm" data-i18n="batchColor">Color</button>
+          <button id="batchNoteBtn" class="btn btn-secondary btn-sm" data-i18n="batchNote">Note</button>
           <button id="batchMergeBtn" class="btn btn-secondary btn-sm" data-i18n="batchMerge">Merge...</button>
           <button id="batchDeleteBtn" class="btn btn-danger btn-sm" data-i18n="batchDelete">Delete</button>
           <button id="batchExportBtn" class="btn btn-secondary btn-sm" data-i18n="batchExport">Export</button>
@@ -333,6 +335,36 @@
       </div>
       <div class="merge-actions">
         <button id="mergeCancel" class="btn btn-secondary btn-sm" data-i18n="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量颜色选择弹窗 -->
+  <div id="batchColorModal" class="modal hidden">
+    <div class="modal-overlay" id="batchColorOverlay"></div>
+    <div class="modal-content batch-color-modal">
+      <h3>🎨 <span data-i18n="batchColor">批量设置颜色</span></h3>
+      <p class="batch-color-subtitle"><span data-i18n="batchColorDesc">已选中</span> <span id="batchColorCount">0</span> <span data-i18n="batchColorDesc2">个文件夹</span></p>
+      <div id="batchColorOptions" class="color-picker-options">
+        <!-- 动态填充 -->
+      </div>
+      <div class="modal-actions">
+        <button id="batchColorCancel" class="btn btn-secondary btn-sm" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量添加备注弹窗 -->
+  <div id="batchNoteModal" class="modal hidden">
+    <div class="modal-overlay" id="batchNoteOverlay"></div>
+    <div class="modal-content">
+      <h3>📝 <span data-i18n="batchNote">批量添加备注</span></h3>
+      <p class="batch-note-subtitle" data-i18n="batchNoteDesc">为选中的文件夹添加相同备注</p>
+      <textarea id="batchNoteInput" class="notes-input" rows="4"
+                data-i18n-placeholder="batchNotePrompt"></textarea>
+      <div class="modal-actions">
+        <button id="batchNoteCancel" class="btn btn-secondary btn-sm" data-i18n="cancel">取消</button>
+        <button id="batchNoteSave" class="btn btn-primary btn-sm" data-i18n="save">保存</button>
       </div>
     </div>
   </div>

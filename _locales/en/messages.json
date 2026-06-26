@@ -400,5 +400,47 @@
   },
   "undoFailed": {
     "message": "$1 folders could not be restored (parent deleted)"
+  },
+  "batchColor": {
+    "message": "Color"
+  },
+  "batchNote": {
+    "message": "Note"
+  },
+  "batchColorSuccess": {
+    "message": "Set color for $1 folders"
+  },
+  "batchNoteSuccess": {
+    "message": "Added note to $1 folders"
+  },
+  "batchNotePrompt": {
+    "message": "Enter note for selected folders:"
+  },
+  "exportSuccess": {
+    "message": "Configuration exported successfully"
+  },
+  "exportFailed": {
+    "message": "Export failed"
+  },
+  "importSuccess": {
+    "message": "Configuration imported successfully"
+  },
+  "importFailed": {
+    "message": "Import failed"
+  },
+  "importInvalidFormat": {
+    "message": "Invalid file format"
+  },
+  "batchColorDesc": {
+    "message": "Applying color to"
+  },
+  "batchColorDesc2": {
+    "message": "folders"
+  },
+  "batchNoteDesc": {
+    "message": "Add the same note to selected folders"
+  },
+  "save": {
+    "message": "Save"
   }
 }

@@ -63,26 +63,177 @@ export function debounce(func, wait = 300) {
 }
 
 /**
- * 显示通知
- * @param {string} message - 通知消息
- * @param {string} type - 通知类型（success, error, info）
+ * 通知队列管理
  */
-export function showNotification(message, type = 'info') {
+const notificationQueue = [];
+let isProcessingQueue = false;
+
+/**
+ * 处理通知队列
+ */
+function processNotificationQueue() {
+  if (isProcessingQueue || notificationQueue.length === 0) return;
+  
+  isProcessingQueue = true;
+  const { message, type, duration, action } = notificationQueue.shift();
+  
+  showNotificationInternal(message, type, duration, action, () => {
+    isProcessingQueue = false;
+    processNotificationQueue();
+  });
+}
+
+/**
+ * 内部通知显示函数
+ * @param {string} message - 通知消息
+ * @param {string} type - 通知类型（success, error, info, warning）
+ * @param {number} duration - 显示时长（毫秒），0 表示不自动消失
+ * @param {Object} action - 操作按钮配置 {text, callback}
+ * @param {Function} onComplete - 完成回调
+ */
+function showNotificationInternal(message, type, duration, action, onComplete) {
+  const container = document.getElementById('notification-container') || createNotificationContainer();
+  
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
-  notification.textContent = message;
   
-  document.body.appendChild(notification);
+  // 创建通知内容
+  const content = document.createElement('div');
+  content.className = 'notification-content';
+  
+  // 图标
+  const icon = document.createElement('span');
+  icon.className = 'notification-icon';
+  const icons = {
+    success: '✓',
+    error: '✗',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+  icon.textContent = icons[type] || icons.info;
+  content.appendChild(icon);
+  
+  // 消息文本
+  const text = document.createElement('span');
+  text.className = 'notification-message';
+  text.textContent = message;
+  content.appendChild(text);
+  
+  notification.appendChild(content);
+  
+  // 操作按钮
+  if (action && action.text) {
+    const actionBtn = document.createElement('button');
+    actionBtn.className = 'notification-action';
+    actionBtn.textContent = action.text;
+    actionBtn.onclick = () => {
+      if (action.callback) action.callback();
+      removeNotification(notification, onComplete);
+    };
+    notification.appendChild(actionBtn);
+  }
+  
+  // 关闭按钮
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'notification-close';
+  closeBtn.innerHTML = '×';
+  closeBtn.onclick = () => removeNotification(notification, onComplete);
+  notification.appendChild(closeBtn);
+  
+  // 添加到容器
+  container.appendChild(notification);
+  
+  // 触发进入动画
+  requestAnimationFrame(() => {
+    notification.classList.add('notification-show');
+  });
   
   // 自动消失
-  setTimeout(() => {
-    notification.classList.add('notification-hide');
+  if (duration > 0) {
     setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
-      }
-    }, 300);
-  }, 3000);
+      removeNotification(notification, onComplete);
+    }, duration);
+  }
+}
+
+/**
+ * 创建通知容器
+ * @returns {HTMLElement} 通知容器
+ */
+function createNotificationContainer() {
+  const container = document.createElement('div');
+  container.id = 'notification-container';
+  container.className = 'notification-container';
+  document.body.appendChild(container);
+  return container;
+}
+
+/**
+ * 移除通知
+ * @param {HTMLElement} notification - 通知元素
+ * @param {Function} onComplete - 完成回调
+ */
+function removeNotification(notification, onComplete) {
+  if (!notification || !notification.parentNode) {
+    if (onComplete) onComplete();
+    return;
+  }
+  
+  notification.classList.add('notification-hide');
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+    if (onComplete) onComplete();
+  }, 300);
+}
+
+/**
+ * 显示通知（增强版）
+ * @param {string} message - 通知消息
+ * @param {string} type - 通知类型（success, error, info, warning）
+ * @param {number} duration - 显示时长（毫秒），默认 3000，0 表示不自动消失
+ * @param {Object} action - 操作按钮配置 {text, callback}
+ */
+export function showNotification(message, type = 'info', duration = 3000, action = null) {
+  notificationQueue.push({ message, type, duration, action });
+  processNotificationQueue();
+}
+
+/**
+ * 显示成功通知
+ * @param {string} message - 消息
+ * @param {Object} action - 操作按钮配置
+ */
+export function showSuccess(message, action = null) {
+  showNotification(message, 'success', 3000, action);
+}
+
+/**
+ * 显示错误通知
+ * @param {string} message - 消息
+ * @param {Object} action - 操作按钮配置
+ */
+export function showError(message, action = null) {
+  showNotification(message, 'error', 5000, action);
+}
+
+/**
+ * 显示警告通知
+ * @param {string} message - 消息
+ * @param {Object} action - 操作按钮配置
+ */
+export function showWarning(message, action = null) {
+  showNotification(message, 'warning', 4000, action);
+}
+
+/**
+ * 显示信息通知
+ * @param {string} message - 消息
+ * @param {Object} action - 操作按钮配置
+ */
+export function showInfo(message, action = null) {
+  showNotification(message, 'info', 3000, action);
 }
 
 /**

@@ -400,5 +400,47 @@
   },
   "undoFailed": {
     "message": "$1 个文件夹无法恢复（父文件夹已删除）"
+  },
+  "batchColor": {
+    "message": "颜色"
+  },
+  "batchNote": {
+    "message": "备注"
+  },
+  "batchColorSuccess": {
+    "message": "已为 $1 个文件夹设置颜色"
+  },
+  "batchNoteSuccess": {
+    "message": "已为 $1 个文件夹添加备注"
+  },
+  "batchNotePrompt": {
+    "message": "输入选中文件夹的备注："
+  },
+  "exportSuccess": {
+    "message": "配置导出成功"
+  },
+  "exportFailed": {
+    "message": "导出失败"
+  },
+  "importSuccess": {
+    "message": "配置导入成功"
+  },
+  "importFailed": {
+    "message": "导入失败"
+  },
+  "importInvalidFormat": {
+    "message": "无效的文件格式"
+  },
+  "batchColorDesc": {
+    "message": "为"
+  },
+  "batchColorDesc2": {
+    "message": "个文件夹设置颜色"
+  },
+  "batchNoteDesc": {
+    "message": "为选中的文件夹添加相同备注"
+  },
+  "save": {
+    "message": "保存"
   }
 }
