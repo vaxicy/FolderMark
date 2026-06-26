@@ -285,7 +285,7 @@
     "message": "Delete All"
   },
   "review": {
-    "message": "Review"
+    "message": "Quick Select"
   },
   "mergeAll": {
     "message": "Merge All"
@@ -346,6 +346,15 @@
   },
   "allColors": {
     "message": "All Colors"
+  },
+  "actionPosition": {
+    "message": "Action Position"
+  },
+  "actionPositionLeft": {
+    "message": "Left"
+  },
+  "actionPositionRight": {
+    "message": "Right"
   },
   "filterByColor": {
     "message": "Filter by color"

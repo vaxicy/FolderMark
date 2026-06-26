@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   LANGUAGE: 'foldermark_language',
   DELETE_CONFIRM: 'foldermark_delete_confirm',
   HIDE_ROOT_FOLDERS: 'foldermark_hide_root_folders',
+  ACTION_POSITION: 'foldermark_action_position',
   LAST_SCAN: 'foldermark_last_scan',
   SCAN_RESULT: 'foldermark_scan_result',
   FOLDER_NOTES: 'foldermark_folder_notes',
@@ -27,7 +28,8 @@ export const DEFAULT_SETTINGS = {
   theme: THEMES.SYSTEM,
   language: 'en',
   deleteConfirm: true,
-  hideRootFolders: false
+  hideRootFolders: false,
+  actionPosition: 'right'
 };
 
 // 事件类型定义

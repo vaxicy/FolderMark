@@ -32,6 +32,7 @@ class App {
     this.folderColors = {}; // 文件夹颜色 {folderId: colorValue}
     this.folderIcons = {}; // 文件夹图标 {folderId: iconValue}
     this.colorFilter = ''; // 当前颜色筛选
+    this.actionPosition = 'right'; // 操作按钮位置: left | right
     this._colorPickerOpenTime = 0; // 颜色选择器打开时间戳（防止立即关闭）
     this._iconPickerOpenTime = 0; // 图标选择器打开时间戳（防止立即关闭）
     this._customColorFolderId = ''; // 正在设置自定义颜色的目标文件夹 ID
@@ -146,12 +147,14 @@ class App {
         STORAGE_KEYS.THEME,
         STORAGE_KEYS.LANGUAGE,
         STORAGE_KEYS.DELETE_CONFIRM,
-        STORAGE_KEYS.HIDE_ROOT_FOLDERS
+        STORAGE_KEYS.HIDE_ROOT_FOLDERS,
+        STORAGE_KEYS.ACTION_POSITION
       ], (result) => {
         this.theme = result[STORAGE_KEYS.THEME] || 'system';
         this.language = result[STORAGE_KEYS.LANGUAGE] || 'en';
         this.deleteConfirm = result[STORAGE_KEYS.DELETE_CONFIRM] !== false;
         this.hideRootFolders = result[STORAGE_KEYS.HIDE_ROOT_FOLDERS] === true;
+        this.actionPosition = result[STORAGE_KEYS.ACTION_POSITION] || 'right';
         resolve();
       });
     });
@@ -224,6 +227,17 @@ class App {
       hideRootFoldersToggle.checked = this.hideRootFolders;
       hideRootFoldersToggle.addEventListener('change', (e) => {
         this.toggleHideRootFolders(e.target.checked);
+      });
+    }
+
+    // 设置 - 操作按钮位置
+    const actionPositionSelect = document.getElementById('actionPositionSelect');
+    if (actionPositionSelect) {
+      actionPositionSelect.value = this.actionPosition;
+      actionPositionSelect.addEventListener('change', (e) => {
+        this.actionPosition = e.target.value;
+        chrome.storage.local.set({ [STORAGE_KEYS.ACTION_POSITION]: this.actionPosition });
+        this.renderFolders();
       });
     }
 
@@ -365,12 +379,30 @@ class App {
       this.handleKeyboard(e);
     });
 
-    // 颜色筛选
+    // 颜色筛选 - 自定义下拉交互
     const colorFilterSelect = document.getElementById('colorFilterSelect');
     if (colorFilterSelect) {
-      colorFilterSelect.addEventListener('change', (e) => {
-        this.colorFilter = e.target.value;
-        this.renderFolders();
+      const trigger = colorFilterSelect.querySelector('.custom-select-trigger');
+      const dropdown = colorFilterSelect.querySelector('.custom-select-dropdown');
+
+      // 点击 trigger → toggle 下拉
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !dropdown.classList.contains('hidden');
+        // 先关闭所有其他自定义下拉
+        document.querySelectorAll('.custom-select-dropdown:not(.hidden)').forEach(d => d.classList.add('hidden'));
+        if (isOpen) {
+          dropdown.classList.add('hidden');
+        } else {
+          dropdown.classList.remove('hidden');
+        }
+      });
+
+      // 点击外部 → 关闭下拉
+      document.addEventListener('click', (e) => {
+        if (!colorFilterSelect.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
       });
     }
 
@@ -391,8 +423,9 @@ class App {
           f._color = this.folderColors[f.id] || '';
         });
         this.renderFolders();
+        this.updateColorFilterOptions();
       });
-      // 取消选择时也要刷新（关闭颜色面板）
+    // 取消选择时也要刷新（关闭颜色面板）
       customColorInput.addEventListener('change', async (e) => {
         const color = e.target.value;
         const folderId = this._customColorFolderId;
@@ -629,6 +662,314 @@ class App {
   }
 
   /**
+   * 根据当前文件夹列表，动态更新颜色筛选下拉选项
+   * 只显示实际存在的颜色（预设 + 自定义 hex）
+   * 使用自定义下拉组件（非原生 select）
+   */
+  updateColorFilterOptions() {
+    const container = document.getElementById('colorFilterSelect');
+    if (!container) return;
+
+    const dropdown = container.querySelector('.custom-select-dropdown');
+    if (!dropdown) return;
+
+    // 保存当前选中值
+    const currentValue = this.colorFilter;
+
+    // 收集所有实际存在的颜色值
+    const colorSet = new Set();
+    this.folders.forEach(f => {
+      if (f._color) colorSet.add(f._color);
+    });
+
+    // 预设颜色（按常见顺序，带 hex 值用于 CSS 圆点）
+    const presetList = [
+      { value: 'red',    hex: '#EF4444', zh: '红色',   en: 'Red' },
+      { value: 'orange', hex: '#F97316', zh: '橙色',   en: 'Orange' },
+      { value: 'yellow', hex: '#EAB308', zh: '黄色',   en: 'Yellow' },
+      { value: 'green',  hex: '#22C55E', zh: '绿色',   en: 'Green' },
+      { value: 'blue',   hex: '#3B82F6', zh: '蓝色',   en: 'Blue' },
+      { value: 'purple', hex: '#A855F7', zh: '紫色',   en: 'Purple' }
+    ];
+
+    // 自定义颜色列表（# 开头）
+    const customColors = [];
+    colorSet.forEach(c => {
+      if (c.startsWith('#')) customColors.push(c);
+    });
+
+    // 构建下拉选项 HTML
+    let optionsHtml = '';
+
+    // "全部颜色" 选项
+    const allLabel = this.language === 'zh_CN' ? '全部颜色' : 'All Colors';
+    optionsHtml += `<div class="custom-select-option${currentValue === '' ? ' active' : ''}" data-value="">` +
+      `<span class="color-dot" style="background:transparent;border:1px solid var(--border-color);"></span>` +
+      `<span>${allLabel}</span></div>`;
+
+    // 实际存在的预设颜色
+    presetList.forEach(p => {
+      if (colorSet.has(p.value)) {
+        const label = this.language === 'zh_CN' ? p.zh : p.en;
+        optionsHtml += `<div class="custom-select-option${currentValue === p.value ? ' active' : ''}" data-value="${p.value}">` +
+          `<span class="color-dot" style="background:${p.hex}"></span>` +
+          `<span>${label}</span></div>`;
+      }
+    });
+
+    // 自定义颜色
+    customColors.sort().forEach(hex => {
+      const label = this.guessColorName(hex);
+      optionsHtml += `<div class="custom-select-option${currentValue === hex ? ' active' : ''}" data-value="${hex}">` +
+        `<span class="color-dot" style="background:${hex}"></span>` +
+        `<span>${label}</span></div>`;
+    });
+
+    // "无颜色" 选项
+    const noColorLabel = this.language === 'zh_CN' ? '无颜色' : 'No Color';
+    optionsHtml += `<div class="custom-select-option${currentValue === '__nocolor__' ? ' active' : ''}" data-value="__nocolor__">` +
+      `<span class="color-dot" style="background:transparent;border:1px dashed var(--border-color);"></span>` +
+      `<span style="font-style:italic;color:var(--text-tertiary);">${noColorLabel}</span></div>`;
+
+    dropdown.innerHTML = optionsHtml;
+
+    // 更新触发器显示
+    this._updateColorFilterTrigger();
+
+    // 绑定选项点击事件
+    dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = opt.dataset.value;
+        this.colorFilter = val;
+        this.renderFolders();
+        this.updateColorFilterOptions();
+        container.querySelector('.custom-select-dropdown').classList.add('hidden');
+      });
+    });
+  }
+
+  /**
+   * 更新颜色筛选触发器显示（圆点 + 文字）
+   */
+  _updateColorFilterTrigger() {
+    const container = document.getElementById('colorFilterSelect');
+    if (!container) return;
+
+    const dot = container.querySelector('.custom-select-dot');
+    const label = container.querySelector('.custom-select-label');
+
+    const presetMap = {
+      '':            { hex: 'transparent', zh: '全部颜色', en: 'All Colors' },
+      'red':         { hex: '#EF4444',    zh: '红色',     en: 'Red' },
+      'orange':      { hex: '#F97316',    zh: '橙色',     en: 'Orange' },
+      'yellow':      { hex: '#EAB308',    zh: '黄色',     en: 'Yellow' },
+      'green':       { hex: '#22C55E',    zh: '绿色',     en: 'Green' },
+      'blue':        { hex: '#3B82F6',    zh: '蓝色',     en: 'Blue' },
+      'purple':      { hex: '#A855F7',    zh: '紫色',     en: 'Purple' },
+      '__nocolor__': { hex: 'transparent', zh: '无颜色',   en: 'No Color', dashed: true }
+    };
+
+    const val = this.colorFilter;
+    let hex = '';
+    let text = '';
+    let isDashed = false;
+
+    if (presetMap[val]) {
+      hex = presetMap[val].hex;
+      text = this.language === 'zh_CN' ? presetMap[val].zh : presetMap[val].en;
+      isDashed = !!presetMap[val].dashed;
+    } else if (val && val.startsWith('#')) {
+      hex = val;
+      text = this.guessColorName(val);
+    } else {
+      hex = 'transparent';
+      text = this.language === 'zh_CN' ? '全部颜色' : 'All Colors';
+    }
+
+    if (dot) {
+      dot.style.background = isDashed ? 'transparent' : hex;
+      dot.style.borderColor = isDashed ? 'var(--border-color)' : (hex === 'transparent' ? 'var(--border-color)' : 'rgba(0,0,0,0.1)');
+      dot.style.borderStyle = isDashed ? 'dashed' : 'solid';
+    }
+    if (label) {
+      label.textContent = text;
+    }
+  }
+
+  /**
+   * 根据 hex 值猜测颜色名称
+   * 通过 RGB 欧氏距离匹配最近似色名
+   */
+  guessColorName(hex) {
+    // 扩充颜色数据库（hex → [r,g,b, 中文名, 英文名]）
+    // 按色系分组，覆盖常见 Web 颜色、品牌色、中文传统色
+    const colorDB = [
+      // ── 红色系 ──
+      ['#FF0000', 255,  0,  0,   '红色',   'Red'],
+      ['#EF4444', 239, 68, 68,   '亮红',   'Bright Red'],
+      ['#DC2626', 220, 38, 38,   '深红',   'Dark Red'],
+      ['#B91C1C', 185, 28, 28,   '暗红',   'Deep Red'],
+      ['#FCA5A5', 252,165,165,   '浅红',   'Light Red'],
+      ['#F87171', 248,113,113,   '珊瑚红', 'Coral Red'],
+      ['#FF5733', 255, 87, 51,   '珊瑚橙', 'Coral'],
+      ['#FF6347', 255, 99, 71,   '番茄红', 'Tomato'],
+      ['#E53E3E', 229, 62, 62,   '玫瑰红', 'Rose Red'],
+      ['#F43F5E', 244, 63, 94,   '玫瑰',   'Rose'],
+      ['#E53E3E', 229, 62, 62,   '赤红',   'Crimson'],
+      ['#9B2C2C', 155, 44, 44,   '栗红',   'Maroon'],
+      ['#800000', 128,  0,  0,   '栗色',   'Maroon'],
+      ['#C53030', 197, 48, 48,   '朱红',   'Vermilion'],
+      // ── 橙色系 ──
+      ['#FF8C00', 255,140,  0,   '橙色',   'Orange'],
+      ['#F97316', 249,115, 22,   '亮橙',   'Bright Orange'],
+      ['#EA580C', 234, 88, 12,   '深橙',   'Dark Orange'],
+      ['#FFA500', 255,165,  0,   '琥珀橙', 'Amber Orange'],
+      ['#FFB347', 255,179, 71,   '蜜橙',   'Honey Orange'],
+      ['#FF7F50', 255,127, 80,   '珊瑚',   'Coral'],
+      ['#E65100', 230, 81,  0,   '铁锈橙', 'Rust'],
+      // ── 黄色/金色系 ──
+      ['#FFFF00', 255,255,  0,   '黄色',   'Yellow'],
+      ['#EAB308', 234,179,  8,   '金黄花', 'Golden Yellow'],
+      ['#FACC15', 250,204, 21,   '柠檬黄', 'Lemon'],
+      ['#FDE047', 253,224, 71,   '浅黄',   'Light Yellow'],
+      ['#F59E0B', 245,158, 11,   '琥珀黄', 'Amber'],
+      ['#FFD700', 255,215,  0,   '金色',   'Gold'],
+      ['#FFC107', 255,193,  7,   '金黄',   'Golden'],
+      ['#CA8A04', 202,138,  4,   '暗金',   'Dark Gold'],
+      ['#FBBF24', 251,191, 36,   '鲜黄',   'Vivid Yellow'],
+      // ── 绿色系 ──
+      ['#008000',   0,128,  0,   '绿色',   'Green'],
+      ['#22C55E',  34,197, 94,   '亮绿',   'Bright Green'],
+      ['#16A34A',  22,163, 74,   '深绿',   'Dark Green'],
+      ['#059669',   5,150,105,   '翠绿',   'Emerald'],
+      ['#10B981',  16,185,129,   '翡翠绿', 'Jade'],
+      ['#34D399',  52,211,153,   '薄荷绿', 'Mint'],
+      ['#6EE7B7', 110,231,183,   '浅绿',   'Light Green'],
+      ['#86EFAC', 134,239,172,   '嫩绿',   'Pale Green'],
+      ['#166534',  22,101, 52,   '墨绿',   'Forest Green'],
+      ['#14532D',  20, 83, 45,   '深林绿', 'Deep Forest'],
+      ['#A7F3D0', 167,243,208,   '薄荷白', 'Mint Cream'],
+      ['#064E3B',   6, 78, 59,   '松绿',   'Pine Green'],
+      ['#2D6A4F',  45,106, 79,   '鼠尾草', 'Sage'],
+      // ── 青色/蓝绿色系 ──
+      ['#00FFFF',   0,255,255,   '青色',   'Cyan'],
+      ['#06B6D4',   6,182,212,   '亮青',   'Bright Cyan'],
+      ['#0891B2',   8,145,178,   '深青',   'Dark Cyan'],
+      ['#67E8F9', 103,232,249,   '浅青',   'Light Cyan'],
+      ['#A5F3FC', 165,243,252,   '天青',   'Sky Cyan'],
+      ['#CCFBF1', 204,251,241,   '淡青',   'Pale Cyan'],
+      ['#0D9488',  13,148,136,   '凫绿',   'Teal'],
+      ['#134E4A',  19, 78, 74,   '深凫绿', 'Deep Teal'],
+      ['#115E59',  17, 94, 89,   '孔雀绿', 'Peacock'],
+      // ── 蓝色系 ──
+      ['#0000FF',   0,  0,255,   '蓝色',   'Blue'],
+      ['#3B82F6',  59,130,246,   '亮蓝',   'Bright Blue'],
+      ['#2563EB',  37, 99,235,   '深蓝',   'Dark Blue'],
+      ['#1D4ED8',  29, 78,216,   '海军蓝', 'Navy Blue'],
+      ['#1E40AF',  30, 64,175,   '藏蓝',   'Navy'],
+      ['#0EA5E9',  14,165,233,   '天蓝',   'Sky Blue'],
+      ['#38BDF8',  56,189,248,   '浅天蓝', 'Light Sky'],
+      ['#7DD3FC', 125,211,252,   '淡蓝',   'Pale Blue'],
+      ['#60A5FA',  96,165,250,   '矢车菊', 'Cornflower'],
+      ['#4F46E5',  79, 70,229,   '靛蓝',   'Indigo Blue'],
+      ['#4338CA',  67, 56,202,   '深靛',   'Deep Indigo'],
+      ['#1E3A8A',  30, 58,138,   '午夜蓝', 'Midnight Blue'],
+      ['#0C4A6E',  12, 74,110,   '钢蓝',   'Steel Blue'],
+      ['#0369A1',   3,105,161,   '钴蓝',   'Cobalt'],
+      // ── 紫色/紫红系 ──
+      ['#800080', 128,  0,128,   '紫色',   'Purple'],
+      ['#A855F7', 168, 85,247,   '亮紫',   'Bright Purple'],
+      ['#7C3AED', 124, 58,237,   '深紫',   'Deep Purple'],
+      ['#6D28D9', 109, 40,217,   '紫罗兰', 'Violet'],
+      ['#8B5CF6', 139, 92,246,   '薰衣草紫', 'Lavender Purple'],
+      ['#C084FC', 192,132,252,   '浅紫',   'Light Purple'],
+      ['#E9D5FF', 233,213,255,   '淡紫',   'Pale Purple'],
+      ['#4C1D95',  76, 29,149,   '暗紫',   'Dark Purple'],
+      ['#5B21B6',  91, 33,182,   '茄紫',   'Aubergine'],
+      ['#D946EF', 217, 70,239,   '洋红',   'Magenta'],
+      ['#C026D3', 192, 38,211,   '品红',   'Fuchsia'],
+      ['#A21CAF', 162, 28,175,   '紫红',   'Purple Red'],
+      // ── 粉色系 ──
+      ['#FFC0CB', 255,192,203,   '粉色',   'Pink'],
+      ['#EC4899', 236, 72,153,   '亮粉',   'Bright Pink'],
+      ['#DB2777', 219, 39,119,   '深粉',   'Dark Pink'],
+      ['#F472B6', 244,114,182,   '玫瑰粉', 'Rose Pink'],
+      ['#FB7185', 251,113,133,   '珊瑚粉', 'Coral Pink'],
+      ['#FECDD3', 254,205,211,   '浅粉',   'Light Pink'],
+      ['#FFB6C1', 255,182,193,   '桃粉',   'Peach Pink'],
+      ['#FBCFE8', 251,207,232,   '淡粉',   'Pale Pink'],
+      ['#BE185D', 190, 24, 93,   '酒红',   'Burgundy'],
+      ['#9D174D', 157, 23, 77,   '暗粉',   'Dark Pink'],
+      // ── 棕色/肤色系 ──
+      ['#A52A2A', 165, 42, 42,   '棕色',   'Brown'],
+      ['#92400E', 146, 64, 14,   '深棕',   'Dark Brown'],
+      ['#B45309', 180, 83,  9,   '赤棕',   'Reddish Brown'],
+      ['#D97706', 217,119,  6,   '琥珀棕', 'Amber Brown'],
+      ['#CD853F', 205,133, 63,   '秘鲁棕', 'Peru'],
+      ['#A0522D', 160, 82, 45,   '赭色',   'Sienna'],
+      ['#8B4513', 139, 69, 19,   ' saddle棕', 'Saddle Brown'],
+      ['#DEB887', 222,184,135,   '浅棕',   'Burlywood'],
+      ['#F5DEB3', 245,222,179,   '小麦色', 'Wheat'],
+      ['#FAEBD7', 250,235,215,   '古董白', 'Antique White'],
+      // ── 灰色/黑白系 ──
+      ['#000000',   0,  0,  0,   '黑色',   'Black'],
+      ['#1E1E1E',  30, 30, 30,   '墨黑',   'Ink Black'],
+      ['#171717',  23, 23, 23,   '近黑',   'Near Black'],
+      ['#404040',  64, 64, 64,   '炭灰',   'Charcoal'],
+      ['#525252',  82, 82, 82,   '深灰',   'Dark Gray'],
+      ['#808080', 128,128,128,   '灰色',   'Gray'],
+      ['#A3A3A3', 163,163,163,   '中性灰', 'Neutral Gray'],
+      ['#D1D5DB', 209,213,219,   '浅灰',   'Light Gray'],
+      ['#E5E7EB', 229,231,235,   '淡灰',   'Pale Gray'],
+      ['#F3F4F6', 243,244,246,   '月白',   'Off White'],
+      ['#F9FAFB', 249,250,251,   '瓷白',   'Porcelain'],
+      ['#FFFFFF', 255,255,255,   '白色',   'White'],
+      ['#F0F0F0', 240,240,240,   '雪白',   'Snow'],
+      ['#C0C0C0', 192,192,192,   '银色',   'Silver'],
+      ['#A8A8A8', 168,168,168,   '铅灰',   'Lead Gray'],
+      // ── 特殊/霓虹色 ──
+      ['#00FF00',   0,255,  0,   '酸橙绿', 'Lime'],
+      ['#39FF14',  57,255, 20,   '霓虹绿', 'Neon Green'],
+      ['#FF00FF', 255,  0,255,   '霓虹粉', 'Neon Pink'],
+      ['#00FFAA',   0,255,170,   '霓虹青', 'Neon Cyan'],
+      ['#FF00AA', 255,  0,170,   '霓虹紫', 'Neon Purple'],
+      ['#FFAA00', 255,170,  0,   '霓虹橙', 'Neon Orange']
+    ];
+
+    // 解析 hex 为 RGB（支持 3 位和 6 位 hex）
+    const parseHex = (h) => {
+      let s = h.replace('#', '');
+      if (s.length === 3) {
+        s = s[0]+s[0]+s[1]+s[1]+s[2]+s[2];
+      }
+      const v = parseInt(s, 16);
+      if (isNaN(v)) return [128, 128, 128];
+      return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+    };
+
+    const rgb = parseHex(hex);
+
+    // 找最近距离的颜色（加权：人眼对绿色更敏感）
+    let minDist = Infinity;
+    let bestName = '';
+
+    colorDB.forEach(entry => {
+      const dr = rgb[0] - entry[1];
+      const dg = rgb[1] - entry[2];
+      const db = rgb[2] - entry[3];
+      // 使用加权欧氏距离（ITU-R BT.709 系数近似值）
+      const dist = 2 * dr * dr + 4 * dg * dg + 3 * db * db;
+      if (dist < minDist) {
+        minDist = dist;
+        bestName = this.language === 'zh_CN' ? entry[4] : entry[5];
+      }
+    });
+
+    return bestName || (this.language === 'zh_CN' ? '自定义颜色' : 'Custom Color');
+  }
+
+  /**
    * 扫描书签
    */
   async scanBookmarks() {
@@ -663,6 +1004,7 @@ class App {
       this.updateStats();
       this.clearSelection();
       this.renderCurrentPage();
+      this.updateColorFilterOptions();
       this.showLoading(false);
     } catch (error) {
       console.error('Scan failed:', error);
@@ -782,7 +1124,10 @@ class App {
       // 文件夹名称搜索（或空搜索）
       let list = FolderScanner.searchFolders(this.folders, this.searchQuery);
       // 颜色筛选
-      if (this.colorFilter) {
+      if (this.colorFilter === '__nocolor__') {
+        // 无颜色：_color 为空或 undefined
+        list = list.filter(f => !f._color);
+      } else if (this.colorFilter) {
         list = list.filter(f => f._color === this.colorFilter);
       }
       folders = FolderScanner.sortFolders(list, this.currentSort);
@@ -971,14 +1316,14 @@ class App {
           <div class="folder-header">
             <div class="folder-name">
               <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
-              <span class="folder-path">${this.escapeHtml(folder.path)}</span>
+              <span class="folder-path">${this.escapeHtml(this.translatePath(folder.path))}</span>
             </div>
           </div>
           <div class="folder-stats-inline">${statsHtml}</div>
         </div>
 
         <!-- Hover 时显示的操作按钮 -->
-        <div class="folder-actions-bar">
+        <div class="folder-actions-bar" style="justify-content: ${this.actionPosition === 'right' ? 'flex-end' : 'flex-start'};">
           <button class="btn btn-secondary btn-xs" data-action="open" data-folder-id="${folder.id}">${i18n.getMessage('open')}</button>
           <button class="btn btn-secondary btn-xs" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
           <button class="btn btn-secondary btn-xs" data-action="rename" data-folder-id="${folder.id}">${i18n.getMessage('rename')}</button>
@@ -1065,6 +1410,7 @@ class App {
         });
         panel.classList.add('hidden');
         this.renderFolders();
+        this.updateColorFilterOptions();
       });
     });
 
@@ -1751,7 +2097,7 @@ class App {
     listContainer.innerHTML = targetFolders.map(f => `
       <div class="merge-folder-item" data-target-id="${f.id}">
         <strong>${this.escapeHtml(f.title)}</strong>
-        <span style="color:var(--text-tertiary);font-size:9px;">${this.escapeHtml(f.path)}</span>
+        <span style="color:var(--text-tertiary);font-size:9px;">${this.escapeHtml(this.translatePath(f.path))}</span>
       </div>
     `).join('');
 
@@ -1908,7 +2254,7 @@ class App {
     listContainer.innerHTML = targetFolders.map(f => `
       <div class="merge-folder-item" data-target-id="${f.id}">
         <strong>${this.escapeHtml(f.title)}</strong>
-        <span style="color:var(--text-tertiary);font-size:9px;">${this.escapeHtml(f.path)}</span>
+        <span style="color:var(--text-tertiary);font-size:9px;">${this.escapeHtml(this.translatePath(f.path))}</span>
       </div>
     `).join('');
 
@@ -2043,7 +2389,7 @@ class App {
               <span class="folder-icon">📁</span>
               <span>${this.escapeHtml(folder.title)}</span>
             </div>
-            <div class="folder-path">${this.escapeHtml(folder.path)}</div>
+            <div class="folder-path">${this.escapeHtml(this.translatePath(folder.path))}</div>
           </div>
         </div>
         <div class="folder-actions">
@@ -2081,7 +2427,7 @@ class App {
           <div class="duplicate-folders">
             ${group.folders.map(folder => `
               <div class="duplicate-folder">
-                <span>${this.escapeHtml(folder.path)} (${folder.bookmarkCount})</span>
+                <span>${this.escapeHtml(this.translatePath(folder.path))} (${folder.bookmarkCount})</span>
                 <button class="btn btn-secondary btn-sm" data-action="merge" data-folder-id="${folder.id}">${i18n.getMessage('merge')}</button>
               </div>
             `).join('')}
@@ -2146,7 +2492,7 @@ class App {
             <div class="folder-name">
               <span class="folder-title-text">${this.escapeHtml(folder.title)}</span>
             </div>
-            <div class="folder-path">${this.escapeHtml(folder.path)}</div>
+            <div class="folder-path">${this.escapeHtml(this.translatePath(folder.path))}</div>
           </div>
           <button class="btn btn-danger btn-sm" data-action="delete" data-folder-id="${folder.id}" style="margin-left:auto;">${i18n.getMessage('delete')}</button>
         </div>
@@ -2411,7 +2757,7 @@ class App {
               </label>
               <div class="duplicate-bookmark-info">
                 <span class="duplicate-bookmark-title">${this.escapeHtml(bookmark.title)}</span>
-                <span class="duplicate-bookmark-path">${this.escapeHtml(bookmark.path)}</span>
+                <span class="duplicate-bookmark-path">${this.escapeHtml(this.translatePath(bookmark.path))}</span>
               </div>
             </div>
           `).join('')}
@@ -2483,7 +2829,7 @@ class App {
           ${displayFolders.map(folder => `
             <div class="cleanup-suggestion-folder">
               <span class="folder-name">${this.escapeHtml(folder.title)}</span>
-              <span class="folder-path">${this.escapeHtml(folder.path)}</span>
+              <span class="folder-path">${this.escapeHtml(this.translatePath(folder.path))}</span>
             </div>
           `).join('')}
           ${suggestion.folders.length > 5 ? `
@@ -2639,6 +2985,10 @@ class App {
     const hideRootFoldersToggle = document.getElementById('hideRootFoldersToggle');
     if (hideRootFoldersToggle) {
       hideRootFoldersToggle.checked = this.hideRootFolders;
+    }
+    const actionPositionSelect = document.getElementById('actionPositionSelect');
+    if (actionPositionSelect) {
+      actionPositionSelect.value = this.actionPosition;
     }
   }
 
@@ -2829,7 +3179,8 @@ class App {
         theme: this.theme,
         language: this.language,
         deleteConfirm: this.deleteConfirm,
-        hideRootFolders: this.hideRootFolders
+        hideRootFolders: this.hideRootFolders,
+        actionPosition: this.actionPosition
       };
 
       const data = {
@@ -2937,6 +3288,12 @@ class App {
               if (hideRootFoldersToggle) hideRootFoldersToggle.checked = this.hideRootFolders;
               this.renderFolders();
             }
+            if (data.settings.actionPosition !== undefined) {
+              this.actionPosition = data.settings.actionPosition;
+              const actionPositionSelect = document.getElementById('actionPositionSelect');
+              if (actionPositionSelect) actionPositionSelect.value = this.actionPosition;
+              this.renderFolders();
+            }
           }
 
           showNotification(
@@ -3016,6 +3373,40 @@ class App {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  /**
+   * 翻译路径中的 Chrome 系统根文件夹名称
+   * 根据当前扩展语言将浏览器返回的本地化名称转为对应语言
+   */
+  translatePath(path) {
+    if (!path || !path.trim()) return path;
+
+    // Chrome 系统根文件夹名称映射表（key: 浏览器可能返回的原始名称 → value: 翻译后的名称）
+    const translations = {
+      'zh_CN': {
+        '书签栏': '书签栏',
+        '其他书签': '其他书签',
+        '移动书签': '移动书签',
+        // 英文浏览器下中文扩展可能遇到
+        'Bookmarks Bar': '书签栏',
+        'Other Bookmarks': '其他书签',
+        'Mobile Bookmarks': '移动书签'
+      },
+      'en': {
+        '书签栏': 'Bookmarks Bar',
+        '其他书签': 'Other Bookmarks',
+        '移动书签': 'Mobile Bookmarks',
+        'Bookmarks Bar': 'Bookmarks Bar',
+        'Other Bookmarks': 'Other Bookmarks',
+        'Mobile Bookmarks': 'Mobile Bookmarks'
+      }
+    };
+
+    var langMap = translations[this.language] || translations['en'];
+    return path.split(' / ').map(function(segment) {
+      return langMap[segment] || segment;
+    }).join(' / ');
   }
 }
 

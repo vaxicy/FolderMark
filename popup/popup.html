@@ -48,15 +48,14 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <select id="colorFilterSelect" class="color-filter-select" data-i18n-title="filterByColor">
-        <option value="" data-i18n="allColors">All Colors</option>
-        <option value="red" data-i18n="colorRed">🔴 Red</option>
-        <option value="orange" data-i18n="colorOrange">🟠 Orange</option>
-        <option value="yellow" data-i18n="colorYellow">🟡 Yellow</option>
-        <option value="green" data-i18n="colorGreen">🟢 Green</option>
-        <option value="blue" data-i18n="colorBlue">🔵 Blue</option>
-        <option value="purple" data-i18n="colorPurple">🟣 Purple</option>
-      </select>
+      <div class="custom-select" id="colorFilterSelect" data-i18n-title="filterByColor" title="Filter by color">
+        <div class="custom-select-trigger">
+          <span class="custom-select-dot"></span>
+          <span class="custom-select-label" data-i18n="allColors">All Colors</span>
+          <span class="custom-select-arrow">▾</span>
+        </div>
+        <div class="custom-select-dropdown hidden"></div>
+      </div>
     </div>
 
     <!-- 统计卡片 -->
@@ -259,6 +258,13 @@
             <div class="setting-item">
               <label data-i18n="hideRootFolders">隐藏根文件夹</label>
               <input type="checkbox" id="hideRootFoldersToggle">
+            </div>
+            <div class="setting-item">
+              <label data-i18n="actionPosition">操作按钮位置</label>
+              <select id="actionPositionSelect">
+                <option value="left" data-i18n="actionPositionLeft">靠左</option>
+                <option value="right" data-i18n="actionPositionRight">靠右</option>
+              </select>
             </div>
           </div>
 

@@ -285,7 +285,7 @@
     "message": "全部删除"
   },
   "review": {
-    "message": "查看"
+    "message": "快速选择"
   },
   "mergeAll": {
     "message": "全部合并"
@@ -346,6 +346,15 @@
   },
   "allColors": {
     "message": "全部颜色"
+  },
+  "actionPosition": {
+    "message": "操作按钮位置"
+  },
+  "actionPositionLeft": {
+    "message": "靠左"
+  },
+  "actionPositionRight": {
+    "message": "靠右"
   },
   "filterByColor": {
     "message": "按颜色筛选"
