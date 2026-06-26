@@ -13,9 +13,11 @@ import SmartCleanupSuggestions from '../src/features/smartCleanupSuggestions.js'
 import BrokenBookmarkDetector from '../src/features/brokenBookmarkDetector.js';
 import FolderColorService from '../src/features/folderColorService.js';
 import FolderIconService from '../src/features/folderIconService.js';
+import FolderAccessService from '../src/features/folderAccessService.js';
 import FolderOperations from '../src/features/folderOperations.js';
 import NotesService from '../src/features/notesService.js';
 import UndoService from '../src/features/undoService.js';
+import BookmarkService from '../src/core/bookmarkService.js';
 import { STORAGE_KEYS, TABS, SORT_TYPES } from '../src/utils/constants.js';
 import { formatDate, debounce, showNotification, exportToJSON } from '../src/utils/helpers.js';
 
@@ -35,6 +37,10 @@ class App {
     this._customColorFolderId = ''; // 正在设置自定义颜色的目标文件夹 ID
     this._undoToastTimer = null;      // 撤销 Toast 自动关闭定时器
     this.cleanupSuggestions = []; // 清理建议
+    this.expandedFolders = new Set(); // 当前展开的文件夹 ID 集合
+    this._focusedFolderIndex = -1;   // 键盘导航当前焦点索引
+    this.searchMode = 'folder';            // 搜索模式：folder / bookmark
+    this._bookmarkSearchResults = {}; // { folderId: [bookmark, ...] }
     this.currentSort = SORT_TYPES.NAME;
     this.searchQuery = '';
     this._mergeSourceId = null;
@@ -158,6 +164,16 @@ class App {
         this.switchTab(tab.dataset.tab);
       });
     });
+
+    // 搜索模式切换
+    const searchModeBtn = document.getElementById('searchModeBtn');
+    if (searchModeBtn) {
+      searchModeBtn.addEventListener('click', () => {
+        this.searchMode = this.searchMode === 'folder' ? 'bookmark' : 'folder';
+        this.updateSearchModeUI();
+        this.renderFolders();
+      });
+    }
 
     // 搜索
     const searchInput = document.getElementById('searchInput');
@@ -533,6 +549,70 @@ class App {
           }
         }
         break;
+      case 'ArrowUp':
+        // 上箭头：焦点移到上一个文件夹卡片
+        if (!inInput && this.currentTab === TABS.FOLDERS) {
+          e.preventDefault();
+          const cards = Array.from(document.querySelectorAll('.folder-card'));
+          if (cards.length === 0) break;
+          if (this._focusedFolderIndex <= 0) {
+            this._focusedFolderIndex = cards.length - 1;
+          } else {
+            this._focusedFolderIndex--;
+          }
+          cards.forEach(c => c.classList.remove('focused'));
+          cards[this._focusedFolderIndex].classList.add('focused');
+          cards[this._focusedFolderIndex].focus();
+          cards[this._focusedFolderIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+        break;
+      case 'ArrowDown':
+        // 下箭头：焦点移到下一个文件夹卡片
+        if (!inInput && this.currentTab === TABS.FOLDERS) {
+          e.preventDefault();
+          const cards = Array.from(document.querySelectorAll('.folder-card'));
+          if (cards.length === 0) break;
+          if (this._focusedFolderIndex >= cards.length - 1) {
+            this._focusedFolderIndex = 0;
+          } else {
+            this._focusedFolderIndex++;
+          }
+          cards.forEach(c => c.classList.remove('focused'));
+          cards[this._focusedFolderIndex].classList.add('focused');
+          cards[this._focusedFolderIndex].focus();
+          cards[this._focusedFolderIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+        break;
+      case 'Enter':
+        // Enter：展开/收起当前焦点的文件夹
+        if (!inInput && this.currentTab === TABS.FOLDERS) {
+          const active = document.activeElement;
+          if (active && active.classList.contains('folder-card')) {
+            e.preventDefault();
+            const folderId = active.dataset.folderId;
+            if (folderId) {
+              this.toggleExpand(folderId);
+            }
+          }
+        }
+        break;
+      case ' ':
+        // Space：切换当前焦点文件夹的选中状态
+        if (!inInput && this.currentTab === TABS.FOLDERS) {
+          const active = document.activeElement;
+          if (active && active.classList.contains('folder-card')) {
+            e.preventDefault();
+            const folderId = active.dataset.folderId;
+            if (folderId) {
+              const cb = active.querySelector('input[type="checkbox"]');
+              if (cb) {
+                cb.checked = !cb.checked;
+                this.toggleFolderSelection(folderId, cb.checked);
+              }
+            }
+          }
+        }
+        break;
     }
   }
 
@@ -564,8 +644,9 @@ class App {
       const bookmarkTree = await this.getBookmarkTree();
       this.duplicateBookmarks = DuplicateBookmarkDetector.detect(bookmarkTree);
       
-      // 生成清理建议（传入已计算的 duplicates）
-      this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates);
+      // 生成清理建议（传入已计算的 duplicates 和访问数据）
+      const accessData = await FolderAccessService.loadAccessData();
+      this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates, accessData);
       
       this.updateStats();
       this.clearSelection();
@@ -634,6 +715,26 @@ class App {
   }
 
   /**
+   * 更新搜索模式 UI
+   */
+  updateSearchModeUI() {
+    const btn = document.getElementById('searchModeBtn');
+    const input = document.getElementById('searchInput');
+    if (!btn) return;
+    if (this.searchMode === 'folder') {
+      btn.textContent = '📁';
+      btn.classList.remove('active');
+      btn.title = i18n.getMessage('searchModeFolder') || 'Search folders';
+      input.placeholder = i18n.getMessage('searchPlaceholder') || 'Search folders...';
+    } else {
+      btn.textContent = '🔗';
+      btn.classList.add('active');
+      btn.title = i18n.getMessage('searchModeBookmark') || 'Search bookmarks';
+      input.placeholder = i18n.getMessage('searchBookmarkPlaceholder') || 'Search bookmarks...';
+    }
+  }
+
+  /**
    * 渲染当前页面
    */
   renderCurrentPage() {
@@ -659,19 +760,30 @@ class App {
   /**
    * 渲染文件夹列表（含复选框）
    */
-  renderFolders() {
+  async renderFolders() {
     const container = document.getElementById('foldersList');
-    let folders = FolderScanner.searchFolders(this.folders, this.searchQuery);
+    let folders = [];
 
-    // 颜色筛选
-    if (this.colorFilter) {
-      folders = folders.filter(f => f._color === this.colorFilter);
+    if (!this.searchQuery || this.searchMode === 'folder') {
+      // 文件夹名称搜索（或空搜索）
+      let list = FolderScanner.searchFolders(this.folders, this.searchQuery);
+      // 颜色筛选
+      if (this.colorFilter) {
+        list = list.filter(f => f._color === this.colorFilter);
+      }
+      folders = FolderScanner.sortFolders(list, this.currentSort);
+    } else if (this.searchMode === 'bookmark' && this.searchQuery) {
+      // 书签内容搜索
+      await this.renderBookmarkSearchResults(container);
+      return;
     }
 
-    folders = FolderScanner.sortFolders(folders, this.currentSort);
-
-    if (folders.length === 0) {
+    if (folders.length === 0 && !this.searchQuery) {
       container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noFoldersFound') + '</p></div>';
+      return;
+    }
+    if (folders.length === 0 && this.searchQuery) {
+      container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p></div>';
       return;
     }
 
@@ -681,7 +793,109 @@ class App {
   }
 
   /**
-   * 创建文件夹卡片 HTML（含复选框、颜色条、图标）
+   * 渲染书签内容搜索结果
+   * @param {HTMLElement} container - 列表容器
+   */
+  async renderBookmarkSearchResults(container) {
+    if (!this.searchQuery) {
+      // 无搜索词时显示全部文件夹
+      const folders = FolderScanner.sortFolders(this.folders, this.currentSort);
+      container.innerHTML = folders.map(folder => this.createFolderCard(folder)).join('');
+      this.bindFolderCardEvents();
+      this.restoreSelectionState();
+      return;
+    }
+
+    try {
+      const results = await BookmarkService.search(this.searchQuery);
+      // 按 parentId 分组
+      const folderMap = {};
+      for (const item of results) {
+        if (!item.url) continue; // 跳过文件夹
+        const parentId = item.parentId;
+        if (!folderMap[parentId]) folderMap[parentId] = [];
+        folderMap[parentId].push(item);
+      }
+
+      // 获取父文件夹信息并去重
+      const folderIds = [...new Set(results.filter(r => r.url).map(r => r.parentId))];
+      const folderInfos = [];
+      for (const id of folderIds) {
+        const folder = this.folders.find(f => f.id === id);
+        if (folder) {
+          folderInfos.push({ folder, bookmarks: folderMap[id] || [] });
+        }
+      }
+
+      if (folderInfos.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p></div>';
+        return;
+      }
+
+      // 按匹配书签数排序
+      folderInfos.sort((a, b) => b.bookmarks.length - a.bookmarks.length);
+
+      container.innerHTML = folderInfos.map(({ folder, bookmarks }) => {
+        const card = this.createFolderCard(folder);
+        // 自动展开并显示匹配的书签
+        setTimeout(() => {
+          this.renderBookmarkMatches(folder.id, bookmarks);
+        }, 50);
+        return card;
+      }).join('');
+
+      this.bindFolderCardEvents();
+      this.restoreSelectionState();
+
+      // 自动展开匹配的文件夹
+      for (const { folder } of folderInfos) {
+        this.expandedFolders.add(folder.id);
+        setTimeout(() => {
+          const detailsEl = document.querySelector(`.folder-details[data-details-for="${folder.id}"]`);
+          const btnEl = document.querySelector(`.folder-expand-btn[data-folder-id="${folder.id}"]`);
+          if (detailsEl) {
+            detailsEl.classList.remove('hidden');
+            detailsEl.classList.add('open');
+          }
+          if (btnEl) {
+            btnEl.classList.add('expanded');
+            const chevron = btnEl.querySelector('.expand-chevron');
+            if (chevron) {
+              chevron.classList.remove('chevron-right');
+              chevron.classList.add('chevron-down');
+            }
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Bookmark search failed:', error);
+      container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('searchError') || 'Search failed') + '</p></div>';
+    }
+  }
+
+  /**
+   * 在展开的文件夹中显示匹配的书签
+   */
+  renderBookmarkMatches(folderId, bookmarks) {
+    const contentEl = document.querySelector(`.folder-details-content[data-content-for="${folderId}"]`);
+    if (!contentEl) return;
+
+    let html = `<div class="details-section">
+      <div class="details-section-title">🔗 ${i18n.getMessage('matchingBookmarks') || 'Matching Bookmarks'} (${bookmarks.length})</div>
+      ${bookmarks.slice(0, 30).map(b => `
+        <div class="details-item details-bookmark-item" title="${this.escapeHtml(b.url)}">
+          <span style="color:var(--primary);">★</span>
+          <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
+        </div>
+      `).join('')}
+      ${bookmarks.length > 30 ? `<div class="details-more">+${bookmarks.length - 30} more...</div>` : ''}
+    </div>`;
+
+    contentEl.innerHTML = html;
+  }
+
+  /**
+   * 创建文件夹卡片 HTML（含复选框、颜色条、图标、展开按钮）
    */
   createFolderCard(folder) {
     const isSelected = this.selectedFolderIds.has(folder.id);
@@ -690,12 +904,18 @@ class App {
     const colorStyle = color ? `border-left-color: ${FolderColorService.getHex(color)};` : '';
     const icon = this.folderIcons[folder.id] || ''; // 自定义图标
     const displayIcon = icon || '📁'; // 默认图标
+    const isExpanded = this.expandedFolders.has(folder.id);
+    const expandClass = isExpanded ? 'expanded' : '';
+    const chevronClass = isExpanded ? 'chevron-down' : 'chevron-right';
     return `
-      <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}">
+      <div class="folder-card ${isSelected ? 'selected' : ''}" data-folder-id="${folder.id}" tabindex="0">
         <div class="folder-card-header">
           <label class="folder-checkbox">
             <input type="checkbox" data-folder-id="${folder.id}" ${isSelected ? 'checked' : ''}>
           </label>
+          <button class="folder-expand-btn ${expandClass}" data-folder-id="${folder.id}" title="${i18n.getMessage('toggleExpand') || 'Expand'}">
+            <span class="expand-chevron ${chevronClass}">▸</span>
+          </button>
           <div class="folder-icon-btn" data-folder-id="${folder.id}" title="${i18n.getMessage('setIcon') || 'Set icon'}">
             <span class="folder-icon-display">${displayIcon}</span>
           </div>
@@ -724,6 +944,13 @@ class App {
         </div>
         <div class="folder-notes">
           <textarea class="notes-input" data-folder-id="${folder.id}" placeholder="${i18n.getMessage('addNote') || 'Add a note...'}" rows="2">${folder.note || ''}</textarea>
+        </div>
+        <div class="folder-details ${isExpanded ? 'open' : 'hidden'}" data-details-for="${folder.id}">
+          <div class="folder-details-loading" style="display:none;">
+            <div class="spinner" style="width:12px;height:12px;"></div>
+            <span style="font-size:10px;color:var(--text-tertiary);">${i18n.getMessage('loading') || 'Loading...'}</span>
+          </div>
+          <div class="folder-details-content" data-content-for="${folder.id}"></div>
         </div>
       </div>
     `;
@@ -898,6 +1125,15 @@ class App {
     const container = document.getElementById('foldersList');
     if (!container) return;
 
+    // 展开/收起按钮
+    document.querySelectorAll('.folder-expand-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const folderId = e.currentTarget.dataset.folderId;
+        this.toggleExpand(folderId);
+      });
+    });
+
     // 图标按钮
     document.querySelectorAll('.folder-icon-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -944,6 +1180,119 @@ class App {
           this.saveFolderNote(folderId, note);
         }
       }, true);
+    }
+  }
+
+  /**
+   * 展开/收起文件夹详情
+   * @param {string} folderId - 文件夹 ID
+   */
+  async toggleExpand(folderId) {
+    const detailsEl = document.querySelector(`.folder-details[data-details-for="${folderId}"]`);
+    const btnEl = document.querySelector(`.folder-expand-btn[data-folder-id="${folderId}"]`);
+    if (!detailsEl) return;
+
+    if (this.expandedFolders.has(folderId)) {
+      // 收起
+      this.expandedFolders.delete(folderId);
+      detailsEl.classList.remove('open');
+      detailsEl.classList.add('hidden');
+      if (btnEl) {
+        btnEl.classList.remove('expanded');
+        const chevron = btnEl.querySelector('.expand-chevron');
+        if (chevron) {
+          chevron.classList.remove('chevron-down');
+          chevron.classList.add('chevron-right');
+        }
+      }
+      return;
+    }
+
+    // 展开
+    this.expandedFolders.add(folderId);
+    detailsEl.classList.remove('hidden');
+    detailsEl.classList.add('open');
+    if (btnEl) {
+      btnEl.classList.add('expanded');
+      const chevron = btnEl.querySelector('.expand-chevron');
+      if (chevron) {
+        chevron.classList.remove('chevron-right');
+        chevron.classList.add('chevron-down');
+      }
+    }
+
+    // 记录访问
+    await FolderAccessService.recordAccess(folderId);
+
+    // 加载内容
+    await this.renderFolderDetails(folderId);
+  }
+
+  /**
+   * 渲染文件夹详情（子文件夹 + 书签列表）
+   * @param {string} folderId - 文件夹 ID
+   */
+  async renderFolderDetails(folderId) {
+    const contentEl = document.querySelector(`.folder-details-content[data-content-for="${folderId}"]`);
+    const loadingEl = document.querySelector(`.folder-details[data-details-for="${folderId}"] .folder-details-loading`);
+    if (!contentEl) return;
+
+    if (loadingEl) loadingEl.style.display = 'flex';
+    contentEl.innerHTML = '';
+
+    try {
+      const children = await BookmarkService.getChildren(folderId);
+      const subfolders = [];
+      const bookmarks = [];
+
+      for (const child of children) {
+        if (child.children) {
+          subfolders.push(child);
+        } else if (child.url) {
+          bookmarks.push(child);
+        }
+      }
+
+      let html = '';
+
+      // 子文件夹
+      if (subfolders.length > 0) {
+        html += `<div class="details-section">
+          <div class="details-section-title">📁 ${i18n.getMessage('subfolders') || 'Subfolders'} (${subfolders.length})</div>
+          ${subfolders.map(f => `
+            <div class="details-item details-folder-item">
+              <span class="details-folder-icon">📁</span>
+              <span class="details-item-name">${this.escapeHtml(f.title)}</span>
+              <span class="details-item-count">${f.children ? f.children.length : 0}</span>
+            </div>
+          `).join('')}
+        </div>`;
+      }
+
+      // 书签列表
+      if (bookmarks.length > 0) {
+        html += `<div class="details-section">
+          <div class="details-section-title">📄 ${i18n.getMessage('bookmarks') || 'Bookmarks'} (${bookmarks.length})</div>
+          ${bookmarks.slice(0, 20).map(b => `
+            <div class="details-item details-bookmark-item" title="${this.escapeHtml(b.url)}">
+              <span class="details-bookmark-favicon">🔗</span>
+              <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
+            </div>
+          `).join('')}
+          ${bookmarks.length > 20 ? `<div class="details-more">+${bookmarks.length - 20} ${i18n.getMessage('more') || 'more'}...</div>` : ''}
+        </div>`;
+      }
+
+      if (subfolders.length === 0 && bookmarks.length === 0) {
+        html = `<div class="details-empty">${i18n.getMessage('emptyFolder') || 'Empty folder'}</div>`;
+      }
+
+      contentEl.innerHTML = html;
+    } catch (error) {
+      console.error('Render folder details failed:', error);
+      contentEl.innerHTML = `<div class="details-error">${i18n.getMessage('loadFailed') || 'Load failed'}</div>`;
+    } finally {
+      if (loadingEl) loadingEl.style.display = 'none';
     }
   }
 
@@ -1097,6 +1446,8 @@ class App {
     // 删除图标和备注
     await FolderIconService.deleteIcons(ids);
     await NotesService.deleteNotes(ids);
+    // 删除访问数据
+    await FolderAccessService.clearAccessData(ids);
     // 更新本地图标和备注数据
     ids.forEach(id => {
       delete this.folderIcons[id];
@@ -1526,6 +1877,8 @@ class App {
       // 删除图标和备注
       await FolderIconService.deleteIcons([folderId]);
       await NotesService.deleteNotes([folderId]);
+      // 删除访问数据
+      await FolderAccessService.clearAccessData([folderId]);
       // 更新本地图标数据
       delete this.folderIcons[folderId];
       // 推入撤销栈并显示 Toast

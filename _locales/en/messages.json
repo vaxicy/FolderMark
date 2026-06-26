@@ -523,5 +523,38 @@
   },
   "iconFileBox": {
     "message": "Archive"
+  },
+  "toggleExpand": {
+    "message": "Expand"
+  },
+  "subfolders": {
+    "message": "Subfolders"
+  },
+  "bookmarks": {
+    "message": "Bookmarks"
+  },
+  "emptyFolder": {
+    "message": "Empty folder"
+  },
+  "loadFailed": {
+    "message": "Load failed"
+  },
+  "searchModeFolder": {
+    "message": "Search folders"
+  },
+  "searchModeBookmark": {
+    "message": "Search bookmarks"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "Search bookmarks..."
+  },
+  "noSearchResults": {
+    "message": "No results found"
+  },
+  "searchError": {
+    "message": "Search failed"
+  },
+  "matchingBookmarks": {
+    "message": "Matching Bookmarks"
   }
 }

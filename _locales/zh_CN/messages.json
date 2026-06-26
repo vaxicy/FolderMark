@@ -523,5 +523,38 @@
   },
   "iconFileBox": {
     "message": "归档"
+  },
+  "toggleExpand": {
+    "message": "展开"
+  },
+  "subfolders": {
+    "message": "子文件夹"
+  },
+  "bookmarks": {
+    "message": "书签"
+  },
+  "emptyFolder": {
+    "message": "空文件夹"
+  },
+  "loadFailed": {
+    "message": "加载失败"
+  },
+  "searchModeFolder": {
+    "message": "搜索文件夹"
+  },
+  "searchModeBookmark": {
+    "message": "搜索书签"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "搜索书签..."
+  },
+  "noSearchResults": {
+    "message": "未找到结果"
+  },
+  "searchError": {
+    "message": "搜索失败"
+  },
+  "matchingBookmarks": {
+    "message": "匹配的书签"
   }
 }
