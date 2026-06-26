@@ -50,10 +50,77 @@ class App {
       await theme.init(this.theme);
       this.bindEvents();
       await this.scanBookmarks();
+
+      // 检查是否有待保存的页面（从右键菜单触发）
+      await this.checkPendingSave();
     } catch (error) {
       console.error('Initialization failed:', error);
       showNotification('Initialization failed: ' + error.message, 'error');
     }
+  }
+
+  /**
+   * 检查是否有待保存的页面（从右键菜单触发）
+   */
+  async checkPendingSave() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get('foldermark_pending_save', (result) => {
+        if (result.foldermark_pending_save) {
+          const pageInfo = result.foldermark_pending_save;
+          // 显示保存对话框
+          this.showSaveToFolderDialog(pageInfo);
+          // 清除待保存标记
+          chrome.storage.local.remove('foldermark_pending_save');
+        }
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * 显示「保存到文件夹」对话框
+   */
+  showSaveToFolderDialog(pageInfo) {
+    // 简化方案：直接保存到书签栏，显示通知
+    const folderList = this.folders.filter(f => !f.isRoot).map(f => f.title).join('\n');
+    const choice = prompt(
+      `${i18n.getMessage('savePageConfirm') || 'Save page to bookmarks?'}\n\n${pageInfo.title}\n\n${i18n.getMessage('selectFolder') || 'Select folder (or cancel to save to bookmark bar):'}`,
+      this.folders.length > 0 ? this.folders[0].title : ''
+    );
+
+    if (choice === null) {
+      // 用户取消，保存到书签栏
+      this.doSavePage(pageInfo, '1');
+    } else if (choice) {
+      // 查找匹配的文件夹
+      const targetFolder = this.folders.find(f => f.title === choice);
+      if (targetFolder) {
+        this.doSavePage(pageInfo, targetFolder.id);
+      } else {
+        // 创建新文件夹并保存
+        BookmarkService.createFolder(choice, '1')
+          .then(newFolder => {
+            this.doSavePage(pageInfo, newFolder.id);
+          })
+          .catch(err => {
+            showNotification('Save failed: ' + err.message, 'error');
+          });
+      }
+    }
+  }
+
+  /**
+   * 执行保存页面到书签
+   */
+  doSavePage(pageInfo, parentId) {
+    BookmarkService.createBookmark(pageInfo.title, pageInfo.url, parentId)
+      .then(() => {
+        showNotification(i18n.getMessage('pageSaved') || 'Page saved to bookmarks', 'success');
+        this.scanBookmarks();
+      })
+      .catch(err => {
+        showNotification('Save failed: ' + err.message, 'error');
+      });
   }
 
   /**
@@ -287,33 +354,61 @@ class App {
    * 快捷键处理
    */
   handleKeyboard(e) {
-    // 忽略在输入框中的按键
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-      return;
-    }
+    // 忽略在输入框中的按键（除了特定快捷键）
+    const inInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT';
 
     switch (e.key) {
       case 'Delete':
       case 'Backspace':
-        if (this.selectedFolderIds.size > 0) {
+        if (!inInput && this.selectedFolderIds.size > 0) {
           e.preventDefault();
           this.batchDelete();
         }
         break;
+      case 'z':
+        // Ctrl+Z / Cmd+Z 撤销
+        if ((e.ctrlKey || e.metaKey) && !inInput) {
+          e.preventDefault();
+          if (UndoService.canUndo()) {
+            this.executeUndo();
+          }
+        }
+        break;
       case 'F2':
-        e.preventDefault();
+        if (!inInput) {
+          e.preventDefault();
+          // 单选时重命名
+          if (this.selectedFolderIds.size === 1) {
+            const id = Array.from(this.selectedFolderIds)[0];
+            this.renameFolder(id);
+          }
+        }
         break;
       case 'a':
-        if (e.ctrlKey || e.metaKey) {
+        if ((e.ctrlKey || e.metaKey) && !inInput) {
           e.preventDefault();
           this.toggleSelectAll(true);
           document.getElementById('selectAllCheckbox').checked = true;
         }
         break;
       case 'Escape':
-        if (this.selectedFolderIds.size > 0) {
+        // 优先关闭弹窗
+        if (!document.getElementById('confirmModal').classList.contains('hidden')) {
+          this.closeModal();
+        } else if (!document.getElementById('mergeModal').classList.contains('hidden')) {
+          this.closeMergeModal();
+        } else if (this.selectedFolderIds.size > 0) {
           e.preventDefault();
           this.clearSelection();
+        }
+        break;
+      case '/':
+        // / 聚焦搜索框
+        if (!inInput) {
+          e.preventDefault();
+          const searchInput = document.getElementById('searchInput');
+          searchInput.focus();
+          searchInput.select();
         }
         break;
     }
@@ -604,6 +699,9 @@ class App {
    * 绑定文件夹卡片事件
    */
   bindFolderCardEvents() {
+    const container = document.getElementById('foldersList');
+    if (!container) return;
+
     // 颜色点
     document.querySelectorAll('.folder-color-dot').forEach(dot => {
       dot.addEventListener('click', (e) => {
@@ -633,9 +731,8 @@ class App {
     });
 
     // 备注输入
-    const foldersList = document.getElementById('foldersList');
-    if (foldersList) {
-      foldersList.addEventListener('blur', (e) => {
+    if (container) {
+      container.addEventListener('blur', (e) => {
         if (e.target.classList.contains('notes-input')) {
           const folderId = e.target.dataset.folderId;
           const note = e.target.value;
@@ -1416,6 +1513,7 @@ class App {
       return;
     }
     
+    // 为每个重复组生成唯一 ID（用于 radio 分组）
     container.innerHTML = this.duplicateBookmarks.map((group, index) => `
       <div class="duplicate-bookmark-group">
         <div class="duplicate-bookmark-header">
@@ -1424,20 +1522,53 @@ class App {
         </div>
         <div class="duplicate-bookmark-list">
           ${group.bookmarks.map((bookmark, idx) => `
-            <div class="duplicate-bookmark-item ${idx === 0 ? 'keep' : ''}">
-              <label class="duplicate-bookmark-checkbox">
-                <input type="checkbox" data-group-index="${index}" data-bookmark-index="${idx}" ${idx === 0 ? 'checked disabled' : ''}>
+            <div class="duplicate-bookmark-item">
+              <label class="duplicate-bookmark-radio">
+                <input type="radio" name="keep-${index}" value="${idx}" ${idx === 0 ? 'checked' : ''} data-group-index="${index}" data-bookmark-index="${idx}">
+                <span class="radio-label">${idx === 0 ? (i18n.getMessage('keepDefault') || 'Keep (default)') : i18n.getMessage('deleteThis') || 'Delete this'}</span>
               </label>
               <div class="duplicate-bookmark-info">
                 <span class="duplicate-bookmark-title">${this.escapeHtml(bookmark.title)}</span>
                 <span class="duplicate-bookmark-path">${this.escapeHtml(bookmark.path)}</span>
               </div>
-              ${idx === 0 ? `<span class="keep-badge">${i18n.getMessage('keep') || 'Keep'}</span>` : ''}
             </div>
           `).join('')}
         </div>
       </div>
     `).join('');
+
+    // 绑定 radio 切换事件
+    container.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        // 更新 UI 显示
+        const groupIndex = parseInt(radio.dataset.groupIndex);
+        const bookmarkIndex = parseInt(radio.dataset.bookmarkIndex);
+        this.updateKeepBadge(groupIndex, bookmarkIndex);
+      });
+    });
+  }
+
+  /**
+   * 更新保留标记显示
+   */
+  updateKeepBadge(groupIndex, keepIndex) {
+    const container = document.getElementById('duplicateBookmarksList');
+    const groupEl = container.querySelectorAll('.duplicate-bookmark-group')[groupIndex];
+    if (!groupEl) return;
+
+    groupEl.querySelectorAll('.duplicate-bookmark-item').forEach((item, idx) => {
+      const badge = item.querySelector('.keep-badge');
+      if (idx === keepIndex) {
+        if (!badge) {
+          const badgeEl = document.createElement('span');
+          badgeEl.className = 'keep-badge';
+          badgeEl.textContent = i18n.getMessage('keep') || 'Keep';
+          item.appendChild(badgeEl);
+        }
+      } else {
+        if (badge) badge.remove();
+      }
+    });
   }
   
   /**
@@ -1551,14 +1682,44 @@ class App {
   
   async doCleanDuplicateBookmarks() {
     try {
-      const result = await DuplicateBookmarkDetector.removeDuplicates(this.duplicateBookmarks, 0);
+      // 收集用户选择的保留索引
+      const keepIndices = [];
+      const container = document.getElementById('duplicateBookmarksList');
+      
+      this.duplicateBookmarks.forEach((group, groupIndex) => {
+        // 查找该组中选中的 radio
+        const radios = container.querySelectorAll(`input[name="keep-${groupIndex}"]`);
+        let keepIndex = 0; // 默认保留第一个
+        radios.forEach(radio => {
+          if (radio.checked) {
+            keepIndex = parseInt(radio.value);
+          }
+        });
+        keepIndices.push(keepIndex);
+      });
+
+      // 按用户选择清理重复书签
+      let totalSuccess = 0;
+      let totalFailed = 0;
+      
+      for (let i = 0; i < this.duplicateBookmarks.length; i++) {
+        const group = this.duplicateBookmarks[i];
+        const keepIndex = keepIndices[i];
+        
+        const result = await DuplicateBookmarkDetector.removeDuplicates([group], keepIndex);
+        totalSuccess += result.success;
+        totalFailed += result.failed;
+        
+        if (result.errors.length > 0) {
+          console.error('Clean duplicates errors:', result.errors);
+        }
+      }
+      
       showNotification(
-        `Deleted ${result.success} duplicate bookmarks${result.failed > 0 ? ', ' + result.failed + ' failed' : ''}`,
+        `Deleted ${totalSuccess} duplicate bookmarks${totalFailed > 0 ? ', ' + totalFailed + ' failed' : ''}`,
         'success'
       );
-      if (result.errors.length > 0) {
-        console.error('Clean duplicates errors:', result.errors);
-      }
+      
       await this.scanBookmarks();
     } catch (error) {
       showNotification('Clean failed: ' + error.message, 'error');
@@ -1772,13 +1933,33 @@ class App {
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          showNotification('Structure imported successfully', 'success');
-          console.log('Imported data:', data);
+          if (!data.folders || !Array.isArray(data.folders)) {
+            showNotification('Import failed: Invalid file format', 'error');
+            return;
+          }
+
+          // 创建文件夹（按路径层级创建）
+          let created = 0;
+          for (const folder of data.folders) {
+            try {
+              // 简化导入：直接在书签栏下创建
+              await BookmarkService.createFolder(folder.name || folder.title, '1');
+              created++;
+            } catch (err) {
+              console.error('Import folder failed:', err);
+            }
+          }
+
+          showNotification(
+            (i18n.getMessage('importSuccess') || 'Imported $1 folders').replace('$1', created),
+            'success'
+          );
+          await this.scanBookmarks();
         } catch (error) {
-          showNotification('Import failed: Invalid file format', 'error');
+          showNotification('Import failed: ' + error.message, 'error');
         }
       };
       reader.readAsText(file);

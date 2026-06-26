@@ -56,6 +56,7 @@ class FolderScanner {
       const folderInfo = {
         id: node.id,
         title: node.title,
+        parentId: node.parentId || '0', // 父级文件夹 ID
         bookmarkCount: 0,
         subfolderCount: 0,
         path: currentPath.slice(0, -1).join(' / ') || 'Root',

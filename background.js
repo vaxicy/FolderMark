@@ -39,18 +39,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       break;
     
     case 'saveCurrentPage':
-      // 保存当前页面到书签
+      // 保存页面信息到 storage，然后打开 popup 让用户选择目标文件夹
       if (tab && tab.url) {
-        chrome.bookmarks.create({
-          parentId: '1', // 书签栏
+        const pageInfo = {
           title: tab.title || tab.url,
-          url: tab.url
-        }, (bookmark) => {
-          if (chrome.runtime.lastError) {
-            console.error('Save failed:', chrome.runtime.lastError);
-          } else {
-            console.log('Page saved to bookmarks:', bookmark);
-          }
+          url: tab.url,
+          timestamp: Date.now()
+        };
+        chrome.storage.local.set({ foldermark_pending_save: pageInfo }, () => {
+          // 打开弹出窗口
+          chrome.action.openPopup();
         });
       }
       break;

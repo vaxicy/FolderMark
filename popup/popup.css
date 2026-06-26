@@ -8,7 +8,7 @@
   /* 主色调 - 橙色强调 */
   --primary: #D97706;
   --primary-hover: #B45309;
-  --primary-light: #FDE68A;
+  --primary-light: #FEF3C7;
 
   /* 危险操作 */
   --danger: #DC2626;
@@ -75,8 +75,10 @@
 }
 
 html {
-  width: 380px;
-  height: 520px;
+  min-width: 380px;
+  max-width: 420px;
+  width: 400px;
+  height: 600px;
 }
 
 body {
@@ -86,8 +88,8 @@ body {
   color: var(--text-primary);
   background: var(--bg-primary);
   overflow: hidden;
-  width: 380px;
-  height: 520px;
+  width: 400px;
+  height: 600px;
   margin: 0;
   padding: 0;
 }
