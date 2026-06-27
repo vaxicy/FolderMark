@@ -356,6 +356,39 @@
             </div>
           </div>
 
+          <!-- 赞赏支持分组 -->
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="donateTitle">赞赏支持</div>
+            <p class="donate-desc" data-i18n="donateDesc">如果 FolderMark 对你有帮助，欢迎赞赏支持作者继续开发 ❤️</p>
+            <div class="donate-tabs">
+              <button class="donate-tab active" data-donate-tab="wechat" data-i18n="wechatDonate">微信赞赏</button>
+              <button class="donate-tab" data-donate-tab="paypal" data-i18n="paypalDonate">PayPal</button>
+            </div>
+            <div class="donate-content">
+              <!-- 微信赞赏 -->
+              <div class="donate-panel active" id="donateWechat">
+                <div class="donate-qr-wrap">
+                  <img id="wechatQrImg" src="../icons/wechat-donate.png" alt="WeChat Donate QR Code"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <div class="donate-qr-placeholder" style="display:none;">
+                    <span>⚠️</span>
+                    <p data-i18n="qrCodeNotFound">请将微信赞赏码保存为 icons/wechat-donate.png</p>
+                  </div>
+                </div>
+                <p class="donate-hint" data-i18n="scanQrCode">扫码打赏</p>
+              </div>
+              <!-- PayPal -->
+              <div class="donate-panel" id="donatePaypal">
+                <div class="donate-paypal-wrap">
+                  <div class="paypal-icon">💙</div>
+                  <p class="paypal-hint" data-i18n="buyMeACoffee">Buy me a coffee :)</p>
+                  <a id="paypalLink" href="https://www.paypal.com/ncp/payment/ZMRJYQY23KKZQ" target="_blank" rel="noopener"
+                     class="btn btn-primary btn-sm donate-paypal-btn" data-i18n="openPayPal">Support via PayPal</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- 撤销历史分组 -->
           <div class="settings-section">
             <div class="settings-section-title">

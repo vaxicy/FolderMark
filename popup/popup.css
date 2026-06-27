@@ -2277,6 +2277,124 @@ body {
   flex-shrink: 0;
 }
 
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* 统计页面 */
 .stats-panel {
   display: flex;
@@ -2428,6 +2546,124 @@ body {
 
 .smart-classify-item .apply-btn {
   flex-shrink: 0;
+}
+
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .cleanup-suggestion-count {
@@ -2794,6 +3030,124 @@ body {
   flex-shrink: 0;
 }
 
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* 统计页面 */
 .stats-panel {
   display: flex;
@@ -2945,6 +3299,124 @@ body {
 
 .smart-classify-item .apply-btn {
   flex-shrink: 0;
+}
+
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* 撤销历史面板 */
@@ -3152,6 +3624,124 @@ body {
   flex-shrink: 0;
 }
 
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* 统计页面 */
 .stats-panel {
   display: flex;
@@ -3303,4 +3893,237 @@ body {
 
 .smart-classify-item .apply-btn {
   flex-shrink: 0;
+}
+
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+/* 微信赞赏 */
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* PayPal */
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+/* 赞赏支持 */
+.donate-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.donate-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.donate-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.donate-tab:hover {
+  background: var(--bg-secondary);
+}
+
+.donate-tab.active {
+  background: var(--accent-color, #3B82F6);
+  color: #fff;
+  border-color: var(--accent-color, #3B82F6);
+}
+
+.donate-content {
+  position: relative;
+}
+
+.donate-panel {
+  display: none;
+}
+
+.donate-panel.active {
+  display: block;
+}
+
+.donate-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.donate-qr-wrap img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.donate-qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.donate-qr-placeholder span {
+  font-size: 28px;
+}
+
+.donate-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.donate-paypal-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.paypal-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.paypal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.donate-paypal-btn {
+  margin-top: 4px;
+  text-decoration: none;
+  display: inline-block;
 }

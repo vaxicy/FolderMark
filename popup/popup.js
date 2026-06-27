@@ -508,6 +508,19 @@ class App {
     document.getElementById('undoBtn').addEventListener('click', async () => {
       await this.executeUndo();
     });
+
+    // 赞赏支持 - Tab 切换
+    document.querySelectorAll('.donate-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.donateTab;
+        document.querySelectorAll('.donate-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.donate-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        const panelId = 'donate' + target.charAt(0).toUpperCase() + target.slice(1);
+        const panel = document.getElementById(panelId);
+        if (panel) panel.classList.add('active');
+      });
+    });
   }
 
   /**

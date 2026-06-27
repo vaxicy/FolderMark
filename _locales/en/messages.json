@@ -628,5 +628,32 @@
   },
   "apply": {
     "message": "Apply"
+  },
+  "donateTitle": {
+    "message": "Support"
+  },
+  "donateDesc": {
+    "message": "If FolderMark helps you, consider supporting the developer ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "buyMeACoffee": {
+    "message": "Buy me a coffee"
+  },
+  "openPayPal": {
+    "message": "Support via PayPal"
+  },
+  "thankYou": {
+    "message": "Thank you for your support!"
+  },
+  "qrCodeNotFound": {
+    "message": "Please save WeChat QR code as icons/wechat-donate.png"
   }
 }

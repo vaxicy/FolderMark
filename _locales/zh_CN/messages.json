@@ -628,5 +628,32 @@
   },
   "apply": {
     "message": "应用"
+  },
+  "donateTitle": {
+    "message": "赞赏支持"
+  },
+  "donateDesc": {
+    "message": "如果 FolderMark 对你有帮助，欢迎赞赏支持作者继续开发 ❤️"
+  },
+  "wechatDonate": {
+    "message": "微信赞赏"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "扫码打赏"
+  },
+  "buyMeACoffee": {
+    "message": "买杯咖啡"
+  },
+  "openPayPal": {
+    "message": "前往 PayPal 支持"
+  },
+  "thankYou": {
+    "message": "感谢你的支持！"
+  },
+  "qrCodeNotFound": {
+    "message": "请将微信赞赏码保存为 icons/wechat-donate.png"
   }
 }
