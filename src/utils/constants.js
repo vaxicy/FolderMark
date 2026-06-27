@@ -46,6 +46,7 @@ export const TABS = {
   FOLDERS: 'folders',
   DUPLICATES: 'duplicates',
   SMART: 'smart',
+  STATS: 'stats',
   SETTINGS: 'settings'
 };
 

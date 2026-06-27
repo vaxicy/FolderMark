@@ -58,6 +58,10 @@ class App {
       await this.loadSettings();
       await i18n.init(this.language);
       await theme.init(this.theme);
+      
+      // 初始化撤销服务（加载历史）
+      await UndoService.init();
+      
       this.bindEvents();
 
       // 加载颜色和图标
@@ -68,6 +72,9 @@ class App {
 
       // 检查是否有待保存的页面（从右键菜单触发）
       await this.checkPendingSave();
+      
+      // 渲染撤销历史
+      this.renderUndoHistory();
     } catch (error) {
       console.error('Initialization failed:', error);
       showNotification('Initialization failed: ' + error.message, 'error');
@@ -255,6 +262,16 @@ class App {
     document.getElementById('restoreDefaults').addEventListener('click', () => {
       this.restoreDefaults();
     });
+
+    // 设置 - 清空撤销历史
+    const clearUndoHistoryBtn = document.getElementById('clearUndoHistory');
+    if (clearUndoHistoryBtn) {
+      clearUndoHistoryBtn.addEventListener('click', () => {
+        UndoService.clearHistory();
+        this.renderUndoHistory();
+        showNotification(i18n.getMessage('historyCleared') || 'History cleared', 'success');
+      });
+    }
 
     // 设置 - 隐私
     document.getElementById('privacyInfo').addEventListener('click', () => {
@@ -501,6 +518,30 @@ class App {
     const inInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT';
 
     switch (e.key) {
+      case 'ArrowUp':
+        if (!inInput) {
+          e.preventDefault();
+          this._moveFocus(-1);
+        }
+        break;
+      case 'ArrowDown':
+        if (!inInput) {
+          e.preventDefault();
+          this._moveFocus(1);
+        }
+        break;
+      case 'Enter':
+        if (!inInput && this._focusedFolderIndex >= 0) {
+          e.preventDefault();
+          this._activateFocused();
+        }
+        break;
+      case ' ':
+        if (!inInput && this._focusedFolderIndex >= 0) {
+          e.preventDefault();
+          this._toggleFocusedSelection();
+        }
+        break;
       case 'Delete':
       case 'Backspace':
         if (!inInput && this.selectedFolderIds.size > 0) {
@@ -594,70 +635,78 @@ class App {
           }
         }
         break;
-      case 'ArrowUp':
-        // 上箭头：焦点移到上一个文件夹卡片
-        if (!inInput && this.currentTab === TABS.FOLDERS) {
-          e.preventDefault();
-          const cards = Array.from(document.querySelectorAll('.folder-card'));
-          if (cards.length === 0) break;
-          if (this._focusedFolderIndex <= 0) {
-            this._focusedFolderIndex = cards.length - 1;
-          } else {
-            this._focusedFolderIndex--;
-          }
-          cards.forEach(c => c.classList.remove('focused'));
-          cards[this._focusedFolderIndex].classList.add('focused');
-          cards[this._focusedFolderIndex].focus();
-          cards[this._focusedFolderIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  /**
+   * 移动键盘焦点
+   * @param {number} direction - 方向：+1 向下，-1 向上
+   */
+  _moveFocus(direction) {
+    if (this.currentTab !== TABS.FOLDERS) return;
+    const cards = Array.from(document.querySelectorAll('.folder-card'));
+    if (cards.length === 0) return;
+
+    // 移除旧焦点
+    cards.forEach(c => {
+      c.classList.remove('focused');
+      c.setAttribute('tabindex', '-1');
+    });
+
+    // 计算新焦点索引
+    if (this._focusedFolderIndex < 0) {
+      this._focusedFolderIndex = direction > 0 ? 0 : cards.length - 1;
+    } else {
+      this._focusedFolderIndex = (this._focusedFolderIndex + direction + cards.length) % cards.length;
+    }
+
+    // 应用新焦点
+    const card = cards[this._focusedFolderIndex];
+    if (card) {
+      card.classList.add('focused');
+      card.setAttribute('tabindex', '0');
+      card.focus();
+      card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  /**
+   * 激活当前焦点文件夹（展开/收起）
+   */
+  _activateFocused() {
+    if (this._focusedFolderIndex < 0) return;
+    const cards = Array.from(document.querySelectorAll('.folder-card'));
+    if (this._focusedFolderIndex >= cards.length) return;
+
+    const card = cards[this._focusedFolderIndex];
+    const folderId = card.dataset.folderId;
+    if (folderId) {
+      this.toggleExpand(folderId);
+    }
+  }
+
+  /**
+   * 切换当前焦点文件夹的选中状态
+   */
+  _toggleFocusedSelection() {
+    if (this._focusedFolderIndex < 0) return;
+    const cards = Array.from(document.querySelectorAll('.folder-card'));
+    if (this._focusedFolderIndex >= cards.length) return;
+
+    const card = cards[this._focusedFolderIndex];
+    const folderId = card.dataset.folderId;
+    if (folderId) {
+      const cb = card.querySelector('input[type="checkbox"]');
+      if (cb) {
+        cb.checked = !cb.checked;
+        this.toggleFolderSelection(folderId, cb.checked);
+        // 视觉反馈
+        if (cb.checked) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
         }
-        break;
-      case 'ArrowDown':
-        // 下箭头：焦点移到下一个文件夹卡片
-        if (!inInput && this.currentTab === TABS.FOLDERS) {
-          e.preventDefault();
-          const cards = Array.from(document.querySelectorAll('.folder-card'));
-          if (cards.length === 0) break;
-          if (this._focusedFolderIndex >= cards.length - 1) {
-            this._focusedFolderIndex = 0;
-          } else {
-            this._focusedFolderIndex++;
-          }
-          cards.forEach(c => c.classList.remove('focused'));
-          cards[this._focusedFolderIndex].classList.add('focused');
-          cards[this._focusedFolderIndex].focus();
-          cards[this._focusedFolderIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-        break;
-      case 'Enter':
-        // Enter：展开/收起当前焦点的文件夹
-        if (!inInput && this.currentTab === TABS.FOLDERS) {
-          const active = document.activeElement;
-          if (active && active.classList.contains('folder-card')) {
-            e.preventDefault();
-            const folderId = active.dataset.folderId;
-            if (folderId) {
-              this.toggleExpand(folderId);
-            }
-          }
-        }
-        break;
-      case ' ':
-        // Space：切换当前焦点文件夹的选中状态
-        if (!inInput && this.currentTab === TABS.FOLDERS) {
-          const active = document.activeElement;
-          if (active && active.classList.contains('folder-card')) {
-            e.preventDefault();
-            const folderId = active.dataset.folderId;
-            if (folderId) {
-              const cb = active.querySelector('input[type="checkbox"]');
-              if (cb) {
-                cb.checked = !cb.checked;
-                this.toggleFolderSelection(folderId, cb.checked);
-              }
-            }
-          }
-        }
-        break;
+      }
     }
   }
 
@@ -1070,6 +1119,11 @@ class App {
     this.currentTab = tab;
     this.clearSelection();
     this.renderCurrentPage();
+    
+    // 切换到设置页时刷新撤销历史
+    if (tab === TABS.SETTINGS) {
+      this.renderUndoHistory();
+    }
   }
 
   /**
@@ -1134,10 +1188,211 @@ class App {
       case TABS.SMART:
         this.renderSmartPage();
         break;
+      case TABS.STATS:
+        this.renderStats();
+        break;
       case TABS.SETTINGS:
         this.renderSettings();
         break;
     }
+  }
+
+  /**
+   * 渲染统计页面
+   */
+  renderStats() {
+    // 计算统计 data
+    const totalFolders = this.folders.length;
+    const totalBookmarks = this.folders.reduce((sum, f) => sum + f.bookmarkCount, 0);
+    const avgBookmarks = totalFolders > 0 ? (totalBookmarks / totalFolders).toFixed(1) : 0;
+    const coloredFolders = this.folders.filter(f => f._color).length;
+    const coloredPercent = totalFolders > 0 ? Math.round((coloredFolders / totalFolders) * 100) : 0;
+
+    // 更新概览卡片
+    document.getElementById('statsTotalFolders').textContent = totalFolders;
+    document.getElementById('statsTotalBookmarks').textContent = totalBookmarks;
+    document.getElementById('statsAvgBookmarks').textContent = avgBookmarks;
+    document.getElementById('statsColoredFolders').textContent = coloredPercent + '%';
+
+    // 颜色分布
+    this._renderColorDistribution();
+
+    // 大小分布
+    this._renderSizeDistribution();
+
+    // 绑定智能分类按钮
+    const smartClassifyBtn = document.getElementById('smartClassifyBtn');
+    if (smartClassifyBtn && !smartClassifyBtn._bound) {
+      smartClassifyBtn._bound = true;
+      smartClassifyBtn.addEventListener('click', () => {
+        this._runSmartClassify();
+      });
+    }
+  }
+
+  /**
+   * 渲染颜色分布图表
+   */
+  _renderColorDistribution() {
+    const colorMap = {};
+    this.folders.forEach(f => {
+      const color = f._color || 'none';
+      colorMap[color] = (colorMap[color] || 0) + 1;
+    });
+
+    const total = this.folders.length;
+    const colorList = Object.entries(colorMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8); // 只显示前 8 种
+
+    const colorNames = {
+      'none': { zh: '无颜色', en: 'No Color' },
+      'red': { zh: '红色', en: 'Red' },
+      'orange': { zh: '橙色', en: 'Orange' },
+      'yellow': { zh: '黄色', en: 'Yellow' },
+      'green': { zh: '绿色', en: 'Green' },
+      'blue': { zh: '蓝色', en: 'Blue' },
+      'purple': { zh: '紫色', en: 'Purple' }
+    };
+
+    const container = document.getElementById('statsColorChart');
+    container.innerHTML = colorList.map(([color, count]) => {
+      const percent = total > 0 ? (count / total * 100) : 0;
+      const name = colorNames[color] ? (this.language === 'zh_CN' ? colorNames[color].zh : colorNames[color].en) : color;
+      const hex = color.startsWith('#') ? color : (this._getPresetColorHex(color) || '#808080');
+      return `
+        <div class="stats-bar-item">
+          <span class="stats-bar-label">${name}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" style="width: ${percent}%; background: ${hex};"></div>
+          </div>
+          <span class="stats-bar-value">${count}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * 渲染大小分布图表
+   */
+  _renderSizeDistribution() {
+    const sizeRanges = [
+      { label: { zh: '0 书签', en: '0 bookmarks' }, min: 0, max: 0 },
+      { label: { zh: '1-5', en: '1-5' }, min: 1, max: 5 },
+      { label: { zh: '6-20', en: '6-20' }, min: 6, max: 20 },
+      { label: { zh: '21-50', en: '21-50' }, min: 21, max: 50 },
+      { label: { zh: '50+', en: '50+' }, min: 51, max: Infinity }
+    ];
+
+    const total = this.folders.length;
+    const container = document.getElementById('statsSizeChart');
+    container.innerHTML = sizeRanges.map(range => {
+      const count = this.folders.filter(f => f.bookmarkCount >= range.min && f.bookmarkCount <= range.max).length;
+      const percent = total > 0 ? (count / total * 100) : 0;
+      const label = this.language === 'zh_CN' ? range.label.zh : range.label.en;
+      return `
+        <div class="stats-bar-item">
+          <span class="stats-bar-label">${label}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" style="width: ${percent}%; background: var(--primary);"></div>
+          </div>
+          <span class="stats-bar-value">${count}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * 获取预设颜色 hex 值
+   */
+  _getPresetColorHex(color) {
+    const map = {
+      'red': '#EF4444',
+      'orange': '#F97316',
+      'yellow': '#EAB308',
+      'green': '#22C55E',
+      'blue': '#3B82F6',
+      'purple': '#A855F7'
+    };
+    return map[color] || color;
+  }
+
+  /**
+   * 运行智能分类
+   */
+  async _runSmartClassify() {
+    const results = [];
+    const uncoloredFolders = this.folders.filter(f => !f._color);
+
+    for (const folder of uncoloredFolders) {
+      const suggestedColor = this._suggestColorFromName(folder.title);
+      if (suggestedColor) {
+        results.push({ folder, suggestedColor });
+      }
+    }
+
+    const container = document.getElementById('smartClassifyResults');
+    if (results.length === 0) {
+      container.innerHTML = `<div class="empty-state" style="padding: 12px;"><span>${i18n.getMessage('noSuggestions') || 'No suggestions'}</span></div>`;
+      return;
+    }
+
+    container.innerHTML = results.map(({ folder, suggestedColor }) => {
+      const hex = this._getPresetColorHex(suggestedColor) || suggestedColor;
+      const colorName = this.guessColorName(hex);
+      return `
+        <div class="smart-classify-item" data-folder-id="${folder.id}">
+          <span class="folder-name">${this.escapeHtml(folder.title)}</span>
+          <span class="suggested-color">
+            <span class="color-dot" style="background: ${hex};"></span>
+            <span>${colorName}</span>
+          </span>
+          <button class="btn btn-primary btn-xs apply-btn" data-folder-id="${folder.id}" data-color="${suggestedColor}">${i18n.getMessage('apply') || 'Apply'}</button>
+        </div>
+      `;
+    }).join('');
+
+    // 绑定应用按钮
+    container.querySelectorAll('.apply-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const folderId = btn.dataset.folderId;
+        const color = btn.dataset.color;
+        await FolderColorService.setColor(folderId, color);
+        this.folderColors = await FolderColorService.loadColors();
+        this.folders.forEach(f => {
+          f._color = this.folderColors[f.id] || '';
+        });
+        this.renderStats();
+        showNotification(i18n.getMessage('smartClassifyDone').replace('$1', results.length), 'success');
+      });
+    });
+
+    showNotification(i18n.getMessage('smartClassifyDone').replace('$1', results.length), 'success');
+  }
+
+  /**
+   * 根据文件夹名称推荐颜色
+   */
+  _suggestColorFromName(name) {
+    const lowerName = name.toLowerCase();
+    
+    // 关键词 → 颜色映射
+    const keywords = {
+      red: ['红', 'red', '重要', 'important', '紧急', 'urgent', '错误', 'error', '警告', 'warning'],
+      orange: ['橙', 'orange', '项目', 'project', '工作', 'work', '待办', 'todo'],
+      yellow: ['黄', 'yellow', '笔记', 'note', '草稿', 'draft', '临时', 'temp'],
+      green: ['绿', 'green', '完成', 'done', '成功', 'success', '健康', 'health', '学习', 'study'],
+      blue: ['蓝', 'blue', '技术', 'tech', '开发', 'dev', '代码', 'code', '文档', 'doc'],
+      purple: ['紫', 'purple', '创意', 'creative', '设计', 'design', '灵感', 'inspiration']
+    };
+
+    for (const [color, words] of Object.entries(keywords)) {
+      if (words.some(word => lowerName.includes(word))) {
+        return color;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -3152,6 +3407,61 @@ class App {
     } catch (error) {
       showNotification('Undo failed: ' + error.message, 'error');
     }
+  }
+
+  /**
+   * 渲染撤销历史面板
+   */
+  renderUndoHistory() {
+    const container = document.getElementById('undoHistoryList');
+    if (!container) return;
+
+    const history = UndoService.getHistory();
+    if (history.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding: 16px;">
+          <div class="empty-state-icon">📝</div>
+          <div class="empty-state-title" style="font-size: 12px;">${i18n.getMessage('noUndoHistory') || 'No undo history'}</div>
+        </div>
+      `;
+      return;
+    }
+
+    const formatTime = (timestamp) => {
+      const d = new Date(timestamp);
+      return d.toLocaleString(this.language === 'zh_CN' ? 'zh-CN' : 'en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+    container.innerHTML = history.map((entry, index) => `
+      <div class="undo-history-item" data-index="${index}">
+        <div class="undo-history-info">
+          <span class="undo-history-desc">${this.escapeHtml(entry.description || 'Unknown')}</span>
+          <span class="undo-history-time">${formatTime(entry.timestamp)}</span>
+        </div>
+        <button class="btn btn-secondary btn-xs undo-history-btn" data-index="${index}">${i18n.getMessage('undo') || 'Undo'}</button>
+      </div>
+    `).join('');
+
+    // 绑定撤销按钮事件
+    container.querySelectorAll('.undo-history-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        // 只撤销这一条记录
+        const index = parseInt(btn.dataset.index);
+        const entry = history[index];
+        if (entry) {
+          // 临时将这条记录放到栈顶，然后撤销
+          UndoService._stack.push(entry);
+          await this.executeUndo();
+          this.renderUndoHistory();
+        }
+      });
+    });
   }
 
   closeMergeModal() {

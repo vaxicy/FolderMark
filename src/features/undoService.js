@@ -1,14 +1,18 @@
 /**
  * UndoService - 删除撤销服务
  * 在删除前快照文件夹树，支持撤销重建
+ * 支持持久化到 chrome.storage
  */
 import BookmarkService from '../core/bookmarkService.js';
 import FolderColorService from './folderColorService.js';
 import NotesService from './notesService.js';
 
+const STORAGE_KEY = 'foldermark_undo_history';
+
 class UndoService {
-  // 撤销栈，最多保存 5 次操作
+  // 撤销栈，最多保存 10 次操作
   static _stack = [];
+  static _maxSize = 10;
 
   /**
    * 快照单个文件夹的完整树结构（删除前调用）
@@ -55,13 +59,35 @@ class UndoService {
   }
 
   /**
+   * 初始化：从 storage 加载撤销历史
+   */
+  static async init() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(STORAGE_KEY, (result) => {
+        if (result[STORAGE_KEY] && Array.isArray(result[STORAGE_KEY])) {
+          this._stack = result[STORAGE_KEY];
+        }
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * 保存撤销历史到 storage
+   */
+  static _save() {
+    chrome.storage.local.set({ [STORAGE_KEY]: this._stack });
+  }
+
+  /**
    * 将快照推入撤销栈
    * @param {Array} snapshots - 快照数组（支持批量）
    * @param {string} description - 描述文本（用于 Toast 显示）
    */
   static push(snapshots, description) {
-    this._stack.push({ snapshots, description });
-    if (this._stack.length > 5) this._stack.shift();
+    this._stack.push({ snapshots, description, timestamp: Date.now() });
+    if (this._stack.length > this._maxSize) this._stack.shift();
+    this._save();
   }
 
   /**
@@ -102,7 +128,26 @@ class UndoService {
       }
     }
 
+    // 保存更新后的栈到 storage
+    this._save();
+
     return { restored, failed };
+  }
+
+  /**
+   * 获取完整撤销历史
+   * @returns {Array} 历史记录数组
+   */
+  static getHistory() {
+    return this._stack.slice().reverse(); // 最新的在前面
+  }
+
+  /**
+   * 清空撤销历史
+   */
+  static clearHistory() {
+    this._stack = [];
+    this._save();
   }
 
   /**

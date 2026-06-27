@@ -83,6 +83,7 @@
       <button class="tab active" data-tab="folders" data-i18n="tabFolders">Folders</button>
       <button class="tab" data-tab="duplicates" data-i18n="tabDuplicates">Duplicates</button>
       <button class="tab" data-tab="smart" data-i18n="tabSmart">Smart</button>
+      <button class="tab" data-tab="stats" data-i18n="tabStats">Stats</button>
       <button class="tab" data-tab="settings" data-i18n="tabSettings">Settings</button>
     </nav>
 
@@ -223,6 +224,72 @@
         </div>
       </div>
 
+      <!-- 统计页 -->
+      <div id="statsPage" class="page">
+        <div class="page-header">
+          <h2 data-i18n="statsTitle">Statistics</h2>
+        </div>
+        <div class="stats-panel">
+          <!-- 概览卡片 -->
+          <div class="stats-overview">
+            <div class="stat-overview-card">
+              <div class="stat-overview-icon">📁</div>
+              <div class="stat-overview-info">
+                <div class="stat-overview-value" id="statsTotalFolders">0</div>
+                <div class="stat-overview-label" data-i18n="totalFolders">Folders</div>
+              </div>
+            </div>
+            <div class="stat-overview-card">
+              <div class="stat-overview-icon">📄</div>
+              <div class="stat-overview-info">
+                <div class="stat-overview-value" id="statsTotalBookmarks">0</div>
+                <div class="stat-overview-label" data-i18n="totalBookmarks">Bookmarks</div>
+              </div>
+            </div>
+            <div class="stat-overview-card">
+              <div class="stat-overview-icon">📊</div>
+              <div class="stat-overview-info">
+                <div class="stat-overview-value" id="statsAvgBookmarks">0</div>
+                <div class="stat-overview-label" data-i18n="avgBookmarks">Avg/Folder</div>
+              </div>
+            </div>
+            <div class="stat-overview-card">
+              <div class="stat-overview-icon">🎨</div>
+              <div class="stat-overview-info">
+                <div class="stat-overview-value" id="statsColoredFolders">0%</div>
+                <div class="stat-overview-label" data-i18n="coloredFolders">Colored</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 颜色分布 -->
+          <div class="stats-section">
+            <h3 data-i18n="colorDistribution">Color Distribution</h3>
+            <div id="statsColorChart" class="stats-chart">
+              <!-- 动态渲染颜色分布条 -->
+            </div>
+          </div>
+
+          <!-- 文件夹大小分布 -->
+          <div class="stats-section">
+            <h3 data-i18n="sizeDistribution">Folder Size Distribution</h3>
+            <div id="statsSizeChart" class="stats-chart">
+              <!-- 动态渲染大小分布条 -->
+            </div>
+          </div>
+
+          <!-- 智能分类建议 -->
+          <div class="stats-section">
+            <h3 data-i18n="smartClassify">Smart Classify</h3>
+            <p class="stats-desc" data-i18n="smartClassifyDesc">Automatically suggest colors for uncolored folders based on their names</p>
+            <button id="smartClassifyBtn" class="btn btn-primary btn-sm" data-i18n="runSmartClassify">Run Smart Classify</button>
+            <div id="smartClassifyResults" class="smart-classify-results">
+              <!-- 动态渲染分类建议 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 设置页 -->
       <div id="settingsPage" class="page">
         <div class="settings-container">
@@ -286,6 +353,17 @@
             </div>
             <div class="danger-section">
               <button id="restoreDefaults" class="btn btn-danger btn-sm" data-i18n="restoreDefaults">Restore Defaults</button>
+            </div>
+          </div>
+
+          <!-- 撤销历史分组 -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <span data-i18n="undoHistory">撤销历史</span>
+              <button id="clearUndoHistory" class="btn btn-danger btn-xs" data-i18n="clearHistory">清空</button>
+            </div>
+            <div id="undoHistoryList" class="undo-history-list">
+              <!-- 动态渲染撤销历史 -->
             </div>
           </div>
         </div>

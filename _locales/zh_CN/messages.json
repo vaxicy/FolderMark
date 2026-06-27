@@ -580,5 +580,53 @@
   },
   "hideRootFolders": {
     "message": "隐藏根文件夹（书签栏、其他书签）"
+  },
+  "lastModified": {
+    "message": "最后修改"
+  },
+  "undoHistory": {
+    "message": "撤销历史"
+  },
+  "clearHistory": {
+    "message": "清空"
+  },
+  "noUndoHistory": {
+    "message": "暂无撤销历史"
+  },
+  "historyCleared": {
+    "message": "历史已清空"
+  },
+  "tabStats": {
+    "message": "统计"
+  },
+  "statsTitle": {
+    "message": "数据统计"
+  },
+  "avgBookmarks": {
+    "message": "平均书签"
+  },
+  "coloredFolders": {
+    "message": "已着色"
+  },
+  "colorDistribution": {
+    "message": "颜色分布"
+  },
+  "sizeDistribution": {
+    "message": "大小分布"
+  },
+  "smartClassify": {
+    "message": "智能分类"
+  },
+  "smartClassifyDesc": {
+    "message": "根据文件夹名称自动推荐颜色"
+  },
+  "runSmartClassify": {
+    "message": "运行智能分类"
+  },
+  "smartClassifyDone": {
+    "message": "智能分类完成，已为 $1 个文件夹推荐颜色"
+  },
+  "apply": {
+    "message": "应用"
   }
 }

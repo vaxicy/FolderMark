@@ -580,5 +580,53 @@
   },
   "hideRootFolders": {
     "message": "Hide root folders (Bookmarks Bar, Other Bookmarks)"
+  },
+  "lastModified": {
+    "message": "Last modified"
+  },
+  "undoHistory": {
+    "message": "Undo History"
+  },
+  "clearHistory": {
+    "message": "Clear"
+  },
+  "noUndoHistory": {
+    "message": "No undo history"
+  },
+  "historyCleared": {
+    "message": "History cleared"
+  },
+  "tabStats": {
+    "message": "Stats"
+  },
+  "statsTitle": {
+    "message": "Statistics"
+  },
+  "avgBookmarks": {
+    "message": "Avg/Folder"
+  },
+  "coloredFolders": {
+    "message": "Colored"
+  },
+  "colorDistribution": {
+    "message": "Color Distribution"
+  },
+  "sizeDistribution": {
+    "message": "Size Distribution"
+  },
+  "smartClassify": {
+    "message": "Smart Classify"
+  },
+  "smartClassifyDesc": {
+    "message": "Automatically suggest colors for uncolored folders based on their names"
+  },
+  "runSmartClassify": {
+    "message": "Run Smart Classify"
+  },
+  "smartClassifyDone": {
+    "message": "Smart classify complete, suggested colors for $1 folders"
+  },
+  "apply": {
+    "message": "Apply"
   }
 }
