@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "FolderMark"
+    "message": "FolderMark - Bookmark Folder Manager"
   },
   "extensionDescription": {
-    "message": "Organize bookmarks faster."
+    "message": "Add color labels to bookmark folders and organize Chrome bookmarks efficiently"
   },
   "initializationFailed": {
     "message": "Initialization failed: $1"

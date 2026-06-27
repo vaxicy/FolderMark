@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "FolderMark"
+    "message": "FolderMark - 文件夹标记管理"
   },
   "extensionDescription": {
-    "message": "更快整理书签"
+    "message": "为书签文件夹添加颜色标签，高效整理 Chrome 书签"
   },
   "initializationFailed": {
     "message": "初始化失败：$1"
