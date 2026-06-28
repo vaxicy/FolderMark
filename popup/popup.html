@@ -5,6 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FolderMark</title>
   <link rel="stylesheet" href="popup.css">
+  <style>
+    /* 搜索框包裹层 */
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+    /* 搜索框左右留白，避免文字被图标/×遮挡 */
+    .search-input-wrap .search-input {
+      padding-left: 32px;
+      padding-right: 28px;
+    }
+    /* 搜索图标 - 嵌在输入框内左侧 */
+    .search-input-wrap .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+    /* 搜索清空按钮 - 嵌在搜索框内右侧 */
+    .search-clear-btn {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s, background 0.15s;
+      border-radius: 3px;
+      z-index: 2;
+      padding: 0;
+    }
+    .search-clear-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    .search-clear-btn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* 空状态操作按钮 */
+    .empty-state-action {
+      margin-top: 16px;
+    }
+  </style>
 </head>
 <body>
   <div id="app" class="app">
@@ -36,18 +91,26 @@
 
     <!-- 搜索栏 + 颜色筛选 -->
     <div class="search-container">
-      <input type="text"
-             id="searchInput"
-             class="search-input"
-             placeholder="Search folders..."
-             data-i18n-placeholder="searchPlaceholder">
+      <div class="search-input-wrap">
+        <input type="text"
+               id="searchInput"
+               class="search-input"
+               placeholder="Search folders..."
+               data-i18n-placeholder="searchPlaceholder">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <button id="searchClearBtn" class="search-clear-btn" data-i18n-title="clearSearch">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="1" y1="1" x2="9" y2="9"></line>
+            <line x1="9" y1="1" x2="1" y2="9"></line>
+          </svg>
+        </button>
+      </div>
       <button id="searchModeBtn" class="search-mode-btn" data-i18n-title="searchModeFolder" title="Search folders only">
         📁
       </button>
-      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
       <div class="custom-select" id="colorFilterSelect" data-i18n-title="filterByColor" title="Filter by color">
         <div class="custom-select-trigger">
           <span class="custom-select-dot"></span>
@@ -187,6 +250,9 @@
               <div class="empty-state-icon">🔗</div>
               <div class="empty-state-title" data-i18n="noBrokenBookmarks">Not scanned yet</div>
               <div class="empty-state-desc" data-i18n="noBrokenBookmarksDesc">Click "Scan" to check for broken bookmarks.</div>
+              <div class="empty-state-action">
+                <button id="emptyStateScanBroken" class="btn btn-primary btn-sm" data-i18n="startScan">Start Scan</button>
+              </div>
             </div>
           </div>
           <div id="brokenBookmarksActions" class="broken-actions hidden">
@@ -219,6 +285,9 @@
               <div class="empty-state-icon">✨</div>
               <div class="empty-state-title" data-i18n="noSuggestions">No suggestions yet</div>
               <div class="empty-state-desc" data-i18n="noSuggestionsDesc">Click scan to get cleanup suggestions.</div>
+              <div class="empty-state-action">
+                <button id="emptyStateRunAnalysis" class="btn btn-primary btn-sm" data-i18n="runAnalysis">Run Analysis</button>
+              </div>
             </div>
           </div>
         </div>

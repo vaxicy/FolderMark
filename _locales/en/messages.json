@@ -742,5 +742,20 @@
   },
   "qrCodeNotFound": {
     "message": "Please save WeChat QR code as icons/wechat-donate.png"
+  },
+  "clearSearch": {
+    "message": "Clear search"
+  },
+  "startScan": {
+    "message": "Start Scan"
+  },
+  "runAnalysis": {
+    "message": "Run Analysis"
+  },
+  "clearFilters": {
+    "message": "Clear Filters"
+  },
+  "analysisComplete": {
+    "message": "Analysis complete"
   }
 }

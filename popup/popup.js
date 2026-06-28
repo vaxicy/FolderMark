@@ -193,7 +193,38 @@ class App {
     searchInput.addEventListener('input', debounce((e) => {
       this.searchQuery = e.target.value;
       this.renderFolders();
+      // 显示/隐藏清空按钮
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) {
+        clearBtn.classList.toggle('visible', !!e.target.value);
+      }
     }, 300));
+
+    // 搜索清空按钮
+    const searchClearBtn = document.getElementById('searchClearBtn');
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        const input = document.getElementById('searchInput');
+        if (input) {
+          input.value = '';
+          this.searchQuery = '';
+          this.renderFolders();
+          searchClearBtn.classList.remove('visible');
+          input.focus();
+        }
+      });
+    }
+
+    // Esc 清空搜索
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        this.searchQuery = '';
+        this.renderFolders();
+        const clearBtn = document.getElementById('searchClearBtn');
+        if (clearBtn) clearBtn.classList.remove('visible');
+      }
+    });
 
     // 排序
     const sortSelect = document.getElementById('sortSelect');
@@ -532,6 +563,30 @@ class App {
         if (panel) panel.classList.add('active');
       });
     });
+
+    // 空状态 - 开始扫描失效书签
+    const emptyStateScanBroken = document.getElementById('emptyStateScanBroken');
+    if (emptyStateScanBroken) {
+      emptyStateScanBroken.addEventListener('click', () => {
+        this.switchTab('smart');
+        setTimeout(() => {
+          const scanBtn = document.getElementById('scanBrokenBtn');
+          if (scanBtn) scanBtn.click();
+        }, 100);
+      });
+    }
+
+    // 空状态 - 运行清理分析
+    const emptyStateRunAnalysis = document.getElementById('emptyStateRunAnalysis');
+    if (emptyStateRunAnalysis) {
+      emptyStateRunAnalysis.addEventListener('click', () => {
+        this.switchTab('smart');
+        // 触发清理建议
+        if (this._runCleanupSuggestions) {
+          this._runCleanupSuggestions();
+        }
+      });
+    }
   }
 
   /**
@@ -1448,11 +1503,24 @@ class App {
     }
 
     if (folders.length === 0 && !this.searchQuery) {
-      container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noFoldersFound') + '</p></div>';
+      container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noFoldersFound') + '</p>' +
+        '<div class="empty-state-action"><button id="emptyStateNewFolder" class="btn btn-primary btn-sm">' + (i18n.getMessage('newFolder') || 'New Folder') + '</button></div></div>';
+      container.querySelector('#emptyStateNewFolder').addEventListener('click', () => {
+        document.getElementById('newFolderBtn').click();
+      });
       return;
     }
     if (folders.length === 0 && this.searchQuery) {
-      container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p></div>';
+      container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p>' +
+        '<div class="empty-state-action"><button class="btn btn-secondary btn-sm" data-action="clearFilters">' + (i18n.getMessage('clearFilters') || 'Clear Filters') + '</button></div></div>';
+      container.querySelector('[data-action="clearFilters"]').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        this.searchQuery = '';
+        this.colorFilter = '';
+        this.renderFolders();
+        const clearBtn = document.getElementById('searchClearBtn');
+        if (clearBtn) clearBtn.classList.remove('visible');
+      });
       return;
     }
 
@@ -1509,7 +1577,17 @@ class App {
       }
 
       if (folderInfos.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p></div>';
+        container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p>' +
+          '<div class="empty-state-action"><button class="btn btn-secondary btn-sm" data-action="clearFilters">' + (i18n.getMessage('clearFilters') || 'Clear Filters') + '</button></div></div>';
+        // 绑定清除筛选按钮
+        container.querySelector('[data-action="clearFilters"]').addEventListener('click', () => {
+          document.getElementById('searchInput').value = '';
+          this.searchQuery = '';
+          this.colorFilter = '';
+          this.renderFolders();
+          const clearBtn = document.getElementById('searchClearBtn');
+          if (clearBtn) clearBtn.classList.remove('visible');
+        });
         return;
       }
 
@@ -2999,10 +3077,21 @@ class App {
     if (this.brokenBookmarks.length === 0) {
       container.innerHTML = `
         <div class="empty-state" id="brokenBookmarksEmpty">
-          <div class="empty-state-icon">✅</div>
-          <div class="empty-state-title">${i18n.getMessage('noBrokenBookmarksFound') || 'No broken bookmarks!'}</div>
-          <div class="empty-state-desc">${i18n.getMessage('noBrokenBookmarksFoundDesc') || 'All your bookmarks are accessible.'}</div>
+          <div class="empty-state-icon">🔗</div>
+          <div class="empty-state-title">${i18n.getMessage('noBrokenBookmarks') || 'Not scanned yet'}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noBrokenBookmarksDesc') || 'Click "Scan" to check for broken bookmarks.'}</div>
+          <div class="empty-state-action">
+            <button id="emptyStateScanBrokenJs" class="btn btn-primary btn-sm">${i18n.getMessage('startScan') || 'Start Scan'}</button>
+          </div>
         </div>`;
+      // 绑定扫描按钮
+      const scanBtn = container.querySelector('#emptyStateScanBrokenJs');
+      if (scanBtn) {
+        scanBtn.addEventListener('click', () => {
+          const btn = document.getElementById('scanBrokenBtn');
+          if (btn) btn.click();
+        });
+      }
       actionsEl.classList.add('hidden');
       return;
     }
@@ -3203,8 +3292,20 @@ class App {
         <div class="empty-state" id="cleanupSuggestionsEmpty">
           <div class="empty-state-icon">✨</div>
           <div class="empty-state-title">${i18n.getMessage('noSuggestions')}</div>
-          <div class="empty-state-desc">${i18n.getMessage('noSuggestionsDesc') || 'Your bookmarks are well organized.'}</div>
+          <div class="empty-state-desc">${i18n.getMessage('noSuggestionsDesc') || 'Click scan to get cleanup suggestions.'}</div>
+          <div class="empty-state-action">
+            <button id="emptyStateRunAnalysisJs" class="btn btn-primary btn-sm">${i18n.getMessage('runAnalysis') || 'Run Analysis'}</button>
+          </div>
         </div>`;
+      // 绑定运行分析按钮
+      const analysisBtn = container.querySelector('#emptyStateRunAnalysisJs');
+      if (analysisBtn) {
+        analysisBtn.addEventListener('click', () => {
+          if (this._runCleanupSuggestions) {
+            this._runCleanupSuggestions();
+          }
+        });
+      }
       return;
     }
     
@@ -3295,6 +3396,16 @@ class App {
         );
         break;
     }
+  }
+
+  /**
+   * 运行清理建议分析
+   */
+  async _runCleanupSuggestions() {
+    const accessData = await FolderAccessService.loadAccessData();
+    this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates, accessData);
+    this.renderCleanupSuggestions();
+    showNotification(i18n.getMessage('analysisComplete') || 'Analysis complete', 'success');
   }
 
   /**

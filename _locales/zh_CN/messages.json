@@ -742,5 +742,20 @@
   },
   "hostPermissionRequired": {
     "message": "需要站点访问权限才能检测书签状态。"
+  },
+  "clearSearch": {
+    "message": "清空搜索"
+  },
+  "startScan": {
+    "message": "开始扫描"
+  },
+  "runAnalysis": {
+    "message": "运行分析"
+  },
+  "clearFilters": {
+    "message": "清除筛选"
+  },
+  "analysisComplete": {
+    "message": "分析完成"
   }
 }
