@@ -89,7 +89,10 @@ FolderMark 是一款 Chrome 浏览器扩展，帮助你高效管理和组织书�
 ## 🚀 安装
 
 ### Chrome 网上应用店
-*（即将上线）*
+
+[**Chrome Web Store 安装**](https://chromewebstore.google.com/detail/foldermark-bookmark-folde/iekmdcaeedhalcneidfankmelhkcdmgn?authuser=0&hl=zh-CN)
+
+[![Chrome Web Store](https://img.shields.io/badge/Chrome-Install-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/foldermark-bookmark-folde/iekmdcaeedhalcneidfankmelhkcdmgn?authuser=0&hl=zh-CN)
 
 ### 开发者模式安装
 1. 打开 Chrome 浏览器
