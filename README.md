@@ -214,13 +214,3 @@ FolderMark/
 ## 👤 作者
 
 Built with ❤️ by [vaxicy](https://github.com/vaxicy)
-
----
-
-## 🙏 支持
-
-如果 FolderMark 对你有帮助，欢迎赞赏支持！
-
-| 微信赞赏 | PayPal |
-|---------|--------|
-| 扫码打赏 | [Buy me a coffee](https://www.paypal.com/ncp/payment/ZMRJYQY23KKZQ) |
