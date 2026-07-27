@@ -30,6 +30,7 @@ class App {
     this.duplicates = [];
     this.duplicateBookmarks = []; // 重复书签
     this.brokenBookmarks = []; // 失效书签
+    this._brokenScanTimer = null; // 后台扫描轮询定时器
     this.folderColors = {}; // 文件夹颜色 {folderId: colorValue}
     this.folderIcons = {}; // 文件夹图标 {folderId: iconValue}
     this.colorFilter = ''; // 当前颜色筛选
@@ -76,6 +77,9 @@ class App {
       
       // 渲染撤销历史
       this.renderUndoHistory();
+
+      // 恢复可能正在后台进行的失效书签扫描
+      await this.restoreBrokenScanState();
     } catch (error) {
       console.error('Initialization failed:', error);
       showNotification((i18n.getMessage('initializationFailed') || 'Initialization failed: $1').replace('$1', error.message), 'error');
@@ -2992,90 +2996,137 @@ class App {
   }
   
   /**
-   * 扫描失效书签
+   * 扫描失效书签（委托 background Service Worker 执行，关闭弹窗后仍继续）
    */
   async scanBrokenBookmarks() {
-    if (this.isCheckingBroken) return;
+    if (this._brokenScanTimer) return; // 已在扫描中
 
-    this.isCheckingBroken = true;
     const scanBtn = document.getElementById('scanBrokenBtn');
     const progressEl = document.getElementById('brokenCheckProgress');
     const fillEl = document.getElementById('brokenProgressFill');
     const countEl = document.getElementById('brokenProgressCount');
 
-    scanBtn.disabled = true;
-    scanBtn.textContent = i18n.getMessage('checking') || 'Checking...';
-    progressEl.classList.remove('hidden');
+    // 权限检查/请求（必须在用户手势中）
+    const hasHostAccess = await new Promise((resolve) => {
+      chrome.permissions.contains({
+        origins: ['http://*/*', 'https://*/*']
+      }, resolve);
+    });
 
-    try {
-      const hasHostAccess = await new Promise((resolve) => {
-        chrome.permissions.contains({
+    if (!hasHostAccess) {
+      const granted = await new Promise((resolve) => {
+        chrome.permissions.request({
           origins: ['http://*/*', 'https://*/*']
         }, resolve);
       });
 
-      if (!hasHostAccess) {
-        const granted = await new Promise((resolve) => {
-          chrome.permissions.request({
-            origins: ['http://*/*', 'https://*/*']
-          }, resolve);
-        });
-
-        if (!granted) {
-          showNotification(
-            i18n.getMessage('hostPermissionRequired') || 'Site access is required to check bookmark status.',
-            'warning'
-          );
-          return;
-        }
-      }
-
-      // 收集所有书签
-      const bookmarkTree = await this.getBookmarkTree();
-      const allBookmarks = BrokenBookmarkDetector.collectAllBookmarks(bookmarkTree);
-
-      if (allBookmarks.length === 0) {
-        showNotification(i18n.getMessage('noBookmarksToCheck') || 'No bookmarks to check', 'info');
-        this.isCheckingBroken = false;
-        scanBtn.disabled = false;
-        scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
-        progressEl.classList.add('hidden');
+      if (!granted) {
+        showNotification(
+          i18n.getMessage('hostPermissionRequired') || 'Site access is required to check bookmark status.',
+          'warning'
+        );
         return;
       }
+    }
 
-      this.brokenBookmarks = [];
-      const total = allBookmarks.length;
-      let completed = 0;
+    // 通知 background 开始扫描并进入轮询
+    if (scanBtn) {
+      scanBtn.disabled = true;
+      scanBtn.textContent = i18n.getMessage('checking') || 'Checking...';
+    }
+    if (progressEl) progressEl.classList.remove('hidden');
+    if (fillEl) fillEl.style.width = '0%';
+    if (countEl) countEl.textContent = '0 / 0';
 
-      const result = await BrokenBookmarkDetector.checkAllBookmarks(
-        allBookmarks,
-        (current, totalCount, itemResult) => {
-          completed = current;
-          if (fillEl) fillEl.style.width = `${Math.round((current / totalCount) * 100)}%`;
-          if (countEl) countEl.textContent = `${current} / ${totalCount}`;
-        },
-        5
-      );
-
-      this.brokenBookmarks = result.broken;
-
-      // 更新统计卡片中的书签总数（可选）
-      this.renderBrokenBookmarks();
-
-      showNotification(
-        (i18n.getMessage('scanComplete') || 'Scan complete: $1 broken, $2 valid')
-          .replace('$1', result.broken.length)
-          .replace('$2', result.valid.length),
-        result.broken.length > 0 ? 'warning' : 'success'
-      );
+    try {
+      await chrome.runtime.sendMessage({ action: 'start-broken-scan' });
+      this.startBrokenScanPolling();
     } catch (error) {
-      console.error('Scan broken bookmarks failed:', error);
+      console.error('Start broken scan failed:', error);
       showNotification((i18n.getMessage('scanFailed') || 'Scan failed: $1').replace('$1', error.message), 'error');
-    } finally {
-      this.isCheckingBroken = false;
-      scanBtn.disabled = false;
-      scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
-      progressEl.classList.add('hidden');
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
+      }
+      if (progressEl) progressEl.classList.add('hidden');
+    }
+  }
+
+  /**
+   * 轮询后台扫描进度（弹窗打开期间）
+   */
+  startBrokenScanPolling() {
+    if (this._brokenScanTimer) clearInterval(this._brokenScanTimer);
+    this._brokenScanTimer = setInterval(async () => {
+      try {
+        const state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
+        if (!state) return;
+
+        const fillEl = document.getElementById('brokenProgressFill');
+        const countEl = document.getElementById('brokenProgressCount');
+        if (fillEl && state.total) fillEl.style.width = `${Math.round((state.completed / state.total) * 100)}%`;
+        if (countEl) countEl.textContent = `${state.completed} / ${state.total}`;
+
+        if (state.status === 'done' || state.status === 'error') {
+          this.stopBrokenScanPolling();
+          const scanBtn = document.getElementById('scanBrokenBtn');
+          const progressEl = document.getElementById('brokenCheckProgress');
+          if (scanBtn) {
+            scanBtn.disabled = false;
+            scanBtn.textContent = i18n.getMessage('scanBroken') || 'Scan';
+          }
+          if (progressEl) progressEl.classList.add('hidden');
+
+          if (state.status === 'error') {
+            showNotification((i18n.getMessage('scanFailed') || 'Scan failed: $1').replace('$1', state.error || ''), 'error');
+            return;
+          }
+
+          this.brokenBookmarks = state.broken || [];
+          this.renderBrokenBookmarks();
+          showNotification(
+            (i18n.getMessage('scanComplete') || 'Scan complete: $1 broken, $2 valid')
+              .replace('$1', this.brokenBookmarks.length)
+              .replace('$2', state.validCount || 0),
+            this.brokenBookmarks.length > 0 ? 'warning' : 'success'
+          );
+        }
+      } catch (e) {
+        // 弹窗关闭时 sendMessage 可能失败，忽略即可（后台扫描不受影响）
+      }
+    }, 400);
+  }
+
+  /**
+   * 停止轮询
+   */
+  stopBrokenScanPolling() {
+    if (this._brokenScanTimer) {
+      clearInterval(this._brokenScanTimer);
+      this._brokenScanTimer = null;
+    }
+  }
+
+  /**
+   * 弹窗打开时恢复后台扫描状态：进行中则继续轮询，已完成则直接展示结果
+   */
+  async restoreBrokenScanState() {
+    try {
+      const state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
+      if (!state) return;
+
+      if (state.status === 'running') {
+        const scanBtn = document.getElementById('scanBrokenBtn');
+        const progressEl = document.getElementById('brokenCheckProgress');
+        if (scanBtn) scanBtn.disabled = true;
+        if (progressEl) progressEl.classList.remove('hidden');
+        this.startBrokenScanPolling();
+      } else if (state.status === 'done') {
+        this.brokenBookmarks = state.broken || [];
+        this.renderBrokenBookmarks();
+      }
+    } catch (e) {
+      // 忽略
     }
   }
 

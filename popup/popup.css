@@ -7,6 +7,7 @@
 :root {
   /* 主色调 - 橙色强调 */
   --primary: #D97706;
+  --icon-glow: rgba(217, 119, 6, 0.2); /* 空状态图标发光（默认琥珀） */
   --primary-hover: #B45309;
   --primary-light: #FEF3C7;
 
@@ -43,6 +44,7 @@
 /* 深色主题（优化对比度，符合 WCAG 标准） */
 [data-theme="dark"] {
   --primary: #FCD34D;
+  --icon-glow: rgba(251, 191, 36, 0.25); /* 暗底上稍亮琥珀 */
   --primary-hover: #FBBF24;
   --primary-light: #92400E;
 
@@ -70,6 +72,7 @@
 /* 腮粉主题（Blush - pastel pink 风格） */
 [data-theme="blush"] {
   --primary: #E88B8B;
+  --icon-glow: rgba(225, 100, 120, 0.22); /* 玫瑰粉 */
   --primary-hover: #D97070;
   --primary-light: #FBEFEF;
 
@@ -118,6 +121,7 @@
 /* 抹茶主题（Matcha - sage green 风格） */
 [data-theme="matcha"] {
   --primary: #7A9056;
+  --icon-glow: rgba(100, 140, 60, 0.2); /* 橄榄绿 */
   --primary-hover: #6B8048;
   --primary-light: #EDF2E0;
 
@@ -166,6 +170,7 @@
 /* 拿铁主题（Latte - warm coffee brown 风格） */
 [data-theme="latte"] {
   --primary: #8B7355;
+  --icon-glow: rgba(180, 130, 80, 0.2); /* 咖啡棕 */
   --primary-hover: #7A6448;
   --primary-light: #EDE8DF;
 
@@ -214,6 +219,7 @@
 /* 鸢尾主题（Iris - blue-lavender 风格） */
 [data-theme="iris"] {
   --primary: #7B68B2;
+  --icon-glow: rgba(120, 100, 180, 0.22); /* 靛紫 */
   --primary-hover: #6A57A1;
   --primary-light: #EEE8F5;
 
@@ -262,6 +268,7 @@
 /* 晴空主题（Sky - sky-blue 风格） */
 [data-theme="sky"] {
   --primary: #5BA3CF;
+  --icon-glow: rgba(80, 150, 200, 0.2); /* 天蓝 */
   --primary-hover: #4A92BE;
   --primary-light: #D9F0FD;
 
@@ -310,6 +317,7 @@
 /* 珊瑚主题（Coral - warm coral-peach 风格） */
 [data-theme="coral"] {
   --primary: #D6635A;
+  --icon-glow: rgba(220, 100, 80, 0.22); /* 珊瑚红 */
   --primary-hover: #C55248;
   --primary-light: #FDE8E4;
 
@@ -1869,7 +1877,7 @@ body {
   margin-bottom: 16px;
   line-height: 1;
   animation: iconBounce 0.6s ease forwards;
-  filter: drop-shadow(0 2px 8px rgba(217, 119, 6, 0.2));
+  filter: drop-shadow(0 2px 8px var(--icon-glow));
 }
 
 @keyframes iconBounce {

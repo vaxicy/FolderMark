@@ -10,6 +10,7 @@
   - 拿铁 Latte `latte`（warm coffee brown）
   - 鸢尾 Iris `iris`（blue-lavender）
   - 晴空 Sky `sky`（sky-blue）
+  - 珊瑚 Coral `coral`（warm coral-peach）
 - 通用无障碍做法：主按钮一律「浅色底 + 深色字」，logo/stat-number 用更深的同色系文字，确保 WCAG AA；`header` 有硬编码渐变需按主题覆盖。
 
 ## 关于/维护区重构（2026-07-28）
