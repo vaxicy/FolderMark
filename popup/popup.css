@@ -578,6 +578,8 @@ body {
 
 .search-input {
   width: 100%;
+  height: 28px;
+  box-sizing: border-box;
   padding: 5px 8px 5px 26px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -841,6 +843,8 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+  height: 28px;
+  box-sizing: border-box;
   padding: 5px 6px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
