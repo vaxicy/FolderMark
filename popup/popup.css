@@ -213,9 +213,9 @@
 
 /* 鸢尾主题（Iris - blue-lavender 风格） */
 [data-theme="iris"] {
-  --primary: #6B7BB5;
-  --primary-hover: #5A6AA3;
-  --primary-light: #E8ECF5;
+  --primary: #7B68B2;
+  --primary-hover: #6A57A1;
+  --primary-light: #EEE8F5;
 
   --danger: #C0392B;
   --danger-hover: #A93226;
@@ -225,38 +225,38 @@
   --success-light: #DCEFE4;
 
   --bg-primary: #FAF9FC;
-  --bg-secondary: #F0EEF7;
-  --bg-tertiary: #E4E1F0;
+  --bg-secondary: #F3EDF7;
+  --bg-tertiary: #EBE1F2;
 
-  --text-primary: #33384D;
-  --text-secondary: #4F5570;
-  --text-tertiary: #6E7590;
+  --text-primary: #3D3054;
+  --text-secondary: #5A4D70;
+  --text-tertiary: #756A8C;
 
-  --border-color: #D0D0E0;
-  --shadow-sm: 0 1px 2px 0 rgba(51, 56, 77, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(51, 56, 77, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(51, 56, 77, 0.15);
+  --border-color: #D4C8E0;
+  --shadow-sm: 0 1px 2px 0 rgba(61, 48, 84, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(61, 48, 84, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(61, 48, 84, 0.15);
 }
 
 /* 鸢尾主题下的 header 渐变 */
 [data-theme="iris"] .header {
-  background: linear-gradient(135deg, #C0C9EE 0%, #E4E1F0 100%);
+  background: linear-gradient(135deg, #B8A8DB 0%, #EBE1F2 100%);
 }
 
 /* 鸢尾主题下的主按钮：浅紫底 + 深靛字，保证 WCAG AA 对比度 */
 [data-theme="iris"] .btn-primary {
-  background: #C0C9EE;
+  background: #B8A8DB;
   color: var(--text-primary);
 }
 
 [data-theme="iris"] .btn-primary:hover {
-  background: #AEB8E2;
+  background: #A898CC;
 }
 
-/* 鸢尾主题下的文字型强调（logo / 统计数字）：用更深的靛蓝保证可读 */
+/* 鸢尾主题下的文字型强调（logo / 统计数字）：用更深的靛紫保证可读 */
 [data-theme="iris"] .logo,
 [data-theme="iris"] .stat-number {
-  color: #454C70;
+  color: #5A4880;
 }
 
 /* 深色主题下的特殊样式优化 */
