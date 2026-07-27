@@ -192,7 +192,7 @@
 
 /* 拿铁主题下的 header 渐变 */
 [data-theme="latte"] .header {
-  background: linear-gradient(135deg, #D1BB9E 0%, #EAD8C0 100%);
+  background: linear-gradient(135deg, #F2E8DC 0%, #FAF5EF 100%);
 }
 
 /* 拿铁主题下的主按钮：浅奶棕底 + 深咖啡字，保证 WCAG AA 对比度 */
