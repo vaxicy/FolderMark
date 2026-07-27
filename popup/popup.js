@@ -157,7 +157,7 @@ class App {
         STORAGE_KEYS.HIDE_ROOT_FOLDERS,
         STORAGE_KEYS.ACTION_POSITION
       ], (result) => {
-        this.theme = result[STORAGE_KEYS.THEME] || 'system';
+        this.theme = result[STORAGE_KEYS.THEME] || 'light';
         this.language = result[STORAGE_KEYS.LANGUAGE] || 'en';
         this.deleteConfirm = result[STORAGE_KEYS.DELETE_CONFIRM] !== false;
         this.hideRootFolders = result[STORAGE_KEYS.HIDE_ROOT_FOLDERS] === true;
@@ -304,12 +304,7 @@ class App {
       });
     }
 
-    // 设置 - 隐私
-    document.getElementById('privacyInfo').addEventListener('click', () => {
-      this.showPrivacyInfo();
-    });
-
-    // 设置 - 刷新
+    // 设置 - 重新扫描书签
     document.getElementById('refreshData').addEventListener('click', () => {
       this.scanBookmarks();
     });
@@ -551,18 +546,35 @@ class App {
       await this.executeUndo();
     });
 
-    // 赞赏支持 - Tab 切换
-    document.querySelectorAll('.donate-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const target = tab.dataset.donateTab;
-        document.querySelectorAll('.donate-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.donate-panel').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        const panelId = 'donate' + target.charAt(0).toUpperCase() + target.slice(1);
-        const panel = document.getElementById(panelId);
-        if (panel) panel.classList.add('active');
+    // 赞赏支持 - 弹窗
+    const donateWechatBtn = document.getElementById('donateWechatBtn');
+    const donatePaypalBtn = document.getElementById('donatePaypalBtn');
+    const donateWechatModal = document.getElementById('donateWechatModal');
+    const donatePaypalModal = document.getElementById('donatePaypalModal');
+
+    if (donateWechatBtn && donateWechatModal) {
+      donateWechatBtn.addEventListener('click', () => {
+        donateWechatModal.classList.remove('hidden');
       });
-    });
+      document.getElementById('donateWechatClose')?.addEventListener('click', () => {
+        donateWechatModal.classList.add('hidden');
+      });
+      donateWechatModal.querySelector('.modal-overlay')?.addEventListener('click', () => {
+        donateWechatModal.classList.add('hidden');
+      });
+    }
+
+    if (donatePaypalBtn && donatePaypalModal) {
+      donatePaypalBtn.addEventListener('click', () => {
+        donatePaypalModal.classList.remove('hidden');
+      });
+      document.getElementById('donatePaypalClose')?.addEventListener('click', () => {
+        donatePaypalModal.classList.add('hidden');
+      });
+      donatePaypalModal.querySelector('.modal-overlay')?.addEventListener('click', () => {
+        donatePaypalModal.classList.add('hidden');
+      });
+    }
 
     // 空状态 - 开始扫描失效书签
     const emptyStateScanBroken = document.getElementById('emptyStateScanBroken');
@@ -3487,6 +3499,7 @@ class App {
     if (actionPositionSelect) {
       actionPositionSelect.value = this.actionPosition;
     }
+    this.renderUndoHistory();
   }
 
   /**
@@ -3975,30 +3988,23 @@ class App {
   async doRestoreDefaults() {
     try {
       const defaultSettings = {
-        [STORAGE_KEYS.THEME]: 'system',
+        [STORAGE_KEYS.THEME]: 'light',
         [STORAGE_KEYS.LANGUAGE]: 'en',
         [STORAGE_KEYS.DELETE_CONFIRM]: true,
         [STORAGE_KEYS.HIDE_ROOT_FOLDERS]: false
       };
       await chrome.storage.local.set(defaultSettings);
-      this.theme = 'system';
+      this.theme = 'light';
       this.language = 'en';
       this.deleteConfirm = true;
       this.hideRootFolders = false;
-      await theme.setTheme('system');
+      await theme.setTheme('light');
       await i18n.setLanguage('en');
       this.renderSettings();
       showNotification(i18n.getMessage('restoreSuccess') || 'Settings restored to defaults', 'success');
     } catch (error) {
       showNotification((i18n.getMessage('restoreFailed') || 'Restore failed: $1').replace('$1', error.message), 'error');
     }
-  }
-
-  showPrivacyInfo() {
-    this.showInfoModal(
-      i18n.getMessage('privacyInfo') || 'Privacy',
-      i18n.getMessage('privacyMessage')
-    );
   }
 
   /**

@@ -65,11 +65,14 @@
   "theme": {
     "message": "主题"
   },
-  "themeSystem": {
-    "message": "系统"
-  },
   "themeLight": {
     "message": "浅色"
+  },
+  "themeBlush": {
+    "message": "腮粉"
+  },
+  "themeMatcha": {
+    "message": "抹茶"
   },
   "themeDark": {
     "message": "深色"
@@ -83,11 +86,11 @@
   "exportStructure": {
     "message": "导出"
   },
-  "privacyInfo": {
-    "message": "隐私"
-  },
   "cancel": {
     "message": "取消"
+  },
+  "close": {
+    "message": "关闭"
   },
   "confirm": {
     "message": "确认"
@@ -164,11 +167,8 @@
   "loading": {
     "message": "加载中..."
   },
-  "privacyMessage": {
-    "message": "所有数据仅在本地处理。不会上传到服务器。隐私完全保护。"
-  },
-  "refresh": {
-    "message": "刷新"
+  "rescanBookmarks": {
+    "message": "重新扫描书签"
   },
   "cannotDeleteRoot": {
     "message": "无法删除系统根文件夹（书签栏、其他书签等）"
@@ -225,7 +225,7 @@
     "message": "数据"
   },
   "about": {
-    "message": "关于"
+    "message": "维护"
   },
   "importStructure": {
     "message": "导入"

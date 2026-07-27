@@ -65,11 +65,14 @@
   "theme": {
     "message": "Theme"
   },
-  "themeSystem": {
-    "message": "System"
-  },
   "themeLight": {
     "message": "Light"
+  },
+  "themeBlush": {
+    "message": "Blush"
+  },
+  "themeMatcha": {
+    "message": "Matcha"
   },
   "themeDark": {
     "message": "Dark"
@@ -83,11 +86,11 @@
   "exportStructure": {
     "message": "Export"
   },
-  "privacyInfo": {
-    "message": "Privacy"
-  },
   "cancel": {
     "message": "Cancel"
+  },
+  "close": {
+    "message": "Close"
   },
   "confirm": {
     "message": "Confirm"
@@ -164,11 +167,8 @@
   "loading": {
     "message": "Loading..."
   },
-  "privacyMessage": {
-    "message": "All data processed locally. No data uploaded. Privacy protected."
-  },
-  "refresh": {
-    "message": "Refresh"
+  "rescanBookmarks": {
+    "message": "Rescan Bookmarks"
   },
   "cannotDeleteRoot": {
     "message": "Cannot delete system root folders (Bookmarks Bar, Other Bookmarks, etc.)"
@@ -225,7 +225,7 @@
     "message": "Data"
   },
   "about": {
-    "message": "About"
+    "message": "Maintenance"
   },
   "importStructure": {
     "message": "Import"
