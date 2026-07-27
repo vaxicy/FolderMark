@@ -211,6 +211,54 @@
   color: #5C4632;
 }
 
+/* 鸢尾主题（Iris - blue-lavender 风格） */
+[data-theme="iris"] {
+  --primary: #6B7BB5;
+  --primary-hover: #5A6AA3;
+  --primary-light: #E8ECF5;
+
+  --danger: #C0392B;
+  --danger-hover: #A93226;
+  --danger-light: #F9E0DC;
+
+  --success: #3F7A5A;
+  --success-light: #DCEFE4;
+
+  --bg-primary: #FAF9FC;
+  --bg-secondary: #F0EEF7;
+  --bg-tertiary: #E4E1F0;
+
+  --text-primary: #33384D;
+  --text-secondary: #4F5570;
+  --text-tertiary: #6E7590;
+
+  --border-color: #D0D0E0;
+  --shadow-sm: 0 1px 2px 0 rgba(51, 56, 77, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(51, 56, 77, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(51, 56, 77, 0.15);
+}
+
+/* 鸢尾主题下的 header 渐变 */
+[data-theme="iris"] .header {
+  background: linear-gradient(135deg, #C0C9EE 0%, #E4E1F0 100%);
+}
+
+/* 鸢尾主题下的主按钮：浅紫底 + 深靛字，保证 WCAG AA 对比度 */
+[data-theme="iris"] .btn-primary {
+  background: #C0C9EE;
+  color: var(--text-primary);
+}
+
+[data-theme="iris"] .btn-primary:hover {
+  background: #AEB8E2;
+}
+
+/* 鸢尾主题下的文字型强调（logo / 统计数字）：用更深的靛蓝保证可读 */
+[data-theme="iris"] .logo,
+[data-theme="iris"] .stat-number {
+  color: #454C70;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);
