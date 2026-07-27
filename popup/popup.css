@@ -307,6 +307,54 @@
   color: #2E6A8C;
 }
 
+/* 珊瑚主题（Coral - warm coral-peach 风格） */
+[data-theme="coral"] {
+  --primary: #D6635A;
+  --primary-hover: #C55248;
+  --primary-light: #FDE8E4;
+
+  --danger: #B5483B;
+  --danger-hover: #9A3B30;
+  --danger-light: #F6E4DF;
+
+  --success: #4E7A3A;
+  --success-light: #E3F0DA;
+
+  --bg-primary: #FFFAF5;
+  --bg-secondary: #FEF2E8;
+  --bg-tertiary: #FDE6D5;
+
+  --text-primary: #5C3028;
+  --text-secondary: #7B4A40;
+  --text-tertiary: #A06B60;
+
+  --border-color: #EDD5C8;
+  --shadow-sm: 0 1px 2px 0 rgba(92, 48, 40, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(92, 48, 40, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(92, 48, 40, 0.15);
+}
+
+/* 珊瑚主题下的 header 渐变（浅粉 → 蜜桃奶） */
+[data-theme="coral"] .header {
+  background: linear-gradient(135deg, #FF9F9F 0%, #FDE6D5 100%);
+}
+
+/* 珊瑚主题下的主按钮：浅珊瑚底 + 深棕字，保证 WCAG AA 对比度 */
+[data-theme="coral"] .btn-primary {
+  background: #FF9F9F;
+  color: var(--text-primary);
+}
+
+[data-theme="coral"] .btn-primary:hover {
+  background: #F08A8A;
+}
+
+/* 珊瑚主题下的文字型强调（logo / 统计数字）：用更深的珊瑚红保证可读 */
+[data-theme="coral"] .logo,
+[data-theme="coral"] .stat-number {
+  color: #B84A40;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);
