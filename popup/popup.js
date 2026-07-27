@@ -31,6 +31,7 @@ class App {
     this.duplicateBookmarks = []; // 重复书签
     this.brokenBookmarks = []; // 失效书签
     this._brokenScanTimer = null; // 后台扫描轮询定时器
+    this._isScanningBroken = false; // 失效书签扫描进行中标志
     this.folderColors = {}; // 文件夹颜色 {folderId: colorValue}
     this.folderIcons = {}; // 文件夹图标 {folderId: iconValue}
     this.colorFilter = ''; // 当前颜色筛选
@@ -421,6 +422,13 @@ class App {
     if (cleanBrokenBtn) {
       cleanBrokenBtn.addEventListener('click', () => {
         this.cleanBrokenBookmarks();
+      });
+    }
+    // 清空检测结果
+    const clearBrokenBtn = document.getElementById('clearBrokenBtn');
+    if (clearBrokenBtn) {
+      clearBrokenBtn.addEventListener('click', () => {
+        this.clearBrokenResults();
       });
     }
 
@@ -3030,6 +3038,8 @@ class App {
     }
 
     // 通知 background 开始扫描并进入轮询
+    this._isScanningBroken = true;
+    this.renderBrokenBookmarks(); // 立即切换为「扫描中」状态
     if (scanBtn) {
       scanBtn.disabled = true;
       scanBtn.textContent = i18n.getMessage('checking') || 'Checking...';
@@ -3039,10 +3049,23 @@ class App {
     if (countEl) countEl.textContent = '0 / 0';
 
     try {
-      await chrome.runtime.sendMessage({ action: 'start-broken-scan' });
+      // 重试机制：MV3 Service Worker 可能被休眠，给其唤醒时间
+      let lastError = null;
+      for (let i = 0; i < 3; i++) {
+        try {
+          await chrome.runtime.sendMessage({ action: 'start-broken-scan' });
+          lastError = null;
+          break;
+        } catch (e) {
+          lastError = e;
+          if (i < 2) await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+      if (lastError) throw lastError;
       this.startBrokenScanPolling();
     } catch (error) {
       console.error('Start broken scan failed:', error);
+      this._isScanningBroken = false;
       showNotification((i18n.getMessage('scanFailed') || 'Scan failed: $1').replace('$1', error.message), 'error');
       if (scanBtn) {
         scanBtn.disabled = false;
@@ -3059,7 +3082,20 @@ class App {
     if (this._brokenScanTimer) clearInterval(this._brokenScanTimer);
     this._brokenScanTimer = setInterval(async () => {
       try {
-        const state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
+        let state = null;
+        let lastErr = null;
+        // SW 偶发未就绪，重试一次（弹窗关闭时也可忽略）
+        for (let i = 0; i < 2; i++) {
+          try {
+            state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
+            lastErr = null;
+            break;
+          } catch (e) {
+            lastErr = e;
+            if (i < 1) await new Promise((r) => setTimeout(r, 300));
+          }
+        }
+        if (lastErr) return;
         if (!state) return;
 
         const fillEl = document.getElementById('brokenProgressFill');
@@ -3069,6 +3105,7 @@ class App {
 
         if (state.status === 'done' || state.status === 'error') {
           this.stopBrokenScanPolling();
+          this._isScanningBroken = false;
           const scanBtn = document.getElementById('scanBrokenBtn');
           const progressEl = document.getElementById('brokenCheckProgress');
           if (scanBtn) {
@@ -3112,14 +3149,28 @@ class App {
    */
   async restoreBrokenScanState() {
     try {
-      const state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
-      if (!state) return;
+      let state = null;
+      let lastErr = null;
+      // SW 偶发未就绪，重试一次
+      for (let i = 0; i < 2; i++) {
+        try {
+          state = await chrome.runtime.sendMessage({ action: 'get-broken-scan-state' });
+          lastErr = null;
+          break;
+        } catch (e) {
+          lastErr = e;
+          if (i < 1) await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+      if (lastErr || !state) return;
 
       if (state.status === 'running') {
         const scanBtn = document.getElementById('scanBrokenBtn');
         const progressEl = document.getElementById('brokenCheckProgress');
         if (scanBtn) scanBtn.disabled = true;
         if (progressEl) progressEl.classList.remove('hidden');
+        this._isScanningBroken = true;
+        this.renderBrokenBookmarks();
         this.startBrokenScanPolling();
       } else if (state.status === 'done') {
         this.brokenBookmarks = state.broken || [];
@@ -3138,6 +3189,18 @@ class App {
     const actionsEl = document.getElementById('brokenBookmarksActions');
 
     if (this.brokenBookmarks.length === 0) {
+      if (this._isScanningBroken) {
+        // 扫描进行中：显示扫描状态，隐藏开始按钮
+        container.innerHTML = `
+          <div class="empty-state" id="brokenBookmarksEmpty">
+            <div class="empty-state-icon">⏳</div>
+            <div class="empty-state-title">${i18n.getMessage('scanningBroken') || 'Scanning in progress...'}</div>
+            <div class="empty-state-desc">${i18n.getMessage('scanningBrokenDesc') || 'Checking bookmark status, please wait.'}</div>
+          </div>`;
+        actionsEl.classList.add('hidden');
+        if (window.__refreshScrollbars) window.__refreshScrollbars();
+        return;
+      }
       container.innerHTML = `
         <div class="empty-state" id="brokenBookmarksEmpty">
           <div class="empty-state-icon">🔗</div>
@@ -3156,6 +3219,7 @@ class App {
         });
       }
       actionsEl.classList.add('hidden');
+      if (window.__refreshScrollbars) window.__refreshScrollbars();
       return;
     }
 
@@ -3178,6 +3242,9 @@ class App {
         await this.deleteBrokenBookmark(id);
       });
     });
+
+    // 列表内容变化后刷新自定义滚动条
+    if (window.__refreshScrollbars) window.__refreshScrollbars();
   }
 
   /**
@@ -3268,6 +3335,31 @@ class App {
     } catch (error) {
       showNotification((i18n.getMessage('cleanFailed') || 'Clean failed: $1').replace('$1', error.message), 'error');
     }
+  }
+
+  /**
+   * 清空失效书签检测结果（仅清除列表，不删除书签）
+   */
+  async clearBrokenResults() {
+    if (this.brokenBookmarks.length === 0) return;
+
+    this.showConfirmModal(
+      i18n.getMessage('clearBroken') || 'Clear Results',
+      i18n.getMessage('confirmClearResults') || 'This will clear the scan results. Bookmarks will not be deleted.',
+      () => {
+        this.brokenBookmarks = [];
+        this.renderBrokenBookmarks();
+        if (window.__refreshScrollbars) window.__refreshScrollbars();
+        // ★ 同步清除 storage 中的扫描状态，防止重开弹窗后恢复旧数据
+        chrome.runtime.sendMessage({ action: 'clear-broken-scan-state' }, (resp) => {
+          if (chrome.runtime.lastError) {
+            // 后台偶发未就绪，忽略即可（内存已清空，下次扫描会覆盖）
+            console.warn('clear-broken-scan-state failed:', chrome.runtime.lastError.message);
+          }
+        });
+        showNotification(i18n.getMessage('resultsCleared') || 'Results cleared', 'info');
+      }
+    );
   }
 
   /**
@@ -4111,5 +4203,116 @@ class App {
     }).join(' / ');
   }
 }
+
+/**
+ * 自定义滚动条：隐藏原生滚动条后用 JS 驱动主题色滑块
+ * 针对所有 .smart-list 容器（失效书签/空文件夹/清理建议）
+ */
+(function initCustomScrollbars() {
+  // 全局只初始化一次
+  if (window.__customScrollbarsReady) return;
+  window.__customScrollbarsReady = true;
+
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  function setupOne(scroller) {
+    if (scroller.__customScrollbar) {
+      if (scroller.__scrollUpdate) scroller.__scrollUpdate();
+      return;
+    }
+    scroller.__customScrollbar = true;
+
+    const bar = document.createElement('div');
+    bar.className = 'custom-scrollbar';
+    const thumb = document.createElement('div');
+    thumb.className = 'custom-scrollbar-thumb';
+    bar.appendChild(thumb);
+    scroller.appendChild(bar);
+
+    function update() {
+      const trackH = scroller.clientHeight - 8;
+      const scrollH = scroller.scrollHeight;
+      const clientH = scroller.clientHeight;
+      const ratio = clientH / scrollH;
+      // 轨道随滚动抵消位移（绝对定位子元素会随内容一起滚动，需反向偏移保持固定）
+      bar.style.height = Math.max(trackH, 4) + 'px';
+      bar.style.top = (4 - scroller.scrollTop) + 'px';
+      if (scrollH <= clientH + 2) {
+        bar.style.display = 'none';
+        return;
+      }
+      bar.style.display = 'block';
+      const thumbH = clamp(trackH * 0.45, Math.floor(trackH * ratio), trackH * 0.6);
+      thumb.style.height = thumbH + 'px';
+      const maxScroll = scrollH - clientH;
+      const maxThumb = trackH - thumbH;
+      const top = maxScroll > 0 ? (scroller.scrollTop / maxScroll) * maxThumb : 0;
+      thumb.style.top = top + 'px';
+    }
+    scroller.__scrollUpdate = update;
+
+    scroller.addEventListener('scroll', () => {
+      scroller.classList.add('scrolling');
+      clearTimeout(scroller.__scrollTimer);
+      scroller.__scrollTimer = setTimeout(() => scroller.classList.remove('scrolling'), 800);
+      update();
+    });
+
+    // 拖拽滑块
+    let dragging = false;
+    let startY = 0;
+    let startTop = 0;
+    thumb.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startY = e.clientY;
+      startTop = parseFloat(thumb.style.top) || 0;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const trackH = bar.clientHeight;
+      const thumbH = thumb.offsetHeight;
+      const maxThumb = trackH - thumbH;
+      const maxScroll = scroller.scrollHeight - scroller.clientHeight;
+      let newTop = clamp(startTop + (e.clientY - startY), 0, maxThumb);
+      thumb.style.top = newTop + 'px';
+      scroller.scrollTop = (newTop / maxThumb) * maxScroll;
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+
+    // 点击轨道跳转
+    bar.addEventListener('mousedown', (e) => {
+      if (e.target === thumb) return;
+      const rect = bar.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      const thumbH = thumb.offsetHeight;
+      const maxThumb = bar.clientHeight - thumbH;
+      const maxScroll = scroller.scrollHeight - scroller.clientHeight;
+      const newTop = clamp(clickY - thumbH / 2, 0, maxThumb);
+      scroller.scrollTop = (newTop / maxThumb) * maxScroll;
+    });
+
+    // 内容变化时刷新
+    const ro = new ResizeObserver(() => update());
+    ro.observe(scroller);
+
+    requestAnimationFrame(update);
+    return update;
+  }
+
+  function setupAll() {
+    document.querySelectorAll('.smart-list').forEach(setupOne);
+  }
+
+  // 初次渲染后初始化（module 脚本在 DOMContentLoaded 之后才执行，需兼容两种状态）
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(setupAll, 50));
+  } else {
+    setTimeout(setupAll, 50);
+  }
+
+  // 暴露给实例，供列表内容变化后调用
+  window.__refreshScrollbars = setupAll;
+})();
 
 const app = new App();

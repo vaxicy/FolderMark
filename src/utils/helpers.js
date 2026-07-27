@@ -136,7 +136,7 @@ function showNotificationInternal(message, type, duration, action, onComplete) {
   // 关闭按钮
   const closeBtn = document.createElement('button');
   closeBtn.className = 'notification-close';
-  closeBtn.innerHTML = '×';
+  closeBtn.textContent = '×';
   closeBtn.onclick = () => removeNotification(notification, onComplete);
   notification.appendChild(closeBtn);
   

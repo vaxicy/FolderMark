@@ -3,6 +3,13 @@
  * 淡黄色文件夹风格 + 橙色强调色
  */
 
+/* 全局隐藏滚动条箭头按钮（某些 Chrome 配置下简单 display:none 会失效） */
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* CSS 变量 - 浅色主题（文件夹淡黄风格） */
 :root {
   /* 主色调 - 橙色强调 */
@@ -1961,6 +1968,9 @@ body {
   flex: 1;
   font-size: 12px;
   line-height: 1.4;
+  max-height: 120px;
+  overflow-y: auto;
+  word-break: break-word;
 }
 
 .notification-action {
@@ -2166,8 +2176,53 @@ body {
 }
 
 .smart-list {
+  position: relative;
   max-height: 300px;
   overflow-y: auto;
+  /* 隐藏原生滚动条（含箭头） */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.smart-list::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.smart-list::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ===== 自定义滚动条（跟随主题） ===== */
+.custom-scrollbar {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  width: 4px;
+  background: transparent;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+}
+.smart-list:hover .custom-scrollbar,
+.smart-list.scrolling .custom-scrollbar {
+  opacity: 1;
+}
+.custom-scrollbar-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--border-color);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.custom-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 /* 失效书签检测 */
@@ -2203,6 +2258,7 @@ body {
   margin-top: 8px;
   display: flex;
   justify-content: flex-end;
+  gap: 6px;
 }
 
 .broken-bookmark-item {
@@ -3048,7 +3104,7 @@ body {
 
 .circle {
   fill: none;
-  stroke: var(--success);
+  stroke: var(--primary);
   stroke-width: 3;
   stroke-linecap: round;
   transition: stroke-dasharray 0.5s ease, stroke 0.5s ease;

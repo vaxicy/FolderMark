@@ -158,5 +158,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sendResponse(res[BROKEN_SCAN_KEY] || null);
       });
       return true;
+
+    case 'clear-broken-scan-state':
+      chrome.storage.local.remove(BROKEN_SCAN_KEY, () => {
+        sendResponse({ ok: true });
+      });
+      return true;
   }
 });

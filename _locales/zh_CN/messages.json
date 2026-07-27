@@ -422,6 +422,15 @@
   "confirmCleanBrokenMessage": {
     "message": "删除 $1 个失效书签？"
   },
+  "clearBroken": {
+    "message": "清空结果"
+  },
+  "confirmClearResults": {
+    "message": "将清空检测结果，不会删除书签本身。"
+  },
+  "resultsCleared": {
+    "message": "检测结果已清空"
+  },
   "statusTimeout": {
     "message": "超时"
   },
@@ -760,6 +769,12 @@
   },
   "startScan": {
     "message": "开始扫描"
+  },
+  "scanningBroken": {
+    "message": "正在扫描中..."
+  },
+  "scanningBrokenDesc": {
+    "message": "正在检测书签状态，请稍候。"
   },
   "runAnalysis": {
     "message": "运行分析"

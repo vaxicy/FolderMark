@@ -422,6 +422,15 @@
   "confirmCleanBrokenMessage": {
     "message": "Delete $1 broken bookmarks?"
   },
+  "clearBroken": {
+    "message": "Clear Results"
+  },
+  "confirmClearResults": {
+    "message": "This will clear the scan results. Bookmarks will not be deleted."
+  },
+  "resultsCleared": {
+    "message": "Results cleared"
+  },
   "statusTimeout": {
     "message": "Timeout"
   },
@@ -760,6 +769,12 @@
   },
   "startScan": {
     "message": "Start Scan"
+  },
+  "scanningBroken": {
+    "message": "Scanning in progress..."
+  },
+  "scanningBrokenDesc": {
+    "message": "Checking bookmark status, please wait."
   },
   "runAnalysis": {
     "message": "Run Analysis"
