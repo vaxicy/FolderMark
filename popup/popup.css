@@ -259,6 +259,54 @@
   color: #5A4880;
 }
 
+/* 晴空主题（Sky - sky-blue 风格） */
+[data-theme="sky"] {
+  --primary: #5BA3CF;
+  --primary-hover: #4A92BE;
+  --primary-light: #D9F0FD;
+
+  --danger: #C0392B;
+  --danger-hover: #A93226;
+  --danger-light: #F9E0DC;
+
+  --success: #3F7A5A;
+  --success-light: #DCEFE4;
+
+  --bg-primary: #FAFCFE;
+  --bg-secondary: #EDF6FB;
+  --bg-tertiary: #DFEEF7;
+
+  --text-primary: #2B4A5E;
+  --text-secondary: #3D6680;
+  --text-tertiary: #5882A0;
+
+  --border-color: #C5DAE8;
+  --shadow-sm: 0 1px 2px 0 rgba(43, 74, 94, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(43, 74, 94, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(43, 74, 94, 0.15);
+}
+
+/* 晴空主题下的 header 渐变（天蓝 → 浅青，清爽晴空感） */
+[data-theme="sky"] .header {
+  background: linear-gradient(135deg, #C6E7FF 0%, #D4F6FF 100%);
+}
+
+/* 晴空主题下的主按钮：浅蓝底 + 深海字，保证 WCAG AA 对比度 */
+[data-theme="sky"] .btn-primary {
+  background: #C6E7FF;
+  color: var(--text-primary);
+}
+
+[data-theme="sky"] .btn-primary:hover {
+  background: #B0DCF7;
+}
+
+/* 晴空主题下的文字型强调（logo / 统计数字）：用更深的钴蓝保证可读 */
+[data-theme="sky"] .logo,
+[data-theme="sky"] .stat-number {
+  color: #2E6A8C;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);

@@ -80,6 +80,9 @@
   "themeIris": {
     "message": "Iris"
   },
+  "themeSky": {
+    "message": "Sky"
+  },
   "themeDark": {
     "message": "Dark"
   },
