@@ -1,0 +1,830 @@
+{
+  "extensionName": {
+    "message": "FolderMark - Gestor de carpetas de marcadores"
+  },
+  "extensionDescription": {
+    "message": "Añade etiquetas de color a las carpetas de marcadores y organiza los marcadores de Chrome de forma eficiente"
+  },
+  "initializationFailed": {
+    "message": "Error de inicialización: $1"
+  },
+  "tagline": {
+    "message": "Organiza tus marcadores más rápido."
+  },
+  "searchPlaceholder": {
+    "message": "Buscar carpetas..."
+  },
+  "totalFolders": {
+    "message": "Carpetas"
+  },
+  "totalBookmarks": {
+    "message": "Marcadores"
+  },
+  "emptyFolders": {
+    "message": "Vacías"
+  },
+  "duplicates": {
+    "message": "Duplicados"
+  },
+  "tabFolders": {
+    "message": "Carpetas"
+  },
+  "tabEmpty": {
+    "message": "Vacías"
+  },
+  "tabDuplicates": {
+    "message": "Duplicados"
+  },
+  "tabSettings": {
+    "message": "Ajustes"
+  },
+  "sortByName": {
+    "message": "Nombre"
+  },
+  "sortByCount": {
+    "message": "Cantidad"
+  },
+  "sortByPath": {
+    "message": "Ruta"
+  },
+  "sortByDate": {
+    "message": "Fecha"
+  },
+  "emptyFoldersTitle": {
+    "message": "Carpetas vacías"
+  },
+  "cleanAllEmpty": {
+    "message": "Limpiar todo"
+  },
+  "duplicatesTitle": {
+    "message": "Duplicados"
+  },
+  "settingsTitle": {
+    "message": "Ajustes"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeLight": {
+    "message": "Claro"
+  },
+  "themeBlush": {
+    "message": "Blush"
+  },
+  "themeMatcha": {
+    "message": "Matcha"
+  },
+  "themeLatte": {
+    "message": "Latte"
+  },
+  "themeIris": {
+    "message": "Iris"
+  },
+  "themeSky": {
+    "message": "Sky"
+  },
+  "themeCoral": {
+    "message": "Coral"
+  },
+  "themeRose": {
+    "message": "Rose"
+  },
+  "themeMint": {
+    "message": "Mint"
+  },
+  "themeDark": {
+    "message": "Oscuro"
+  },
+  "language": {
+    "message": "Idioma"
+  },
+  "deleteConfirm": {
+    "message": "Confirmar eliminación"
+  },
+  "exportStructure": {
+    "message": "Exportar"
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "close": {
+    "message": "Cerrar"
+  },
+  "confirm": {
+    "message": "Confirmar"
+  },
+  "delete": {
+    "message": "Eliminar"
+  },
+  "rename": {
+    "message": "Renombrar"
+  },
+  "merge": {
+    "message": "Combinar"
+  },
+  "open": {
+    "message": "Abrir"
+  },
+  "copyPath": {
+    "message": "Copiar"
+  },
+  "selectTargetFolder": {
+    "message": "Selecciona la carpeta de destino"
+  },
+  "noTargetFolder": {
+    "message": "No hay carpeta de destino disponible"
+  },
+  "confirmMerge": {
+    "message": "Confirmar combinación"
+  },
+  "confirmMergeMessage": {
+    "message": "¿Combinar la carpeta \"$1\" en la carpeta seleccionada?"
+  },
+  "mergeSuccess": {
+    "message": "Se movieron $1 marcadores correctamente"
+  },
+  "mergeFailed": {
+    "message": "Error al combinar: $1"
+  },
+  "openFailed": {
+    "message": "Error al abrir: $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "Confirmar eliminación"
+  },
+  "confirmDelete": {
+    "message": "¿Eliminar esta carpeta vacía?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "¿Eliminar la carpeta y sus $1 marcadores?"
+  },
+  "confirmDeleteAll": {
+    "message": "¿Eliminar todas las carpetas vacías?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "¿Eliminar las $1 carpetas vacías?"
+  },
+  "duplicateCount": {
+    "message": "$1 duplicados"
+  },
+  "noFoldersFound": {
+    "message": "No se encontraron carpetas"
+  },
+  "noEmptyFolders": {
+    "message": "¡No hay carpetas vacías!"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "Tus marcadores están bien organizados."
+  },
+  "noDuplicates": {
+    "message": "¡No hay carpetas duplicadas!"
+  },
+  "noDuplicatesDesc": {
+    "message": "La estructura de tus carpetas está muy ordenada."
+  },
+  "loading": {
+    "message": "Cargando..."
+  },
+  "rescanBookmarks": {
+    "message": "Volver a escanear marcadores"
+  },
+  "cannotDeleteRoot": {
+    "message": "No se pueden eliminar las carpetas raíz del sistema (Barra de marcadores, Otros marcadores, etc.)"
+  },
+  "newFolder": {
+    "message": "Nueva"
+  },
+  "newFolderPlaceholder": {
+    "message": "Introduce el nombre de la carpeta:"
+  },
+  "savePageConfirm": {
+    "message": "¿Guardar página en marcadores?"
+  },
+  "selectFolder": {
+    "message": "Introduce el nombre de una carpeta existente o una nueva. Cancelar guarda en la barra de marcadores."
+  },
+  "pageSaved": {
+    "message": "Página guardada en marcadores"
+  },
+  "saveFailed": {
+    "message": "Error al guardar: $1"
+  },
+  "folderCreated": {
+    "message": "Carpeta creada correctamente"
+  },
+  "createFailed": {
+    "message": "Error al crear: $1"
+  },
+  "renameSuccess": {
+    "message": "Carpeta renombrada correctamente"
+  },
+  "renameFailed": {
+    "message": "Error al renombrar: $1"
+  },
+  "appearance": {
+    "message": "Apariencia"
+  },
+  "operations": {
+    "message": "Operaciones"
+  },
+  "addNote": {
+    "message": "Añadir una nota..."
+  },
+  "noteSaved": {
+    "message": "Nota guardada"
+  },
+  "saveNoteFailed": {
+    "message": "Error al guardar la nota: $1"
+  },
+  "operationFailed": {
+    "message": "Error en la operación: $1"
+  },
+  "data": {
+    "message": "Datos"
+  },
+  "about": {
+    "message": "Mantenimiento"
+  },
+  "importStructure": {
+    "message": "Importar"
+  },
+  "restoreDefaults": {
+    "message": "Restaurar valores"
+  },
+  "confirmRestore": {
+    "message": "¿Restaurar la configuración predeterminada?"
+  },
+  "restoreSuccess": {
+    "message": "Configuración restaurada a los valores predeterminados"
+  },
+  "restoreFailed": {
+    "message": "Error al restaurar: $1"
+  },
+  "selectAll": {
+    "message": "Seleccionar todo"
+  },
+  "selected": {
+    "message": "seleccionados"
+  },
+  "batchMerge": {
+    "message": "Combinar"
+  },
+  "batchDelete": {
+    "message": "Eliminar"
+  },
+  "batchExport": {
+    "message": "Exportar"
+  },
+  "batchMergeMin": {
+    "message": "Selecciona al menos 2 carpetas para combinar"
+  },
+  "batchMergeSuccess": {
+    "message": "Se movieron $1 marcadores"
+  },
+  "batchExportSuccess": {
+    "message": "Se exportaron $1 carpetas"
+  },
+  "confirmBatchDelete": {
+    "message": "¿Eliminar $1 carpetas?"
+  },
+  "previewItems": {
+    "message": "Elementos afectados: $1"
+  },
+  "moreItems": {
+    "message": "+$1 más"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "Se exportará un respaldo JSON antes de eliminar."
+  },
+  "tabSmart": {
+    "message": "Inteligente"
+  },
+  "smartTitle": {
+    "message": "Funciones inteligentes"
+  },
+  "duplicateBookmarks": {
+    "message": "Marcadores duplicados"
+  },
+  "cleanDuplicates": {
+    "message": "Limpiar duplicados"
+  },
+  "noDuplicateBookmarks": {
+    "message": "¡No hay marcadores duplicados!"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "Todos tus marcadores son únicos."
+  },
+  "cleanupSuggestions": {
+    "message": "Sugerencias de limpieza"
+  },
+  "noSuggestions": {
+    "message": "Aún no hay sugerencias"
+  },
+  "noSuggestionsDesc": {
+    "message": "Tus marcadores están bien organizados."
+  },
+  "confirmCleanDuplicates": {
+    "message": "Limpiar marcadores duplicados"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "¿Eliminar $1 marcadores duplicados?"
+  },
+  "emptyTitle": {
+    "message": "Carpetas vacías"
+  },
+  "emptyDesc": {
+    "message": "Se encontraron $1 carpetas vacías que se pueden eliminar"
+  },
+  "unusedTitle": {
+    "message": "Carpetas sin usar"
+  },
+  "unusedDesc": {
+    "message": "Se encontraron $1 carpetas sin modificar en más de 6 meses"
+  },
+  "smallTitle": {
+    "message": "Carpetas pequeñas"
+  },
+  "smallDesc": {
+    "message": "Se encontraron $1 carpetas con 2 o menos marcadores (considera combinarlas)"
+  },
+  "deleteAll": {
+    "message": "Eliminar todo"
+  },
+  "review": {
+    "message": "Selección rápida"
+  },
+  "mergeAll": {
+    "message": "Combinar todo"
+  },
+  "fix": {
+    "message": "Arreglar"
+  },
+  "foldersSelected": {
+    "message": "$1 carpetas seleccionadas. Usa las operaciones en lote para gestionarlas."
+  },
+  "healthScoreLabel": {
+    "message": "Puntuación"
+  },
+  "issues": {
+    "message": "Problemas"
+  },
+  "brokenBookmarks": {
+    "message": "Marcadores rotos"
+  },
+  "scanBroken": {
+    "message": "Escanear"
+  },
+  "checking": {
+    "message": "Comprobando..."
+  },
+  "noBrokenBookmarks": {
+    "message": "Aún no se ha escaneado"
+  },
+  "noBookmarksToCheck": {
+    "message": "No hay marcadores que comprobar"
+  },
+  "scanFailed": {
+    "message": "Error en el escaneo: $1"
+  },
+  "scanComplete": {
+    "message": "Escaneo completo: $1 rotos, $2 válidos"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "No hay marcadores rotos que limpiar"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "No hay marcadores duplicados que limpiar"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "No hay carpetas vacías que limpiar"
+  },
+  "cleanFailed": {
+    "message": "Error al limpiar: $1"
+  },
+  "cleanEmptyResult": {
+    "message": "Eliminadas $1 carpetas, $2 fallaron"
+  },
+  "deleteFailed": {
+    "message": "Error al eliminar: $1"
+  },
+  "deletedWithFailures": {
+    "message": "Eliminadas $1, $2 fallaron"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "Haz clic en \"Escanear\" para comprobar los marcadores rotos."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "¡No hay marcadores rotos!"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "Todos tus marcadores son accesibles."
+  },
+  "cleanBroken": {
+    "message": "Eliminar rotos"
+  },
+  "confirmCleanBroken": {
+    "message": "Eliminar marcadores rotos"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "¿Eliminar $1 marcadores rotos?"
+  },
+  "clearBroken": {
+    "message": "Borrar resultados"
+  },
+  "confirmClearResults": {
+    "message": "Esto borrará los resultados del escaneo. Los marcadores no se eliminarán."
+  },
+  "resultsCleared": {
+    "message": "Resultados borrados"
+  },
+  "statusTimeout": {
+    "message": "Tiempo agotado"
+  },
+  "statusBroken": {
+    "message": "Roto"
+  },
+  "hostPermissionRequired": {
+    "message": "Se requiere acceso al sitio para comprobar el estado de los marcadores."
+  },
+  "statusUnreachable": {
+    "message": "Inaccesible"
+  },
+  "statusUnknown": {
+    "message": "Desconocido"
+  },
+  "selectColor": {
+    "message": "Seleccionar color"
+  },
+  "allColors": {
+    "message": "Todos los colores"
+  },
+  "actionPosition": {
+    "message": "Posición de acción"
+  },
+  "actionPositionLeft": {
+    "message": "Izquierda"
+  },
+  "actionPositionRight": {
+    "message": "Derecha"
+  },
+  "filterByColor": {
+    "message": "Filtrar por color"
+  },
+  "setColor": {
+    "message": "Establecer color"
+  },
+  "toggleTheme": {
+    "message": "Cambiar tema"
+  },
+  "keep": {
+    "message": "Mantener"
+  },
+  "more": {
+    "message": "más"
+  },
+  "colornone": {
+    "message": "Ninguno"
+  },
+  "colorcustom": {
+    "message": "Personalizado..."
+  },
+  "colorRed": {
+    "message": "Rojo"
+  },
+  "colorOrange": {
+    "message": "Naranja"
+  },
+  "colorYellow": {
+    "message": "Amarillo"
+  },
+  "colorGreen": {
+    "message": "Verde"
+  },
+  "colorBlue": {
+    "message": "Azul"
+  },
+  "colorPurple": {
+    "message": "Púrpura"
+  },
+  "undo": {
+    "message": "Deshacer"
+  },
+  "folderDeleted": {
+    "message": "$1 eliminada"
+  },
+  "foldersDeletedDesc": {
+    "message": "carpetas"
+  },
+  "undoSuccess": {
+    "message": "Se restauraron $1 carpetas"
+  },
+  "undoFailed": {
+    "message": "$1 carpetas no se pudieron restaurar (carpeta padre eliminada)"
+  },
+  "undoActionFailed": {
+    "message": "Error al deshacer: $1"
+  },
+  "batchColor": {
+    "message": "Color"
+  },
+  "batchNote": {
+    "message": "Nota"
+  },
+  "batchColorSuccess": {
+    "message": "Color aplicado a $1 carpetas"
+  },
+  "batchNoteSuccess": {
+    "message": "Nota añadida a $1 carpetas"
+  },
+  "batchNotePrompt": {
+    "message": "Introduce la nota para las carpetas seleccionadas:"
+  },
+  "exportSuccess": {
+    "message": "Configuración exportada correctamente"
+  },
+  "exportFailed": {
+    "message": "Error al exportar"
+  },
+  "importSuccess": {
+    "message": "Configuración importada correctamente"
+  },
+  "importFailed": {
+    "message": "Error al importar"
+  },
+  "importInvalidFormat": {
+    "message": "Formato de archivo no válido"
+  },
+  "batchColorDesc": {
+    "message": "Aplicando color a"
+  },
+  "batchColorDesc2": {
+    "message": "carpetas"
+  },
+  "batchNoteDesc": {
+    "message": "Añade la misma nota a las carpetas seleccionadas"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "setIcon": {
+    "message": "Establecer icono"
+  },
+  "selectIcon": {
+    "message": "Seleccionar icono"
+  },
+  "iconNone": {
+    "message": "Predeterminado"
+  },
+  "iconOpenFolder": {
+    "message": "Carpeta abierta"
+  },
+  "iconCardFileBox": {
+    "message": "Archivo"
+  },
+  "iconChart": {
+    "message": "Gráfico"
+  },
+  "iconMemo": {
+    "message": "Nota"
+  },
+  "iconPin": {
+    "message": "Fijar"
+  },
+  "iconStar": {
+    "message": "Estrella"
+  },
+  "iconBookmark": {
+    "message": "Marcador"
+  },
+  "iconHome": {
+    "message": "Inicio"
+  },
+  "iconBriefcase": {
+    "message": "Trabajo"
+  },
+  "iconTarget": {
+    "message": "Objetivo"
+  },
+  "iconTools": {
+    "message": "Herramientas"
+  },
+  "iconBooks": {
+    "message": "Libros"
+  },
+  "iconArt": {
+    "message": "Arte"
+  },
+  "iconWrench": {
+    "message": "Ajustes"
+  },
+  "iconIdea": {
+    "message": "Idea"
+  },
+  "iconMusic": {
+    "message": "Música"
+  },
+  "iconMovie": {
+    "message": "Película"
+  },
+  "iconLightning": {
+    "message": "Importante"
+  },
+  "iconLock": {
+    "message": "Privado"
+  },
+  "iconGlobe": {
+    "message": "Web"
+  },
+  "iconEmail": {
+    "message": "Correo"
+  },
+  "iconImage": {
+    "message": "Imágenes"
+  },
+  "iconVideo": {
+    "message": "Vídeos"
+  },
+  "iconFileBox": {
+    "message": "Archivo"
+  },
+  "toggleExpand": {
+    "message": "Expandir"
+  },
+  "subfolders": {
+    "message": "Subcarpetas"
+  },
+  "bookmarks": {
+    "message": "Marcadores"
+  },
+  "emptyFolder": {
+    "message": "Carpeta vacía"
+  },
+  "loadFailed": {
+    "message": "Error al cargar"
+  },
+  "searchModeFolder": {
+    "message": "Buscar carpetas"
+  },
+  "searchModeBookmark": {
+    "message": "Buscar marcadores"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "Buscar marcadores..."
+  },
+  "noSearchResults": {
+    "message": "No se encontraron resultados"
+  },
+  "searchError": {
+    "message": "Error en la búsqueda"
+  },
+  "matchingBookmarks": {
+    "message": "Marcadores coincidentes"
+  },
+  "confirmDeleteBookmark": {
+    "message": "Eliminar marcador"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "¿Eliminar este marcador?"
+  },
+  "bookmarkDeleted": {
+    "message": "Marcador eliminado"
+  },
+  "moveBookmark": {
+    "message": "Mover"
+  },
+  "selectTargetForBookmark": {
+    "message": "Mover marcador a"
+  },
+  "bookmarkMoved": {
+    "message": "Marcador movido"
+  },
+  "moveFailed": {
+    "message": "Error al mover: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "Confirmar combinación"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "¿Combinar las $1 carpetas seleccionadas en la carpeta de destino?"
+  },
+  "loadMore": {
+    "message": "Cargar más"
+  },
+  "noFoldersDesc": {
+    "message": "Tus marcadores aparecerán aquí una vez escaneados. Añade una carpeta o vuelve a escanear para empezar."
+  },
+  "scanningBookmarks": {
+    "message": "Escaneando tus marcadores..."
+  },
+  "collapse": {
+    "message": "Contraer"
+  },
+  "hideRootFolders": {
+    "message": "Ocultar carpetas raíz (Barra de marcadores, Otros marcadores)"
+  },
+  "lastModified": {
+    "message": "Última modificación"
+  },
+  "undoHistory": {
+    "message": "Historial de deshacer"
+  },
+  "clearHistory": {
+    "message": "Borrar"
+  },
+  "noUndoHistory": {
+    "message": "Sin historial de deshacer"
+  },
+  "historyCleared": {
+    "message": "Historial borrado"
+  },
+  "tabStats": {
+    "message": "Estadísticas"
+  },
+  "statsTitle": {
+    "message": "Estadísticas"
+  },
+  "avgBookmarks": {
+    "message": "Prom./carpeta"
+  },
+  "coloredFolders": {
+    "message": "Coloreadas"
+  },
+  "colorDistribution": {
+    "message": "Distribución de color"
+  },
+  "sizeDistribution": {
+    "message": "Distribución por tamaño"
+  },
+  "smartClassify": {
+    "message": "Clasificación inteligente"
+  },
+  "smartClassifyDesc": {
+    "message": "Sugiere automáticamente colores para las carpetas sin color según sus nombres"
+  },
+  "runSmartClassify": {
+    "message": "Ejecutar clasificación inteligente"
+  },
+  "smartClassifyDone": {
+    "message": "Clasificación inteligente completa, colores sugeridos para $1 carpetas"
+  },
+  "apply": {
+    "message": "Aplicar"
+  },
+  "donateTitle": {
+    "message": "Apoya"
+  },
+  "donateDesc": {
+    "message": "Si FolderMark te es útil, considera apoyar al desarrollador ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "Escanear código QR"
+  },
+  "buyMeACoffee": {
+    "message": "Invítame un café"
+  },
+  "openPayPal": {
+    "message": "Apoya vía PayPal"
+  },
+  "thankYou": {
+    "message": "¡Gracias por tu apoyo!"
+  },
+  "qrCodeNotFound": {
+    "message": "Guarda el código QR de WeChat como icons/wechat-donate.png"
+  },
+  "clearSearch": {
+    "message": "Borrar búsqueda"
+  },
+  "startScan": {
+    "message": "Iniciar escaneo"
+  },
+  "scanningBroken": {
+    "message": "Escaneando..."
+  },
+  "scanningBrokenDesc": {
+    "message": "Comprobando el estado de los marcadores, por favor espera."
+  },
+  "runAnalysis": {
+    "message": "Ejecutar análisis"
+  },
+  "clearFilters": {
+    "message": "Borrar filtros"
+  },
+  "analysisComplete": {
+    "message": "Análisis completo"
+  },
+  "feedbackTitle": {
+    "message": "Comentarios"
+  },
+  "feedbackDesc": {
+    "message": "¿Tienes un problema o sugerencia? Escríbele al autor por correo."
+  },
+  "sendEmail": {
+    "message": "Enviar correo"
+  }
+}

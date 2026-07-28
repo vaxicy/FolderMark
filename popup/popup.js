@@ -4042,7 +4042,8 @@ class App {
 
     const formatTime = (timestamp) => {
       const d = new Date(timestamp);
-      return d.toLocaleString(this.language === 'zh_CN' ? 'zh-CN' : 'en-US', {
+      const locale = this.language === 'zh_CN' ? 'zh-CN' : (this.language === 'es' ? 'es-ES' : 'en-US');
+      return d.toLocaleString(locale, {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
