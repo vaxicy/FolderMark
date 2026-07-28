@@ -603,6 +603,14 @@ class App {
       });
     }
 
+    // 问题反馈入口
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    if (feedbackBtn) {
+      feedbackBtn.addEventListener('click', () => {
+        chrome.tabs.create({ url: 'mailto:huangzero2004@gmail.com?subject=' + encodeURIComponent('FolderMark 问题反馈') });
+      });
+    }
+
     // 空状态 - 开始扫描失效书签
     const emptyStateScanBroken = document.getElementById('emptyStateScanBroken');
     if (emptyStateScanBroken) {
@@ -1757,12 +1765,15 @@ class App {
   bindFaviconFallbacks(container) {
     if (!container) return;
     container.querySelectorAll('.details-bookmark-favicon').forEach(img => {
-      img.addEventListener('error', () => {
+      const fallback = () => {
         const span = document.createElement('span');
         span.className = 'details-bookmark-favicon';
         span.textContent = '🔗';
         img.replaceWith(span);
-      });
+      };
+      // 已加载失败的直接替换（错过 error 事件的情况）
+      if (img.complete && img.naturalHeight === 0) { fallback(); return; }
+      img.addEventListener('error', fallback);
     });
   }
 

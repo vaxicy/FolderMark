@@ -817,5 +817,14 @@
   },
   "analysisComplete": {
     "message": "分析完成"
+  },
+  "feedbackTitle": {
+    "message": "问题反馈"
+  },
+  "feedbackDesc": {
+    "message": "遇到问题或有建议？欢迎邮件联系作者。"
+  },
+  "sendEmail": {
+    "message": "发送邮件"
   }
 }

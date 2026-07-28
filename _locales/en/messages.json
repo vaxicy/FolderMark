@@ -817,5 +817,14 @@
   },
   "analysisComplete": {
     "message": "Analysis complete"
+  },
+  "feedbackTitle": {
+    "message": "Feedback"
+  },
+  "feedbackDesc": {
+    "message": "Got an issue or a suggestion? Feel free to email the author."
+  },
+  "sendEmail": {
+    "message": "Send Email"
   }
 }
