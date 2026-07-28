@@ -20,5 +20,5 @@
 - 日期格式：`toLocaleString` 的 locale 映射在 `formatTime` 内（zh-CN/en-US/es-ES/ja-JP/ko-KR）。
 - 语言下拉在 `popup.html` 的 `#languageSelect`。
 - **不要**再散落 `this.language === 'zh_CN' ? zh : (this.language==='es' ? es : en)` 三元；统一用上述辅助方法，否则新增语言会漏改。
-- smartClassify 的「文件夹名→颜色」关键词映射（zh/en）未覆盖 ja/ko，日韩文件夹名不会被智能分类命中（仅影响该功能）。
+- smartClassify 的「文件夹名→颜色」关键词映射已覆盖 zh/en/es/ja/ko 五语言（6 色 × ~20 词/色）。
 - manifest 的 `default_locale` 为 `en`，多 locale 自动生效，无需改 manifest。
