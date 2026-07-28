@@ -1536,14 +1536,32 @@ class App {
   _suggestColorFromName(name) {
     const lowerName = name.toLowerCase();
     
-    // 关键词 → 颜色映射
+    // 关键词 → 颜色映射（zh/en/es/ja/ko）
     const keywords = {
-      red: ['红', 'red', '重要', 'important', '紧急', 'urgent', '错误', 'error', '警告', 'warning'],
-      orange: ['橙', 'orange', '项目', 'project', '工作', 'work', '待办', 'todo'],
-      yellow: ['黄', 'yellow', '笔记', 'note', '草稿', 'draft', '临时', 'temp'],
-      green: ['绿', 'green', '完成', 'done', '成功', 'success', '健康', 'health', '学习', 'study'],
-      blue: ['蓝', 'blue', '技术', 'tech', '开发', 'dev', '代码', 'code', '文档', 'doc'],
-      purple: ['紫', 'purple', '创意', 'creative', '设计', 'design', '灵感', 'inspiration']
+      red: ['红', 'red', '重要', 'important', '紧急', 'urgent', '错误', 'error', '警告', 'warning',
+            'rojo', 'importante', 'urgente', 'error', 'advertencia',
+            '赤', '重要', '緊急', 'エラー', '警告',
+            '빨강', '중요', '긴급', '오류', '경고'],
+      orange: ['橙', 'orange', '项目', 'project', '工作', 'work', '待办', 'todo',
+               'naranja', 'proyecto', 'trabajo', 'pendiente',
+               'オレンジ', 'プロジェクト', '仕事', 'ToDo',
+               '주황', '프로젝트', '업무', '할 일'],
+      yellow: ['黄', 'yellow', '笔记', 'note', '草稿', 'draft', '临时', 'temp',
+               'amarillo', 'nota', 'borrador', 'temporal',
+               '黄', 'ノート', '下書き', '一時',
+               '노랑', '메모', '초안', '임시'],
+      green: ['绿', 'green', '完成', 'done', '成功', 'success', '健康', 'health', '学习', 'study',
+              'verde', 'hecho', 'éxito', 'salud', 'estudio',
+              '緑', '完了', '成功', '健康', '学習',
+              '초록', '완료', '성공', '건강', '공부'],
+      blue: ['蓝', 'blue', '技术', 'tech', '开发', 'dev', '代码', 'code', '文档', 'doc',
+             'azul', 'tecnología', 'desarrollo', 'código', 'documento',
+             '青', '技術', '開発', 'コード', 'ドキュメント',
+             '파랑', '기술', '개발', '코드', '문서'],
+      purple: ['紫', 'purple', '创意', 'creative', '设计', 'design', '灵感', 'inspiration',
+               'púrpura', 'creativo', 'diseño', 'inspiración',
+               '紫', 'クリエイティブ', 'デザイン', 'インスピレーション',
+               '보라', '크리에이티브', '디자인', '영감']
     };
 
     for (const [color, words] of Object.entries(keywords)) {
