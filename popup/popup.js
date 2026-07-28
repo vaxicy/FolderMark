@@ -4172,6 +4172,7 @@ class App {
     await i18n.setLanguage(language);
     await chrome.storage.local.set({ [STORAGE_KEYS.LANGUAGE]: language });
     this.renderCurrentPage();
+    this.updateColorFilterOptions();
   }
 
   async toggleDeleteConfirm(enabled) {
@@ -4365,6 +4366,7 @@ class App {
       await theme.setTheme('light');
       await i18n.setLanguage('en');
       this.renderSettings();
+      this.updateColorFilterOptions();
       showNotification(i18n.getMessage('restoreSuccess') || 'Settings restored to defaults', 'success');
     } catch (error) {
       showNotification((i18n.getMessage('restoreFailed') || 'Restore failed: $1').replace('$1', error.message), 'error');
