@@ -826,5 +826,29 @@
   },
   "sendEmail": {
     "message": "Enviar correo"
+  },
+  "filterAllColors": {
+    "message": "Todos los colores"
+  },
+  "colorRed": {
+    "message": "Rojo"
+  },
+  "colorOrange": {
+    "message": "Naranja"
+  },
+  "colorYellow": {
+    "message": "Amarillo"
+  },
+  "colorGreen": {
+    "message": "Verde"
+  },
+  "colorBlue": {
+    "message": "Azul"
+  },
+  "colorPurple": {
+    "message": "Púrpura"
+  },
+  "filterNoColor": {
+    "message": "Sin color"
   }
 }

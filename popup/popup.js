@@ -861,12 +861,12 @@ class App {
 
     // 预设颜色（按常见顺序，带 hex 值用于 CSS 圆点）
     const presetList = [
-      { value: 'red',    hex: '#EF4444', zh: '红色',   en: 'Red' },
-      { value: 'orange', hex: '#F97316', zh: '橙色',   en: 'Orange' },
-      { value: 'yellow', hex: '#EAB308', zh: '黄色',   en: 'Yellow' },
-      { value: 'green',  hex: '#22C55E', zh: '绿色',   en: 'Green' },
-      { value: 'blue',   hex: '#3B82F6', zh: '蓝色',   en: 'Blue' },
-      { value: 'purple', hex: '#A855F7', zh: '紫色',   en: 'Purple' }
+      { value: 'red',    hex: '#EF4444', zh: '红色',   en: 'Red',      es: 'Rojo' },
+      { value: 'orange', hex: '#F97316', zh: '橙色',   en: 'Orange',   es: 'Naranja' },
+      { value: 'yellow', hex: '#EAB308', zh: '黄色',   en: 'Yellow',   es: 'Amarillo' },
+      { value: 'green',  hex: '#22C55E', zh: '绿色',   en: 'Green',    es: 'Verde' },
+      { value: 'blue',   hex: '#3B82F6', zh: '蓝色',   en: 'Blue',     es: 'Azul' },
+      { value: 'purple', hex: '#A855F7', zh: '紫色',   en: 'Purple',   es: 'Púrpura' }
     ];
 
     // 自定义颜色列表（# 开头）
@@ -879,7 +879,7 @@ class App {
     let optionsHtml = '';
 
     // "全部颜色" 选项
-    const allLabel = this.language === 'zh_CN' ? '全部颜色' : 'All Colors';
+    const allLabel = i18n.getMessage('filterAllColors');
     optionsHtml += `<div class="custom-select-option${currentValue === '' ? ' active' : ''}" data-value="">` +
       `<span class="color-dot" style="background:transparent;border:1px solid var(--border-color);"></span>` +
       `<span>${allLabel}</span></div>`;
@@ -887,7 +887,7 @@ class App {
     // 实际存在的预设颜色
     presetList.forEach(p => {
       if (colorSet.has(p.value)) {
-        const label = this.language === 'zh_CN' ? p.zh : p.en;
+        const label = this.language === 'zh_CN' ? p.zh : (this.language === 'es' ? p.es : p.en);
         optionsHtml += `<div class="custom-select-option${currentValue === p.value ? ' active' : ''}" data-value="${p.value}">` +
           `<span class="color-dot" style="background:${p.hex}"></span>` +
           `<span>${label}</span></div>`;
@@ -903,7 +903,7 @@ class App {
     });
 
     // "无颜色" 选项
-    const noColorLabel = this.language === 'zh_CN' ? '无颜色' : 'No Color';
+    const noColorLabel = i18n.getMessage('filterNoColor');
     optionsHtml += `<div class="custom-select-option${currentValue === '__nocolor__' ? ' active' : ''}" data-value="__nocolor__">` +
       `<span class="color-dot" style="background:transparent;border:1px dashed var(--border-color);"></span>` +
       `<span style="font-style:italic;color:var(--text-tertiary);">${noColorLabel}</span></div>`;
@@ -937,14 +937,14 @@ class App {
     const label = container.querySelector('.custom-select-label');
 
     const presetMap = {
-      '':            { hex: 'transparent', zh: '全部颜色', en: 'All Colors' },
-      'red':         { hex: '#EF4444',    zh: '红色',     en: 'Red' },
-      'orange':      { hex: '#F97316',    zh: '橙色',     en: 'Orange' },
-      'yellow':      { hex: '#EAB308',    zh: '黄色',     en: 'Yellow' },
-      'green':       { hex: '#22C55E',    zh: '绿色',     en: 'Green' },
-      'blue':        { hex: '#3B82F6',    zh: '蓝色',     en: 'Blue' },
-      'purple':      { hex: '#A855F7',    zh: '紫色',     en: 'Purple' },
-      '__nocolor__': { hex: 'transparent', zh: '无颜色',   en: 'No Color', dashed: true }
+      '':            { hex: 'transparent', zh: '全部颜色', en: 'All Colors',     es: 'Todos los colores' },
+      'red':         { hex: '#EF4444',    zh: '红色',     en: 'Red',           es: 'Rojo' },
+      'orange':      { hex: '#F97316',    zh: '橙色',     en: 'Orange',        es: 'Naranja' },
+      'yellow':      { hex: '#EAB308',    zh: '黄色',     en: 'Yellow',        es: 'Amarillo' },
+      'green':       { hex: '#22C55E',    zh: '绿色',     en: 'Green',         es: 'Verde' },
+      'blue':        { hex: '#3B82F6',    zh: '蓝色',     en: 'Blue',          es: 'Azul' },
+      'purple':      { hex: '#A855F7',    zh: '紫色',     en: 'Purple',        es: 'Púrpura' },
+      '__nocolor__': { hex: 'transparent', zh: '无颜色',   en: 'No Color',      es: 'Sin color', dashed: true }
     };
 
     const val = this.colorFilter;
@@ -954,14 +954,14 @@ class App {
 
     if (presetMap[val]) {
       hex = presetMap[val].hex;
-      text = this.language === 'zh_CN' ? presetMap[val].zh : presetMap[val].en;
+      text = this.language === 'zh_CN' ? presetMap[val].zh : (this.language === 'es' ? presetMap[val].es : presetMap[val].en);
       isDashed = !!presetMap[val].dashed;
     } else if (val && val.startsWith('#')) {
       hex = val;
       text = this.guessColorName(val);
     } else {
       hex = 'transparent';
-      text = this.language === 'zh_CN' ? '全部颜色' : 'All Colors';
+      text = i18n.getMessage('filterAllColors');
     }
 
     if (dot) {
@@ -980,166 +980,166 @@ class App {
    * 颜色库按「深色 → 标准 → 浅色 → 淡色(pastel) → 近白」梯度排列
    */
   guessColorName(hex) {
-    // 颜色数据库（hex → [r, g, b, 中文名, 英文名]）
+    // 颜色数据库（hex → [r, g, b, 中文名, 英文名, 西班牙语名]）
     // 每个色系均覆盖：深色/标准/浅色/淡色/近白 五个亮度梯度
     const colorDB = [
       // ── 红色系 ──
-      ['#8B0000', 139,  0,  0,   '暗红',     'Dark Red'],
-      ['#A52A2A', 165, 42, 42,   '栗色',     'Maroon'],
-      ['#B91C1C', 185, 28, 28,   '深红',     'Deep Red'],
-      ['#DC2626', 220, 38, 38,   '赤红',     'Crimson'],
-      ['#EF4444', 239, 68, 68,   '红色',     'Red'],
-      ['#F87171', 248,113,113,   '亮红',     'Bright Red'],
-      ['#FF0000', 255,  0,  0,   '纯红',     'Pure Red'],
-      ['#FF5733', 255, 87, 51,   '珊瑚红',   'Coral Red'],
-      ['#FF6347', 255, 99, 71,   '番茄红',   'Tomato'],
-      ['#FCA5A5', 252,165,165,   '浅红',     'Light Red'],
-      ['#FADBD8', 250,219,216,   '淡红',     'Pale Red'],
-      ['#FDEDEC', 253,237,236,   '粉白红',   'Pinkish White'],
+      ['#8B0000', 139,  0,  0,   '暗红',     'Dark Red',       'Rojo Oscuro'],
+      ['#A52A2A', 165, 42, 42,   '栗色',     'Maroon',         'Granate'],
+      ['#B91C1C', 185, 28, 28,   '深红',     'Deep Red',       'Rojo Profundo'],
+      ['#DC2626', 220, 38, 38,   '赤红',     'Crimson',        'Carmesí'],
+      ['#EF4444', 239, 68, 68,   '红色',     'Red',            'Rojo'],
+      ['#F87171', 248,113,113,   '亮红',     'Bright Red',     'Rojo Brillante'],
+      ['#FF0000', 255,  0,  0,   '纯红',     'Pure Red',       'Rojo Puro'],
+      ['#FF5733', 255, 87, 51,   '珊瑚红',   'Coral Red',      'Rojo Coral'],
+      ['#FF6347', 255, 99, 71,   '番茄红',   'Tomato',         'Tomate'],
+      ['#FCA5A5', 252,165,165,   '浅红',     'Light Red',      'Rojo Claro'],
+      ['#FADBD8', 250,219,216,   '淡红',     'Pale Red',       'Rojo Pálido'],
+      ['#FDEDEC', 253,237,236,   '粉白红',   'Pinkish White',  'Blanco Rosáceo'],
       // ── 橙色系 ──
-      ['#E65100', 230, 81,  0,   '铁锈橙',   'Rust Orange'],
-      ['#FF8C00', 255,140,  0,   '橙色',     'Orange'],
-      ['#F97316', 249,115, 22,   '亮橙',     'Bright Orange'],
-      ['#FFA500', 255,165,  0,   '琥珀橙',   'Amber Orange'],
-      ['#FFB347', 255,179, 71,   '蜜橙',     'Honey Orange'],
-      ['#FF7F50', 255,127, 80,   '珊瑚橙',   'Coral'],
-      ['#FDBA74', 253,186,116,   '浅橙',     'Light Orange'],
-      ['#FAD7A0', 250,215,160,   '淡橙',     'Pale Orange'],
-      ['#FEF5E7', 254,245,231,   '奶橙',     'Creamy Orange'],
+      ['#E65100', 230, 81,  0,   '铁锈橙',   'Rust Orange',    'Naranja Óxido'],
+      ['#FF8C00', 255,140,  0,   '橙色',     'Orange',         'Naranja'],
+      ['#F97316', 249,115, 22,   '亮橙',     'Bright Orange',  'Naranja Brillante'],
+      ['#FFA500', 255,165,  0,   '琥珀橙',   'Amber Orange',   'Naranja Ámbar'],
+      ['#FFB347', 255,179, 71,   '蜜橙',     'Honey Orange',   'Naranja Miel'],
+      ['#FF7F50', 255,127, 80,   '珊瑚橙',   'Coral',          'Coral'],
+      ['#FDBA74', 253,186,116,   '浅橙',     'Light Orange',   'Naranja Claro'],
+      ['#FAD7A0', 250,215,160,   '淡橙',     'Pale Orange',    'Naranja Pálido'],
+      ['#FEF5E7', 254,245,231,   '奶橙',     'Creamy Orange',  'Naranja Cremoso'],
       // ── 黄色/金色系 ──
-      ['#CA8A04', 202,138,  4,   '暗金',     'Dark Gold'],
-      ['#FFD700', 255,215,  0,   '金色',     'Gold'],
-      ['#F59E0B', 245,158, 11,   '琥珀黄',   'Amber'],
-      ['#FFC107', 255,193,  7,   '金黄',     'Golden'],
-      ['#EAB308', 234,179,  8,   '金黄花',   'Golden Yellow'],
-      ['#FACC15', 250,204, 21,   '柠檬黄',   'Lemon'],
-      ['#FBBF24', 251,191, 36,   '鲜黄',     'Vivid Yellow'],
-      ['#FFFF00', 255,255,  0,   '黄色',     'Yellow'],
-      ['#FDE047', 253,224, 71,   '浅黄',     'Light Yellow'],
-      ['#FCF3CF', 252,243,207,   '淡黄',     'Pale Yellow'],
-      ['#FEF9E7', 254,249,231,   '奶黄',     'Creamy Yellow'],
-      ['#FFF9C4', 255,249,196,   '柠檬白',   'Lemon White'],
+      ['#CA8A04', 202,138,  4,   '暗金',     'Dark Gold',      'Oro Oscuro'],
+      ['#FFD700', 255,215,  0,   '金色',     'Gold',           'Oro'],
+      ['#F59E0B', 245,158, 11,   '琥珀黄',   'Amber',          'Ámbar'],
+      ['#FFC107', 255,193,  7,   '金黄',     'Golden',         'Dorado'],
+      ['#EAB308', 234,179,  8,   '金黄花',   'Golden Yellow',  'Amarillo Dorado'],
+      ['#FACC15', 250,204, 21,   '柠檬黄',   'Lemon',          'Limón'],
+      ['#FBBF24', 251,191, 36,   '鲜黄',     'Vivid Yellow',   'Amarillo Vivo'],
+      ['#FFFF00', 255,255,  0,   '黄色',     'Yellow',         'Amarillo'],
+      ['#FDE047', 253,224, 71,   '浅黄',     'Light Yellow',   'Amarillo Claro'],
+      ['#FCF3CF', 252,243,207,   '淡黄',     'Pale Yellow',    'Amarillo Pálido'],
+      ['#FEF9E7', 254,249,231,   '奶黄',     'Creamy Yellow',  'Amarillo Cremoso'],
+      ['#FFF9C4', 255,249,196,   '柠檬白',   'Lemon White',    'Blanco Limón'],
       // ── 绿色系 ──
-      ['#14532D',  20, 83, 45,   '深林绿',   'Deep Forest'],
-      ['#166534',  22,101, 52,   '墨绿',     'Forest Green'],
-      ['#008000',   0,128,  0,   '绿色',     'Green'],
-      ['#16A34A',  22,163, 74,   '深绿',     'Dark Green'],
-      ['#22C55E',  34,197, 94,   '亮绿',     'Bright Green'],
-      ['#059669',   5,150,105,   '翠绿',     'Emerald'],
-      ['#10B981',  16,185,129,   '翡翠绿',   'Jade'],
-      ['#34D399',  52,211,153,   '薄荷绿',   'Mint'],
-      ['#6EE7B7', 110,231,183,   '浅绿',     'Light Green'],
-      ['#86EFAC', 134,239,172,   '嫩绿',     'Pale Green'],
-      ['#A7F3D0', 167,243,208,   '薄荷白',   'Mint Cream'],
-      ['#D5F5E3', 213,245,227,   '淡绿',     'Pale Green'],
-      ['#EAFAF1', 234,250,241,   '冰绿',     'Ice Green'],
-      ['#F0FFF0', 240,255,240,   '蜜露绿',   'Honeydew'],
+      ['#14532D',  20, 83, 45,   '深林绿',   'Deep Forest',    'Bosque Profundo'],
+      ['#166534',  22,101, 52,   '墨绿',     'Forest Green',   'Verde Bosque'],
+      ['#008000',   0,128,  0,   '绿色',     'Green',          'Verde'],
+      ['#16A34A',  22,163, 74,   '深绿',     'Dark Green',     'Verde Oscuro'],
+      ['#22C55E',  34,197, 94,   '亮绿',     'Bright Green',   'Verde Brillante'],
+      ['#059669',   5,150,105,   '翠绿',     'Emerald',        'Esmeralda'],
+      ['#10B981',  16,185,129,   '翡翠绿',   'Jade',           'Jade'],
+      ['#34D399',  52,211,153,   '薄荷绿',   'Mint',           'Menta'],
+      ['#6EE7B7', 110,231,183,   '浅绿',     'Light Green',    'Verde Claro'],
+      ['#86EFAC', 134,239,172,   '嫩绿',     'Pale Green',     'Verde Pálido'],
+      ['#A7F3D0', 167,243,208,   '薄荷白',   'Mint Cream',     'Crema de Menta'],
+      ['#D5F5E3', 213,245,227,   '淡绿',     'Pale Green',     'Verde Musgo'],
+      ['#EAFAF1', 234,250,241,   '冰绿',     'Ice Green',      'Verde Hielo'],
+      ['#F0FFF0', 240,255,240,   '蜜露绿',   'Honeydew',       'Mielada'],
       // ── 青色/蓝绿色系 ──
-      ['#115E59',  17, 94, 89,   '孔雀绿',   'Peacock'],
-      ['#0D9488',  13,148,136,   '凫绿',     'Teal'],
-      ['#008080',   0,128,128,   '凫蓝',     'Teal Blue'],
-      ['#00AAAA',   0,170,170,   '亮凫绿',   'Bright Teal'],
-      ['#00FFFF',   0,255,255,   '青色',     'Cyan'],
-      ['#06B6D4',   6,182,212,   '亮青',     'Bright Cyan'],
-      ['#0891B2',   8,145,178,   '深青',     'Dark Cyan'],
-      ['#67E8F9', 103,232,249,   '浅青',     'Light Cyan'],
-      ['#A5F3FC', 165,243,252,   '天青',     'Sky Cyan'],
-      ['#CCFBF1', 204,251,241,   '淡青',     'Pale Cyan'],
-      ['#D1F2EB', 209,242,235,   '青白',     'Cyan White'],
-      ['#E0F7FA', 224,247,250,   '冰青',     'Ice Cyan'],
-      ['#E8F8F5', 232,248,245,   '淡凫绿',   'Pale Teal'],
+      ['#115E59',  17, 94, 89,   '孔雀绿',   'Peacock',        'Pavo Real'],
+      ['#0D9488',  13,148,136,   '凫绿',     'Teal',           'Verde Azulado'],
+      ['#008080',   0,128,128,   '凫蓝',     'Teal Blue',      'Azul Verdoso'],
+      ['#00AAAA',   0,170,170,   '亮凫绿',   'Bright Teal',    'Verde Azulado Brillante'],
+      ['#00FFFF',   0,255,255,   '青色',     'Cyan',           'Cian'],
+      ['#06B6D4',   6,182,212,   '亮青',     'Bright Cyan',    'Cian Brillante'],
+      ['#0891B2',   8,145,178,   '深青',     'Dark Cyan',      'Cian Oscuro'],
+      ['#67E8F9', 103,232,249,   '浅青',     'Light Cyan',     'Cian Claro'],
+      ['#A5F3FC', 165,243,252,   '天青',     'Sky Cyan',       'Cian Celeste'],
+      ['#CCFBF1', 204,251,241,   '淡青',     'Pale Cyan',      'Cian Pálido'],
+      ['#D1F2EB', 209,242,235,   '青白',     'Cyan White',     'Blanco Cian'],
+      ['#E0F7FA', 224,247,250,   '冰青',     'Ice Cyan',       'Cian Hielo'],
+      ['#E8F8F5', 232,248,245,   '淡凫绿',   'Pale Teal',      'Verde Azulado Pálido'],
       // ── 蓝色系（重点加强，覆盖全亮度梯度）──
-      ['#191970',  25, 25,112,   '午夜蓝',   'Midnight Blue'],
-      ['#00008B',   0,  0,139,   '暗蓝',     'Dark Blue'],
-      ['#0000CD',   0,  0,205,   '中蓝',     'Medium Blue'],
-      ['#0000FF',   0,  0,255,   '蓝色',     'Blue'],
-      ['#1D4ED8',  29, 78,216,   '海军蓝',   'Navy Blue'],
-      ['#2563EB',  37, 99,235,   '深蓝',     'Dark Blue'],
-      ['#3B82F6',  59,130,246,   '亮蓝',     'Bright Blue'],
-      ['#1E40AF',  30, 64,175,   '藏蓝',     'Navy'],
-      ['#0EA5E9',  14,165,233,   '天蓝',     'Sky Blue'],
-      ['#0369A1',   3,105,161,   '钴蓝',     'Cobalt'],
-      ['#4F46E5',  79, 70,229,   '靛蓝',     'Indigo'],
-      ['#60A5FA',  96,165,250,   '矢车菊',   'Cornflower'],
-      ['#38BDF8',  56,189,248,   '浅天蓝',   'Light Sky'],
-      ['#0C4A6E',  12, 74,110,   '钢蓝',     'Steel Blue'],
-      ['#87CEEB', 135,206,235,   '天蓝色',   'Sky Blue Web'],
-      ['#7DD3FC', 125,211,252,   '淡蓝',     'Pale Blue'],
-      ['#ADD8E6', 173,216,230,   '浅蓝',     'Light Blue'],
-      ['#B0E0E6', 176,224,230,   '粉蓝',     'Powder Blue'],
-      ['#BBDEFB', 187,222,251,   '材料蓝',   'Material Blue'],
-      ['#B4D7FF', 180,215,255,   '婴儿蓝',   'Baby Blue'],
-      ['#C6E2FF', 198,226,255,   '冰蓝',     'Ice Blue'],
-      ['#D6EAF8', 214,234,248,   '淡冰蓝',   'Pale Ice Blue'],
-      ['#E3F2FD', 227,242,253,   '近白蓝',   'Near White Blue'],
-      ['#EBF5FB', 235,245,251,   '天空白',   'Sky White'],
+      ['#191970',  25, 25,112,   '午夜蓝',   'Midnight Blue',  'Azul Medianoche'],
+      ['#00008B',   0,  0,139,   '暗蓝',     'Dark Blue',      'Azul Oscuro'],
+      ['#0000CD',   0,  0,205,   '中蓝',     'Medium Blue',    'Azul Medio'],
+      ['#0000FF',   0,  0,255,   '蓝色',     'Blue',           'Azul'],
+      ['#1D4ED8',  29, 78,216,   '海军蓝',   'Navy Blue',      'Azul Marino'],
+      ['#2563EB',  37, 99,235,   '深蓝',     'Dark Blue',      'Azul Profundo'],
+      ['#3B82F6',  59,130,246,   '亮蓝',     'Bright Blue',    'Azul Brillante'],
+      ['#1E40AF',  30, 64,175,   '藏蓝',     'Navy',           'Marino'],
+      ['#0EA5E9',  14,165,233,   '天蓝',     'Sky Blue',       'Azul Cielo'],
+      ['#0369A1',   3,105,161,   '钴蓝',     'Cobalt',         'Cobalto'],
+      ['#4F46E5',  79, 70,229,   '靛蓝',     'Indigo',         'Índigo'],
+      ['#60A5FA',  96,165,250,   '矢车菊',   'Cornflower',     'Aciano'],
+      ['#38BDF8',  56,189,248,   '浅天蓝',   'Light Sky',      'Cielo Claro'],
+      ['#0C4A6E',  12, 74,110,   '钢蓝',     'Steel Blue',     'Azul Acero'],
+      ['#87CEEB', 135,206,235,   '天蓝色',   'Sky Blue Web',   'Azul Cielo Web'],
+      ['#7DD3FC', 125,211,252,   '淡蓝',     'Pale Blue',      'Azul Pálido'],
+      ['#ADD8E6', 173,216,230,   '浅蓝',     'Light Blue',     'Azul Claro'],
+      ['#B0E0E6', 176,224,230,   '粉蓝',     'Powder Blue',    'Azul Polvo'],
+      ['#BBDEFB', 187,222,251,   '材料蓝',   'Material Blue',  'Azul Material'],
+      ['#B4D7FF', 180,215,255,   '婴儿蓝',   'Baby Blue',      'Azul Bebé'],
+      ['#C6E2FF', 198,226,255,   '冰蓝',     'Ice Blue',       'Azul Hielo'],
+      ['#D6EAF8', 214,234,248,   '淡冰蓝',   'Pale Ice Blue',  'Azul Hielo Pálido'],
+      ['#E3F2FD', 227,242,253,   '近白蓝',   'Near White Blue','Azul Blanquecino'],
+      ['#EBF5FB', 235,245,251,   '天空白',   'Sky White',      'Blanco Cielo'],
       // ── 紫色/紫红系 ──
-      ['#4C1D95',  76, 29,149,   '暗紫',     'Dark Purple'],
-      ['#5B21B6',  91, 33,182,   '茄紫',     'Aubergine'],
-      ['#6D28D9', 109, 40,217,   '紫罗兰',   'Violet'],
-      ['#7C3AED', 124, 58,237,   '深紫',     'Deep Purple'],
-      ['#800080', 128,  0,128,   '紫色',     'Purple'],
-      ['#9333EA', 147, 51,234,   '亮紫',     'Bright Purple'],
-      ['#A855F7', 168, 85,247,   '紫藤色',   'Wisteria'],
-      ['#8B5CF6', 139, 92,246,   '薰衣草紫', 'Lavender Purple'],
-      ['#C084FC', 192,132,252,   '浅紫',     'Light Purple'],
-      ['#D7BDE2', 215,189,226,   '淡紫',     'Pale Purple'],
-      ['#E9D5FF', 233,213,255,   '浅紫白',   'Light Purple White'],
-      ['#E8DAEF', 232,218,239,   '淡紫白',   'Pale Purple White'],
-      ['#F4ECF7', 244,236,247,   '紫白',     'Purple White'],
-      ['#D946EF', 217, 70,239,   '洋红',     'Magenta'],
-      ['#C026D3', 192, 38,211,   '品红',     'Fuchsia'],
+      ['#4C1D95',  76, 29,149,   '暗紫',     'Dark Purple',    'Púrpura Oscuro'],
+      ['#5B21B6',  91, 33,182,   '茄紫',     'Aubergine',      'Berenjena'],
+      ['#6D28D9', 109, 40,217,   '紫罗兰',   'Violet',         'Violeta'],
+      ['#7C3AED', 124, 58,237,   '深紫',     'Deep Purple',    'Púrpura Profundo'],
+      ['#800080', 128,  0,128,   '紫色',     'Purple',         'Púrpura'],
+      ['#9333EA', 147, 51,234,   '亮紫',     'Bright Purple',  'Púrpura Brillante'],
+      ['#A855F7', 168, 85,247,   '紫藤色',   'Wisteria',       'Glicina'],
+      ['#8B5CF6', 139, 92,246,   '薰衣草紫', 'Lavender Purple','Lavanda Púrpura'],
+      ['#C084FC', 192,132,252,   '浅紫',     'Light Purple',   'Púrpura Claro'],
+      ['#D7BDE2', 215,189,226,   '淡紫',     'Pale Purple',    'Púrpura Pálido'],
+      ['#E9D5FF', 233,213,255,   '浅紫白',   'Light Purple White','Blanco Púrpura Claro'],
+      ['#E8DAEF', 232,218,239,   '淡紫白',   'Pale Purple White','Blanco Púrpura Pálido'],
+      ['#F4ECF7', 244,236,247,   '紫白',     'Purple White',   'Blanco Púrpura'],
+      ['#D946EF', 217, 70,239,   '洋红',     'Magenta',        'Magenta'],
+      ['#C026D3', 192, 38,211,   '品红',     'Fuchsia',        'Fucsia'],
       // ── 粉色系 ──
-      ['#9D174D', 157, 23, 77,   '暗粉',     'Dark Pink'],
-      ['#BE185D', 190, 24, 93,   '酒红',     'Burgundy'],
-      ['#DB2777', 219, 39,119,   '深粉',     'Dark Pink'],
-      ['#EC4899', 236, 72,153,   '粉色',     'Pink'],
-      ['#F43F5E', 244, 63, 94,   '玫瑰',     'Rose'],
-      ['#FF69B4', 255,105,180,   '热粉',     'Hot Pink'],
-      ['#FFC0CB', 255,192,203,   '粉色',     'Pink'],
-      ['#F472B6', 244,114,182,   '玫瑰粉',   'Rose Pink'],
-      ['#FB7185', 251,113,133,   '珊瑚粉',   'Coral Pink'],
-      ['#FECDD3', 254,205,211,   '浅粉',     'Light Pink'],
-      ['#FFB6C1', 255,182,193,   '桃粉',     'Peach Pink'],
-      ['#FBCFE8', 251,207,232,   '淡粉',     'Pale Pink'],
-      ['#FDEDF3', 253,237,243,   '粉白',     'Pinkish White'],
-      ['#FCE4EC', 252,228,236,   '浅粉白',   'Light Pink White'],
+      ['#9D174D', 157, 23, 77,   '暗粉',     'Dark Pink',      'Rosa Oscuro'],
+      ['#BE185D', 190, 24, 93,   '酒红',     'Burgundy',       'Borgoña'],
+      ['#DB2777', 219, 39,119,   '深粉',     'Dark Pink',      'Rosa Profundo'],
+      ['#EC4899', 236, 72,153,   '粉色',     'Pink',           'Rosa'],
+      ['#F43F5E', 244, 63, 94,   '玫瑰',     'Rose',           'Rosado'],
+      ['#FF69B4', 255,105,180,   '热粉',     'Hot Pink',       'Rosa Fuerte'],
+      ['#FFC0CB', 255,192,203,   '粉色',     'Pink',           'Rosado'],
+      ['#F472B6', 244,114,182,   '玫瑰粉',   'Rose Pink',      'Rosa Rosado'],
+      ['#FB7185', 251,113,133,   '珊瑚粉',   'Coral Pink',     'Rosa Coral'],
+      ['#FECDD3', 254,205,211,   '浅粉',     'Light Pink',     'Rosa Claro'],
+      ['#FFB6C1', 255,182,193,   '桃粉',     'Peach Pink',     'Rosa Melocotón'],
+      ['#FBCFE8', 251,207,232,   '淡粉',     'Pale Pink',      'Rosa Pálido'],
+      ['#FDEDF3', 253,237,243,   '粉白',     'Pinkish White',  'Blanco Rosado'],
+      ['#FCE4EC', 252,228,236,   '浅粉白',   'Light Pink White','Blanco Rosa Claro'],
       // ── 棕色/肤色系 ──
-      ['#654321', 101, 67, 33,   '暗棕',     'Dark Brown'],
-      ['#8B4513', 139, 69, 19,   '鞍棕',     'Saddle Brown'],
-      ['#A52A2A', 165, 42, 42,   '棕色',     'Brown'],
-      ['#A0522D', 160, 82, 45,   '赭色',     'Sienna'],
-      ['#92400E', 146, 64, 14,   '深棕',     'Deep Brown'],
-      ['#B45309', 180, 83,  9,   '赤棕',     'Reddish Brown'],
-      ['#D97706', 217,119,  6,   '琥珀棕',   'Amber Brown'],
-      ['#CD853F', 205,133, 63,   '秘鲁棕',   'Peru'],
-      ['#DEB887', 222,184,135,   '浅棕',     'Burlywood'],
-      ['#F5DEB3', 245,222,179,   '小麦色',   'Wheat'],
-      ['#FAEBD7', 250,235,215,   '古董白',   'Antique White'],
-      ['#FFE4C4', 255,228,196,   '糕点色',   'Bisque'],
-      ['#FFDAB9', 255,218,185,   '桃色',     'Peach'],
+      ['#654321', 101, 67, 33,   '暗棕',     'Dark Brown',     'Marrón Oscuro'],
+      ['#8B4513', 139, 69, 19,   '鞍棕',     'Saddle Brown',   'Marrón Cuero'],
+      ['#A52A2A', 165, 42, 42,   '棕色',     'Brown',          'Marrón'],
+      ['#A0522D', 160, 82, 45,   '赭色',     'Sienna',         'Siena'],
+      ['#92400E', 146, 64, 14,   '深棕',     'Deep Brown',     'Marrón Profundo'],
+      ['#B45309', 180, 83,  9,   '赤棕',     'Reddish Brown',  'Marrón Rojizo'],
+      ['#D97706', 217,119,  6,   '琥珀棕',   'Amber Brown',    'Marrón Ámbar'],
+      ['#CD853F', 205,133, 63,   '秘鲁棕',   'Peru',           'Perú'],
+      ['#DEB887', 222,184,135,   '浅棕',     'Burlywood',      'Madera Clara'],
+      ['#F5DEB3', 245,222,179,   '小麦色',   'Wheat',          'Trigo'],
+      ['#FAEBD7', 250,235,215,   '古董白',   'Antique White',  'Blanco Antiguo'],
+      ['#FFE4C4', 255,228,196,   '糕点色',   'Bisque',         'Bizcocho'],
+      ['#FFDAB9', 255,218,185,   '桃色',     'Peach',          'Melocotón'],
       // ── 灰色/黑白系 ──
-      ['#000000',   0,  0,  0,   '黑色',     'Black'],
-      ['#1A1A1A',  26, 26, 26,   '近黑',     'Near Black'],
-      ['#2D2D2D',  45, 45, 45,   '暗灰',     'Dark Charcoal'],
-      ['#404040',  64, 64, 64,   '炭灰',     'Charcoal'],
-      ['#525252',  82, 82, 82,   '深灰',     'Dark Gray'],
-      ['#808080', 128,128,128,   '灰色',     'Gray'],
-      ['#A3A3A3', 163,163,163,   '中性灰',   'Neutral Gray'],
-      ['#C0C0C0', 192,192,192,   '银色',     'Silver'],
-      ['#D1D5DB', 209,213,219,   '浅灰',     'Light Gray'],
-      ['#E5E7EB', 229,231,235,   '淡灰',     'Pale Gray'],
-      ['#F3F4F6', 243,244,246,   '月白',     'Off White'],
-      ['#F9FAFB', 249,250,251,   '瓷白',     'Porcelain'],
-      ['#FFFFFF', 255,255,255,   '白色',     'White'],
+      ['#000000',   0,  0,  0,   '黑色',     'Black',          'Negro'],
+      ['#1A1A1A',  26, 26, 26,   '近黑',     'Near Black',     'Casi Negro'],
+      ['#2D2D2D',  45, 45, 45,   '暗灰',     'Dark Charcoal',  'Carbón Oscuro'],
+      ['#404040',  64, 64, 64,   '炭灰',     'Charcoal',       'Carbón'],
+      ['#525252',  82, 82, 82,   '深灰',     'Dark Gray',      'Gris Oscuro'],
+      ['#808080', 128,128,128,   '灰色',     'Gray',           'Gris'],
+      ['#A3A3A3', 163,163,163,   '中性灰',   'Neutral Gray',   'Gris Neutro'],
+      ['#C0C0C0', 192,192,192,   '银色',     'Silver',         'Plata'],
+      ['#D1D5DB', 209,213,219,   '浅灰',     'Light Gray',     'Gris Claro'],
+      ['#E5E7EB', 229,231,235,   '淡灰',     'Pale Gray',      'Gris Pálido'],
+      ['#F3F4F6', 243,244,246,   '月白',     'Off White',      'Blanco Roto'],
+      ['#F9FAFB', 249,250,251,   '瓷白',     'Porcelain',      'Porcelana'],
+      ['#FFFFFF', 255,255,255,   '白色',     'White',          'Blanco'],
       // ── 特殊/霓虹色 ──
-      ['#00FF00',   0,255,  0,   '酸橙绿',   'Lime'],
-      ['#39FF14',  57,255, 20,   '霓虹绿',   'Neon Green'],
-      ['#FF00FF', 255,  0,255,   '霓虹粉',   'Neon Pink'],
-      ['#00FFAA',   0,255,170,   '霓虹青',   'Neon Cyan'],
-      ['#FF00AA', 255,  0,170,   '霓虹紫',   'Neon Purple'],
-      ['#FFAA00', 255,170,  0,   '霓虹橙',   'Neon Orange'],
-      ['#00FF41',   0,255, 65,   '矩阵绿',   'Matrix Green']
+      ['#00FF00',   0,255,  0,   '酸橙绿',   'Lime',           'Lima'],
+      ['#39FF14',  57,255, 20,   '霓虹绿',   'Neon Green',     'Verde Neón'],
+      ['#FF00FF', 255,  0,255,   '霓虹粉',   'Neon Pink',      'Rosa Neón'],
+      ['#00FFAA',   0,255,170,   '霓虹青',   'Neon Cyan',      'Cian Neón'],
+      ['#FF00AA', 255,  0,170,   '霓虹紫',   'Neon Purple',    'Púrpura Neón'],
+      ['#FFAA00', 255,170,  0,   '霓虹橙',   'Neon Orange',    'Naranja Neón'],
+      ['#00FF41',   0,255, 65,   '矩阵绿',   'Matrix Green',   'Verde Matrix']
     ];
 
     // 解析 hex 为 RGB（支持 3 位和 6 位 hex）
@@ -1166,11 +1166,11 @@ class App {
       const dist = dr * dr + dg * dg + db * db;
       if (dist < minDist) {
         minDist = dist;
-        bestName = this.language === 'zh_CN' ? entry[4] : entry[5];
+        bestName = this.language === 'zh_CN' ? entry[4] : (this.language === 'es' ? entry[6] : entry[5]);
       }
     });
 
-    return bestName || (this.language === 'zh_CN' ? '自定义颜色' : 'Custom Color');
+    return bestName || (this.language === 'zh_CN' ? '自定义颜色' : (this.language === 'es' ? 'Color personalizado' : 'Custom Color'));
   }
 
   /**
@@ -1375,19 +1375,19 @@ class App {
       .slice(0, 8); // 只显示前 8 种
 
     const colorNames = {
-      'none': { zh: '无颜色', en: 'No Color' },
-      'red': { zh: '红色', en: 'Red' },
-      'orange': { zh: '橙色', en: 'Orange' },
-      'yellow': { zh: '黄色', en: 'Yellow' },
-      'green': { zh: '绿色', en: 'Green' },
-      'blue': { zh: '蓝色', en: 'Blue' },
-      'purple': { zh: '紫色', en: 'Purple' }
+      'none': { zh: '无颜色', en: 'No Color', es: 'Sin color' },
+      'red': { zh: '红色', en: 'Red', es: 'Rojo' },
+      'orange': { zh: '橙色', en: 'Orange', es: 'Naranja' },
+      'yellow': { zh: '黄色', en: 'Yellow', es: 'Amarillo' },
+      'green': { zh: '绿色', en: 'Green', es: 'Verde' },
+      'blue': { zh: '蓝色', en: 'Blue', es: 'Azul' },
+      'purple': { zh: '紫色', en: 'Purple', es: 'Púrpura' }
     };
 
     const container = document.getElementById('statsColorChart');
     container.innerHTML = colorList.map(([color, count]) => {
       const percent = total > 0 ? (count / total * 100) : 0;
-      const name = colorNames[color] ? (this.language === 'zh_CN' ? colorNames[color].zh : colorNames[color].en) : color;
+      const name = colorNames[color] ? (this.language === 'zh_CN' ? colorNames[color].zh : (this.language === 'es' ? colorNames[color].es : colorNames[color].en)) : color;
       const hex = color.startsWith('#') ? color : (this._getPresetColorHex(color) || '#808080');
       return `
         <div class="stats-bar-item">
@@ -1406,11 +1406,11 @@ class App {
    */
   _renderSizeDistribution() {
     const sizeRanges = [
-      { label: { zh: '0 书签', en: '0 bookmarks' }, min: 0, max: 0 },
-      { label: { zh: '1-5', en: '1-5' }, min: 1, max: 5 },
-      { label: { zh: '6-20', en: '6-20' }, min: 6, max: 20 },
-      { label: { zh: '21-50', en: '21-50' }, min: 21, max: 50 },
-      { label: { zh: '50+', en: '50+' }, min: 51, max: Infinity }
+      { label: { zh: '0 书签', en: '0 bookmarks', es: '0 marcadores' }, min: 0, max: 0 },
+      { label: { zh: '1-5', en: '1-5', es: '1-5' }, min: 1, max: 5 },
+      { label: { zh: '6-20', en: '6-20', es: '6-20' }, min: 6, max: 20 },
+      { label: { zh: '21-50', en: '21-50', es: '21-50' }, min: 21, max: 50 },
+      { label: { zh: '50+', en: '50+', es: '50+' }, min: 51, max: Infinity }
     ];
 
     const total = this.folders.length;
@@ -1418,7 +1418,7 @@ class App {
     container.innerHTML = sizeRanges.map(range => {
       const count = this.folders.filter(f => f.bookmarkCount >= range.min && f.bookmarkCount <= range.max).length;
       const percent = total > 0 ? (count / total * 100) : 0;
-      const label = this.language === 'zh_CN' ? range.label.zh : range.label.en;
+      const label = this.language === 'zh_CN' ? range.label.zh : (this.language === 'es' ? range.label.es : range.label.en);
       return `
         <div class="stats-bar-item">
           <span class="stats-bar-label">${label}</span>
