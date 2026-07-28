@@ -1226,6 +1226,8 @@ body {
   height: 14px;
   cursor: pointer;
   accent-color: var(--primary);
+  outline: none;
+  border: none;
 }
 
 .folder-card:hover {
@@ -1482,6 +1484,30 @@ body {
 .details-item-delete:hover {
   color: var(--danger);
   background: rgba(255, 0, 0, 0.1);
+}
+
+/* 移动按钮 */
+.details-item-move {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0 4px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.details-item-move:hover {
+  color: var(--primary);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .details-empty {

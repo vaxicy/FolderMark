@@ -267,7 +267,7 @@
     "message": "已选中"
   },
   "batchMerge": {
-    "message": "合并..."
+    "message": "合并"
   },
   "batchDelete": {
     "message": "删除"
@@ -682,6 +682,27 @@
   },
   "bookmarkDeleted": {
     "message": "书签已删除"
+  },
+  "moveBookmark": {
+    "message": "移动"
+  },
+  "selectTargetForBookmark": {
+    "message": "移动书签到"
+  },
+  "bookmarkMoved": {
+    "message": "书签已移动"
+  },
+  "moveFailed": {
+    "message": "移动失败：$1"
+  },
+  "confirmBatchMerge": {
+    "message": "确认合并"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "将选中的 $1 个文件夹合并到目标文件夹？"
+  },
+  "loadMore": {
+    "message": "加载更多"
   },
   "collapse": {
     "message": "收起"

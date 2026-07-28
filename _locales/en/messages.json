@@ -267,7 +267,7 @@
     "message": "selected"
   },
   "batchMerge": {
-    "message": "Merge..."
+    "message": "Merge"
   },
   "batchDelete": {
     "message": "Delete"
@@ -688,6 +688,27 @@
   },
   "bookmarkDeleted": {
     "message": "Bookmark deleted"
+  },
+  "moveBookmark": {
+    "message": "Move"
+  },
+  "selectTargetForBookmark": {
+    "message": "Move bookmark to"
+  },
+  "bookmarkMoved": {
+    "message": "Bookmark moved"
+  },
+  "moveFailed": {
+    "message": "Move failed: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "Confirm Merge"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "Merge $1 selected folders into the target folder?"
+  },
+  "loadMore": {
+    "message": "Load More"
   },
   "collapse": {
     "message": "Collapse"
