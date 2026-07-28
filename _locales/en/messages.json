@@ -86,6 +86,12 @@
   "themeCoral": {
     "message": "Coral"
   },
+  "themeRose": {
+    "message": "Rose"
+  },
+  "themeMint": {
+    "message": "Mint"
+  },
   "themeDark": {
     "message": "Dark"
   },

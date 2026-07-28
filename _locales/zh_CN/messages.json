@@ -86,6 +86,12 @@
   "themeCoral": {
     "message": "珊瑚"
   },
+  "themeRose": {
+    "message": "玫红"
+  },
+  "themeMint": {
+    "message": "薄荷"
+  },
   "themeDark": {
     "message": "深色"
   },

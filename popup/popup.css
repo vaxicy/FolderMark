@@ -370,6 +370,113 @@
   color: #B84A40;
 }
 
+/* 玫红主题（Rose） */
+[data-theme="rose"] {
+  --primary: #C73E5C;
+  --icon-glow: rgba(199, 62, 92, 0.22);
+  --primary-hover: #B1304C;
+  --primary-light: #FCE3E9;
+
+  --danger: #B33B4E;
+  --danger-hover: #99303F;
+  --danger-light: #FBE2E8;
+
+  --success: #4E7A3A;
+  --success-light: #E3F0DA;
+
+  --bg-primary: #FFF7F8;
+  --bg-secondary: #FCEEF1;
+  --bg-tertiary: #FADDE4;
+
+  --text-primary: #5C2E36;
+  --text-secondary: #854A55;
+  --text-tertiary: #B07A85;
+
+  --border-color: #F5D6DE;
+  --shadow-sm: 0 1px 2px 0 rgba(92, 46, 54, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(92, 46, 54, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(92, 46, 54, 0.15);
+}
+
+/* 玫红主题下的 header 渐变（明确玫红 → 奶白，与腮粉淡粉拉开） */
+[data-theme="rose"] .header {
+  background: linear-gradient(135deg, #E86A87 0%, #FCEEF1 100%);
+}
+
+/* 玫红主题下的主按钮：浅玫红底 + 深字，保证 WCAG AA 对比度 */
+[data-theme="rose"] .btn-primary {
+  background: #F0A0AE;
+  color: var(--text-primary);
+}
+
+[data-theme="rose"] .btn-primary:hover {
+  background: #E58A9C;
+}
+
+/* 玫红主题下的文字型强调（logo / 统计数字）：用更深的绯红保证可读，与腮粉灰玫区分 */
+[data-theme="rose"] .logo,
+[data-theme="rose"] .stat-number {
+  color: #B22E47;
+}
+
+/* 玫红主题下 header 内文字加深：标题深绯红、副标题深灰玫，避免在粉底上对比不足 */
+[data-theme="rose"] .logo {
+  color: #8B1E35;
+}
+
+[data-theme="rose"] .tagline {
+  color: #8D4559;
+}
+
+/* 薄荷主题（Mint） */
+[data-theme="mint"] {
+  --primary: #2EAE9A;
+  --icon-glow: rgba(46, 174, 154, 0.22);
+  --primary-hover: #1F9483;
+  --primary-light: #DFF5EF;
+
+  --danger: #C14B5E;
+  --danger-hover: #A33B4C;
+  --danger-light: #FBE3E8;
+
+  --success: #2E9E6B;
+  --success-light: #D8F2E6;
+
+  --bg-primary: #F4FBF8;
+  --bg-secondary: #E9F6F1;
+  --bg-tertiary: #D5EFE6;
+
+  --text-primary: #1F4A40;
+  --text-secondary: #3A665B;
+  --text-tertiary: #6B9389;
+
+  --border-color: #CDE9E0;
+  --shadow-sm: 0 1px 2px 0 rgba(31, 74, 64, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(31, 74, 64, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(31, 74, 64, 0.15);
+}
+
+/* 薄荷主题下的 header 渐变（浅薄荷 → 奶白） */
+[data-theme="mint"] .header {
+  background: linear-gradient(135deg, #7FD8C4 0%, #E9F6F1 100%);
+}
+
+/* 薄荷主题下的主按钮：浅薄荷底 + 深字，保证 WCAG AA 对比度 */
+[data-theme="mint"] .btn-primary {
+  background: #7FD8C4;
+  color: var(--text-primary);
+}
+
+[data-theme="mint"] .btn-primary:hover {
+  background: #66CBB5;
+}
+
+/* 薄荷主题下的文字型强调（logo / 统计数字）：用更深的薄荷绿保证可读 */
+[data-theme="mint"] .logo,
+[data-theme="mint"] .stat-number {
+  color: #1E9C8A;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);
