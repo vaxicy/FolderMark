@@ -1,0 +1,16 @@
+# 打包产物
+dist/
+
+# 依赖
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 商店素材（可选保留，若已在 git 里则不删）
+# store-assets-real-cn-en/
