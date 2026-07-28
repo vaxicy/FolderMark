@@ -53,6 +53,7 @@ class App {
     this._lastSelectedFolderIndex = -1; // Shift 多选：上次点击的文件夹索引
     this.folderPageSize = 50; // 分页：每页显示数
     this.folderRenderedCount = 50; // 分页：当前已渲染数
+    this._hasScanned = false; // 是否已扫描过书签（用于 empty state 区分未扫描/首次进入）
     this.hideRootFolders = false; // 是否隐藏根文件夹
     this.init();
   }
@@ -1200,6 +1201,7 @@ class App {
       this.clearSelection();
       this.renderCurrentPage();
       this.updateColorFilterOptions();
+      this._hasScanned = true;
       this.showLoading(false);
     } catch (error) {
       console.error('Scan failed:', error);
@@ -1547,7 +1549,18 @@ class App {
     }
 
     if (folders.length === 0 && !this.searchQuery) {
-      container.innerHTML = '<div class="empty-state"><p>' + i18n.getMessage('noFoldersFound') + '</p>' +
+      if (!this._hasScanned) {
+        // 未扫描：显示扫描中状态
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📂</div>' +
+          '<div class="empty-state-title">' + (i18n.getMessage('scanningBookmarks') || 'Scanning your bookmarks...') + '</div>' +
+          '<div class="spinner" style="width:18px;height:18px;margin-top:8px;"></div></div>';
+        return;
+      }
+      // 首次进入 / 真的没有文件夹：引导型 empty state
+      container.innerHTML = '<div class="empty-state">' +
+        '<div class="empty-state-icon">📁</div>' +
+        '<div class="empty-state-title">' + i18n.getMessage('noFoldersFound') + '</div>' +
+        '<div class="empty-state-desc">' + (i18n.getMessage('noFoldersDesc') || 'Your bookmarks will appear here once scanned. Add a folder or re-scan to get started.') + '</div>' +
         '<div class="empty-state-action"><button id="emptyStateNewFolder" class="btn btn-primary btn-sm">' + (i18n.getMessage('newFolder') || 'New Folder') + '</button></div></div>';
       container.querySelector('#emptyStateNewFolder').addEventListener('click', () => {
         document.getElementById('newFolderBtn').click();
@@ -1702,7 +1715,7 @@ class App {
       <div class="details-section-title">🔗 ${i18n.getMessage('matchingBookmarks') || 'Matching Bookmarks'} (${bookmarks.length})</div>
       ${displayBookmarks.map(b => `
         <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
-          <span style="color:var(--primary);">★</span>
+          <img class="details-bookmark-favicon" src="${this.getFaviconUrl(b.url)}" alt="🔗">
           <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
           <button class="details-item-move" data-bookmark-id="${b.id}" title="${i18n.getMessage('moveBookmark') || 'Move'}">➤</button>
           <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
@@ -1721,6 +1734,36 @@ class App {
 
     // 绑定事件委托（打开 + 删除）
     this.bindDetailsEvents(folderId);
+    this.bindFaviconFallbacks(contentEl);
+  }
+
+  /**
+   * 获取书签的真实 favicon 地址（Chrome 官方 favicon API）
+   * @param {string} url - 书签 URL
+   * @returns {string} favicon 图片地址
+   */
+  getFaviconUrl(url) {
+    try {
+      return chrome.runtime.getURL('/_favicon/?pageUrl=' + encodeURIComponent(url) + '&size=32');
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /**
+   * 为已渲染的书签 favicon 图片绑定加载失败兜底
+   * @param {HTMLElement} container - 包含 .details-bookmark-favicon 的容器
+   */
+  bindFaviconFallbacks(container) {
+    if (!container) return;
+    container.querySelectorAll('.details-bookmark-favicon').forEach(img => {
+      img.addEventListener('error', () => {
+        const span = document.createElement('span');
+        span.className = 'details-bookmark-favicon';
+        span.textContent = '🔗';
+        img.replaceWith(span);
+      });
+    });
   }
 
   /**
@@ -2144,7 +2187,7 @@ class App {
           <div class="details-section-title">📄 ${i18n.getMessage('bookmarks') || 'Bookmarks'} (${bookmarks.length})</div>
           ${displayBookmarks.map(b => `
             <div class="details-item details-bookmark-item" data-bookmark-id="${b.id}" data-bookmark-url="${this.escapeHtml(b.url)}" title="${this.escapeHtml(b.url)}">
-              <span class="details-bookmark-favicon">🔗</span>
+              <img class="details-bookmark-favicon" src="${this.getFaviconUrl(b.url)}" alt="🔗">
               <span class="details-item-name">${this.escapeHtml(b.title || b.url)}</span>
               <button class="details-item-move" data-bookmark-id="${b.id}" title="${i18n.getMessage('moveBookmark') || 'Move'}">➤</button>
               <button class="details-item-delete" data-bookmark-id="${b.id}" title="${i18n.getMessage('delete') || 'Delete'}">×</button>
@@ -2168,6 +2211,7 @@ class App {
 
       // 绑定事件委托（打开 + 删除）
       this.bindDetailsEvents(folderId);
+      this.bindFaviconFallbacks(contentEl);
     } catch (error) {
       console.error('Render folder details failed:', error);
       contentEl.innerHTML = `<div class="details-error">${i18n.getMessage('loadFailed') || 'Load failed'}</div>`;

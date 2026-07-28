@@ -710,6 +710,12 @@
   "loadMore": {
     "message": "Load More"
   },
+  "noFoldersDesc": {
+    "message": "Your bookmarks will appear here once scanned. Add a folder or re-scan to get started."
+  },
+  "scanningBookmarks": {
+    "message": "Scanning your bookmarks..."
+  },
   "collapse": {
     "message": "Collapse"
   },

@@ -704,6 +704,12 @@
   "loadMore": {
     "message": "加载更多"
   },
+  "noFoldersDesc": {
+    "message": "扫描完成后书签会显示在这里。新建文件夹或重新扫描即可开始整理。"
+  },
+  "scanningBookmarks": {
+    "message": "正在扫描书签..."
+  },
   "collapse": {
     "message": "收起"
   },
