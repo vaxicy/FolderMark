@@ -477,6 +477,104 @@
   color: #1E9C8A;
 }
 
+/* 银灰主题（Slate） */
+[data-theme="slate"] {
+  --primary: #64748B;
+  --icon-glow: rgba(100, 116, 139, 0.22);
+  --primary-hover: #475569;
+  --primary-light: #E2E8F0;
+
+  --danger: #C14B5E;
+  --danger-hover: #A33B4C;
+  --danger-light: #FBE3E8;
+
+  --success: #2E9E6B;
+  --success-light: #D8F2E6;
+
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #EEF2F6;
+  --bg-tertiary: #E2E8F0;
+
+  --text-primary: #1E293B;
+  --text-secondary: #334155;
+  --text-tertiary: #5B6B7B;
+
+  --border-color: #E2E8F0;
+  --shadow-sm: 0 1px 2px 0 rgba(30, 41, 59, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(30, 41, 59, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(30, 41, 59, 0.15);
+}
+
+/* 银灰主题下的 header 渐变（浅灰蓝 → 近白） */
+[data-theme="slate"] .header {
+  background: linear-gradient(135deg, #CBD5E1 0%, #F1F5F9 100%);
+}
+
+/* 银灰主题下的主按钮：浅灰蓝底 + 深字，保证 WCAG AA 对比度 */
+[data-theme="slate"] .btn-primary {
+  background: #CBD5E1;
+  color: #1E293B;
+}
+
+[data-theme="slate"] .btn-primary:hover {
+  background: #B6C2D1;
+}
+
+/* 银灰主题下的文字型强调（logo / 统计数字）：用更深的岩灰保证可读 */
+[data-theme="slate"] .logo,
+[data-theme="slate"] .stat-number {
+  color: #475569;
+}
+
+/* 湖青主题（Teal） */
+[data-theme="teal"] {
+  --primary: #0EA5A0;
+  --icon-glow: rgba(14, 165, 160, 0.22);
+  --primary-hover: #0C8C88;
+  --primary-light: #D6F2F0;
+
+  --danger: #C14B5E;
+  --danger-hover: #A33B4C;
+  --danger-light: #FBE3E8;
+
+  --success: #2E9E6B;
+  --success-light: #D8F2E6;
+
+  --bg-primary: #F0FAF9;
+  --bg-secondary: #E3F6F4;
+  --bg-tertiary: #CFEEEB;
+
+  --text-primary: #14524F;
+  --text-secondary: #2C6B67;
+  --text-tertiary: #5C8C88;
+
+  --border-color: #CFEEEB;
+  --shadow-sm: 0 1px 2px 0 rgba(20, 82, 79, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(20, 82, 79, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(20, 82, 79, 0.15);
+}
+
+/* 湖青主题下的 header 渐变（浅湖青 → 奶白） */
+[data-theme="teal"] .header {
+  background: linear-gradient(135deg, #7FD8D2 0%, #E3F6F4 100%);
+}
+
+/* 湖青主题下的主按钮：浅湖青底 + 深字，保证 WCAG AA 对比度 */
+[data-theme="teal"] .btn-primary {
+  background: #7FD8D2;
+  color: #14524F;
+}
+
+[data-theme="teal"] .btn-primary:hover {
+  background: #66C9C2;
+}
+
+/* 湖青主题下的文字型强调（logo / 统计数字）：用更深的湖青保证可读 */
+[data-theme="teal"] .logo,
+[data-theme="teal"] .stat-number {
+  color: #0E9C97;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);

@@ -92,6 +92,12 @@
   "themeMint": {
     "message": "Mint"
   },
+  "themeSlate": {
+    "message": "Slate"
+  },
+  "themeTeal": {
+    "message": "Teal"
+  },
   "themeDark": {
     "message": "Dark"
   },

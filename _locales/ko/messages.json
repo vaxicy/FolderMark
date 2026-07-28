@@ -92,6 +92,12 @@
   "themeMint": {
     "message": "민트"
   },
+  "themeSlate": {
+    "message": "슬레이트"
+  },
+  "themeTeal": {
+    "message": "틸"
+  },
   "themeDark": {
     "message": "다크"
   },

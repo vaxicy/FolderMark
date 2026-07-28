@@ -92,6 +92,12 @@
   "themeMint": {
     "message": "薄荷"
   },
+  "themeSlate": {
+    "message": "银灰"
+  },
+  "themeTeal": {
+    "message": "湖青"
+  },
   "themeDark": {
     "message": "深色"
   },
