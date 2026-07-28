@@ -861,12 +861,12 @@ class App {
 
     // 预设颜色（按常见顺序，带 hex 值用于 CSS 圆点）
     const presetList = [
-      { value: 'red',    hex: '#EF4444', zh: '红色',   en: 'Red',      es: 'Rojo' },
-      { value: 'orange', hex: '#F97316', zh: '橙色',   en: 'Orange',   es: 'Naranja' },
-      { value: 'yellow', hex: '#EAB308', zh: '黄色',   en: 'Yellow',   es: 'Amarillo' },
-      { value: 'green',  hex: '#22C55E', zh: '绿色',   en: 'Green',    es: 'Verde' },
-      { value: 'blue',   hex: '#3B82F6', zh: '蓝色',   en: 'Blue',     es: 'Azul' },
-      { value: 'purple', hex: '#A855F7', zh: '紫色',   en: 'Purple',   es: 'Púrpura' }
+      { value: 'red',    hex: '#EF4444', zh: '红色',   en: 'Red',      es: 'Rojo',     ja: '赤',   ko: '빨강' },
+      { value: 'orange', hex: '#F97316', zh: '橙色',   en: 'Orange',   es: 'Naranja',  ja: 'オレンジ', ko: '주황' },
+      { value: 'yellow', hex: '#EAB308', zh: '黄色',   en: 'Yellow',   es: 'Amarillo', ja: '黄',   ko: '노랑' },
+      { value: 'green',  hex: '#22C55E', zh: '绿色',   en: 'Green',    es: 'Verde',    ja: '緑',   ko: '초록' },
+      { value: 'blue',   hex: '#3B82F6', zh: '蓝色',   en: 'Blue',     es: 'Azul',     ja: '青',   ko: '파랑' },
+      { value: 'purple', hex: '#A855F7', zh: '紫色',   en: 'Purple',   es: 'Púrpura',  ja: '紫',   ko: '보라' }
     ];
 
     // 自定义颜色列表（# 开头）
@@ -887,7 +887,7 @@ class App {
     // 实际存在的预设颜色
     presetList.forEach(p => {
       if (colorSet.has(p.value)) {
-        const label = this.language === 'zh_CN' ? p.zh : (this.language === 'es' ? p.es : p.en);
+        const label = this._langName(p);
         optionsHtml += `<div class="custom-select-option${currentValue === p.value ? ' active' : ''}" data-value="${p.value}">` +
           `<span class="color-dot" style="background:${p.hex}"></span>` +
           `<span>${label}</span></div>`;
@@ -937,14 +937,14 @@ class App {
     const label = container.querySelector('.custom-select-label');
 
     const presetMap = {
-      '':            { hex: 'transparent', zh: '全部颜色', en: 'All Colors',     es: 'Todos los colores' },
-      'red':         { hex: '#EF4444',    zh: '红色',     en: 'Red',           es: 'Rojo' },
-      'orange':      { hex: '#F97316',    zh: '橙色',     en: 'Orange',        es: 'Naranja' },
-      'yellow':      { hex: '#EAB308',    zh: '黄色',     en: 'Yellow',        es: 'Amarillo' },
-      'green':       { hex: '#22C55E',    zh: '绿色',     en: 'Green',         es: 'Verde' },
-      'blue':        { hex: '#3B82F6',    zh: '蓝色',     en: 'Blue',          es: 'Azul' },
-      'purple':      { hex: '#A855F7',    zh: '紫色',     en: 'Purple',        es: 'Púrpura' },
-      '__nocolor__': { hex: 'transparent', zh: '无颜色',   en: 'No Color',      es: 'Sin color', dashed: true }
+      '':            { hex: 'transparent', zh: '全部颜色', en: 'All Colors',     es: 'Todos los colores', ja: 'すべての色', ko: '모든 색상' },
+      'red':         { hex: '#EF4444',    zh: '红色',     en: 'Red',           es: 'Rojo',           ja: '赤',   ko: '빨강' },
+      'orange':      { hex: '#F97316',    zh: '橙色',     en: 'Orange',        es: 'Naranja',        ja: 'オレンジ', ko: '주황' },
+      'yellow':      { hex: '#EAB308',    zh: '黄色',     en: 'Yellow',        es: 'Amarillo',       ja: '黄',   ko: '노랑' },
+      'green':       { hex: '#22C55E',    zh: '绿色',     en: 'Green',         es: 'Verde',          ja: '緑',   ko: '초록' },
+      'blue':        { hex: '#3B82F6',    zh: '蓝色',     en: 'Blue',          es: 'Azul',           ja: '青',   ko: '파랑' },
+      'purple':      { hex: '#A855F7',    zh: '紫色',     en: 'Purple',        es: 'Púrpura',        ja: '紫',   ko: '보라' },
+      '__nocolor__': { hex: 'transparent', zh: '无颜色',   en: 'No Color',      es: 'Sin color', ja: '色なし', ko: '색 없음', dashed: true }
     };
 
     const val = this.colorFilter;
@@ -954,7 +954,7 @@ class App {
 
     if (presetMap[val]) {
       hex = presetMap[val].hex;
-      text = this.language === 'zh_CN' ? presetMap[val].zh : (this.language === 'es' ? presetMap[val].es : presetMap[val].en);
+      text = this._langName(presetMap[val]);
       isDashed = !!presetMap[val].dashed;
     } else if (val && val.startsWith('#')) {
       hex = val;
@@ -984,162 +984,162 @@ class App {
     // 每个色系均覆盖：深色/标准/浅色/淡色/近白 五个亮度梯度
     const colorDB = [
       // ── 红色系 ──
-      ['#8B0000', 139,  0,  0,   '暗红',     'Dark Red',       'Rojo Oscuro'],
-      ['#A52A2A', 165, 42, 42,   '栗色',     'Maroon',         'Granate'],
-      ['#B91C1C', 185, 28, 28,   '深红',     'Deep Red',       'Rojo Profundo'],
-      ['#DC2626', 220, 38, 38,   '赤红',     'Crimson',        'Carmesí'],
-      ['#EF4444', 239, 68, 68,   '红色',     'Red',            'Rojo'],
-      ['#F87171', 248,113,113,   '亮红',     'Bright Red',     'Rojo Brillante'],
-      ['#FF0000', 255,  0,  0,   '纯红',     'Pure Red',       'Rojo Puro'],
-      ['#FF5733', 255, 87, 51,   '珊瑚红',   'Coral Red',      'Rojo Coral'],
-      ['#FF6347', 255, 99, 71,   '番茄红',   'Tomato',         'Tomate'],
-      ['#FCA5A5', 252,165,165,   '浅红',     'Light Red',      'Rojo Claro'],
-      ['#FADBD8', 250,219,216,   '淡红',     'Pale Red',       'Rojo Pálido'],
-      ['#FDEDEC', 253,237,236,   '粉白红',   'Pinkish White',  'Blanco Rosáceo'],
+      ['#8B0000', 139,  0,  0,   '暗红',     'Dark Red',       'Rojo Oscuro', '暗赤', '짙은 빨강'],
+      ['#A52A2A', 165, 42, 42,   '栗色',     'Maroon',         'Granate', 'ブラウン', '갈색'],
+      ['#B91C1C', 185, 28, 28,   '深红',     'Deep Red',       'Rojo Profundo', 'ディープレッド', '진한 빨강'],
+      ['#DC2626', 220, 38, 38,   '赤红',     'Crimson',        'Carmesí', 'クリムゾン', '크림슨'],
+      ['#EF4444', 239, 68, 68,   '红色',     'Red',            'Rojo', '赤', '빨강'],
+      ['#F87171', 248,113,113,   '亮红',     'Bright Red',     'Rojo Brillante', 'ブライトレッド', '밝은 빨강'],
+      ['#FF0000', 255,  0,  0,   '纯红',     'Pure Red',       'Rojo Puro', 'ピュアレッド', '순빨강'],
+      ['#FF5733', 255, 87, 51,   '珊瑚红',   'Coral Red',      'Rojo Coral', 'コーラルレッド', '산호빨강'],
+      ['#FF6347', 255, 99, 71,   '番茄红',   'Tomato',         'Tomate', 'トマト', '토마토'],
+      ['#FCA5A5', 252,165,165,   '浅红',     'Light Red',      'Rojo Claro', 'ライトレッド', '연한 빨강'],
+      ['#FADBD8', 250,219,216,   '淡红',     'Pale Red',       'Rojo Pálido', 'ペールレッド', '옅은 빨강'],
+      ['#FDEDEC', 253,237,236,   '粉白红',   'Pinkish White',  'Blanco Rosáceo', 'ピンク白', '분홍빛 흰색'],
       // ── 橙色系 ──
-      ['#E65100', 230, 81,  0,   '铁锈橙',   'Rust Orange',    'Naranja Óxido'],
-      ['#FF8C00', 255,140,  0,   '橙色',     'Orange',         'Naranja'],
-      ['#F97316', 249,115, 22,   '亮橙',     'Bright Orange',  'Naranja Brillante'],
-      ['#FFA500', 255,165,  0,   '琥珀橙',   'Amber Orange',   'Naranja Ámbar'],
-      ['#FFB347', 255,179, 71,   '蜜橙',     'Honey Orange',   'Naranja Miel'],
-      ['#FF7F50', 255,127, 80,   '珊瑚橙',   'Coral',          'Coral'],
-      ['#FDBA74', 253,186,116,   '浅橙',     'Light Orange',   'Naranja Claro'],
-      ['#FAD7A0', 250,215,160,   '淡橙',     'Pale Orange',    'Naranja Pálido'],
-      ['#FEF5E7', 254,245,231,   '奶橙',     'Creamy Orange',  'Naranja Cremoso'],
+      ['#E65100', 230, 81,  0,   '铁锈橙',   'Rust Orange',    'Naranja Óxido', 'ラストオレンジ', '녹슨 주황'],
+      ['#FF8C00', 255,140,  0,   '橙色',     'Orange',         'Naranja', 'オレンジ', '주황'],
+      ['#F97316', 249,115, 22,   '亮橙',     'Bright Orange',  'Naranja Brillante', 'ブライトオレンジ', '밝은 주황'],
+      ['#FFA500', 255,165,  0,   '琥珀橙',   'Amber Orange',   'Naranja Ámbar', 'アンバーオレンジ', '앰버 주황'],
+      ['#FFB347', 255,179, 71,   '蜜橙',     'Honey Orange',   'Naranja Miel', 'ハニーオレンジ', '꿀 주황'],
+      ['#FF7F50', 255,127, 80,   '珊瑚橙',   'Coral',          'Coral', 'コーラル', '산호색'],
+      ['#FDBA74', 253,186,116,   '浅橙',     'Light Orange',   'Naranja Claro', 'ライトオレンジ', '연한 주황'],
+      ['#FAD7A0', 250,215,160,   '淡橙',     'Pale Orange',    'Naranja Pálido', 'ペールオレンジ', '옅은 주황'],
+      ['#FEF5E7', 254,245,231,   '奶橙',     'Creamy Orange',  'Naranja Cremoso', 'クリーミーオレンジ', '크리미 주황'],
       // ── 黄色/金色系 ──
-      ['#CA8A04', 202,138,  4,   '暗金',     'Dark Gold',      'Oro Oscuro'],
-      ['#FFD700', 255,215,  0,   '金色',     'Gold',           'Oro'],
-      ['#F59E0B', 245,158, 11,   '琥珀黄',   'Amber',          'Ámbar'],
-      ['#FFC107', 255,193,  7,   '金黄',     'Golden',         'Dorado'],
-      ['#EAB308', 234,179,  8,   '金黄花',   'Golden Yellow',  'Amarillo Dorado'],
-      ['#FACC15', 250,204, 21,   '柠檬黄',   'Lemon',          'Limón'],
-      ['#FBBF24', 251,191, 36,   '鲜黄',     'Vivid Yellow',   'Amarillo Vivo'],
-      ['#FFFF00', 255,255,  0,   '黄色',     'Yellow',         'Amarillo'],
-      ['#FDE047', 253,224, 71,   '浅黄',     'Light Yellow',   'Amarillo Claro'],
-      ['#FCF3CF', 252,243,207,   '淡黄',     'Pale Yellow',    'Amarillo Pálido'],
-      ['#FEF9E7', 254,249,231,   '奶黄',     'Creamy Yellow',  'Amarillo Cremoso'],
-      ['#FFF9C4', 255,249,196,   '柠檬白',   'Lemon White',    'Blanco Limón'],
+      ['#CA8A04', 202,138,  4,   '暗金',     'Dark Gold',      'Oro Oscuro', 'ダークゴールド', '짙은 금색'],
+      ['#FFD700', 255,215,  0,   '金色',     'Gold',           'Oro', 'ゴールド', '금색'],
+      ['#F59E0B', 245,158, 11,   '琥珀黄',   'Amber',          'Ámbar', 'アンバー', '앰버'],
+      ['#FFC107', 255,193,  7,   '金黄',     'Golden',         'Dorado', 'ゴールデン', '황금색'],
+      ['#EAB308', 234,179,  8,   '金黄花',   'Golden Yellow',  'Amarillo Dorado', 'ゴールデンイエロー', '황금빛 노랑'],
+      ['#FACC15', 250,204, 21,   '柠檬黄',   'Lemon',          'Limón', 'レモン', '레몬'],
+      ['#FBBF24', 251,191, 36,   '鲜黄',     'Vivid Yellow',   'Amarillo Vivo', 'ビビッドイエロー', '선명한 노랑'],
+      ['#FFFF00', 255,255,  0,   '黄色',     'Yellow',         'Amarillo', '黄', '노랑'],
+      ['#FDE047', 253,224, 71,   '浅黄',     'Light Yellow',   'Amarillo Claro', 'ライトイエロー', '연한 노랑'],
+      ['#FCF3CF', 252,243,207,   '淡黄',     'Pale Yellow',    'Amarillo Pálido', 'ペールイエロー', '옅은 노랑'],
+      ['#FEF9E7', 254,249,231,   '奶黄',     'Creamy Yellow',  'Amarillo Cremoso', 'クリーミーイエロー', '크리미 노랑'],
+      ['#FFF9C4', 255,249,196,   '柠檬白',   'Lemon White',    'Blanco Limón', 'レモンホワイト', '레몬 흰색'],
       // ── 绿色系 ──
-      ['#14532D',  20, 83, 45,   '深林绿',   'Deep Forest',    'Bosque Profundo'],
-      ['#166534',  22,101, 52,   '墨绿',     'Forest Green',   'Verde Bosque'],
-      ['#008000',   0,128,  0,   '绿色',     'Green',          'Verde'],
-      ['#16A34A',  22,163, 74,   '深绿',     'Dark Green',     'Verde Oscuro'],
-      ['#22C55E',  34,197, 94,   '亮绿',     'Bright Green',   'Verde Brillante'],
-      ['#059669',   5,150,105,   '翠绿',     'Emerald',        'Esmeralda'],
-      ['#10B981',  16,185,129,   '翡翠绿',   'Jade',           'Jade'],
-      ['#34D399',  52,211,153,   '薄荷绿',   'Mint',           'Menta'],
-      ['#6EE7B7', 110,231,183,   '浅绿',     'Light Green',    'Verde Claro'],
-      ['#86EFAC', 134,239,172,   '嫩绿',     'Pale Green',     'Verde Pálido'],
-      ['#A7F3D0', 167,243,208,   '薄荷白',   'Mint Cream',     'Crema de Menta'],
-      ['#D5F5E3', 213,245,227,   '淡绿',     'Pale Green',     'Verde Musgo'],
-      ['#EAFAF1', 234,250,241,   '冰绿',     'Ice Green',      'Verde Hielo'],
-      ['#F0FFF0', 240,255,240,   '蜜露绿',   'Honeydew',       'Mielada'],
+      ['#14532D',  20, 83, 45,   '深林绿',   'Deep Forest',    'Bosque Profundo', 'ディープフォレスト', '짙은 숲색'],
+      ['#166534',  22,101, 52,   '墨绿',     'Forest Green',   'Verde Bosque', 'フォレストグリーン', '숲녹색'],
+      ['#008000',   0,128,  0,   '绿色',     'Green',          'Verde', '緑', '초록'],
+      ['#16A34A',  22,163, 74,   '深绿',     'Dark Green',     'Verde Oscuro', 'ダークグリーン', '짙은 녹색'],
+      ['#22C55E',  34,197, 94,   '亮绿',     'Bright Green',   'Verde Brillante', 'ブライトグリーン', '밝은 녹색'],
+      ['#059669',   5,150,105,   '翠绿',     'Emerald',        'Esmeralda', 'エメラルド', '에메랄드'],
+      ['#10B981',  16,185,129,   '翡翠绿',   'Jade',           'Jade', 'ジェイド', '비취'],
+      ['#34D399',  52,211,153,   '薄荷绿',   'Mint',           'Menta', 'ミント', '민트'],
+      ['#6EE7B7', 110,231,183,   '浅绿',     'Light Green',    'Verde Claro', 'ライトグリーン', '연한 녹색'],
+      ['#86EFAC', 134,239,172,   '嫩绿',     'Pale Green',     'Verde Pálido', 'ペールグリーン', '옅은 녹색'],
+      ['#A7F3D0', 167,243,208,   '薄荷白',   'Mint Cream',     'Crema de Menta', 'ミントクリーム', '민트 크림'],
+      ['#D5F5E3', 213,245,227,   '淡绿',     'Pale Green',     'Verde Musgo', '苔グリーン', '이끼녹색'],
+      ['#EAFAF1', 234,250,241,   '冰绿',     'Ice Green',      'Verde Hielo', 'アイスグリーン', '얼음 녹색'],
+      ['#F0FFF0', 240,255,240,   '蜜露绿',   'Honeydew',       'Mielada', 'ハニーデュー', '멜론'],
       // ── 青色/蓝绿色系 ──
-      ['#115E59',  17, 94, 89,   '孔雀绿',   'Peacock',        'Pavo Real'],
-      ['#0D9488',  13,148,136,   '凫绿',     'Teal',           'Verde Azulado'],
-      ['#008080',   0,128,128,   '凫蓝',     'Teal Blue',      'Azul Verdoso'],
-      ['#00AAAA',   0,170,170,   '亮凫绿',   'Bright Teal',    'Verde Azulado Brillante'],
-      ['#00FFFF',   0,255,255,   '青色',     'Cyan',           'Cian'],
-      ['#06B6D4',   6,182,212,   '亮青',     'Bright Cyan',    'Cian Brillante'],
-      ['#0891B2',   8,145,178,   '深青',     'Dark Cyan',      'Cian Oscuro'],
-      ['#67E8F9', 103,232,249,   '浅青',     'Light Cyan',     'Cian Claro'],
-      ['#A5F3FC', 165,243,252,   '天青',     'Sky Cyan',       'Cian Celeste'],
-      ['#CCFBF1', 204,251,241,   '淡青',     'Pale Cyan',      'Cian Pálido'],
-      ['#D1F2EB', 209,242,235,   '青白',     'Cyan White',     'Blanco Cian'],
-      ['#E0F7FA', 224,247,250,   '冰青',     'Ice Cyan',       'Cian Hielo'],
-      ['#E8F8F5', 232,248,245,   '淡凫绿',   'Pale Teal',      'Verde Azulado Pálido'],
+      ['#115E59',  17, 94, 89,   '孔雀绿',   'Peacock',        'Pavo Real', 'ピーコック', '공작'],
+      ['#0D9488',  13,148,136,   '凫绿',     'Teal',           'Verde Azulado', 'ティール', '청록'],
+      ['#008080',   0,128,128,   '凫蓝',     'Teal Blue',      'Azul Verdoso', 'ティールブルー', '청록 블루'],
+      ['#00AAAA',   0,170,170,   '亮凫绿',   'Bright Teal',    'Verde Azulado Brillante', 'ブライトティール', '밝은 청록'],
+      ['#00FFFF',   0,255,255,   '青色',     'Cyan',           'Cian', 'シアン', '시안'],
+      ['#06B6D4',   6,182,212,   '亮青',     'Bright Cyan',    'Cian Brillante', 'ブライトシアン', '밝은 시안'],
+      ['#0891B2',   8,145,178,   '深青',     'Dark Cyan',      'Cian Oscuro', 'ダークシアン', '짙은 시안'],
+      ['#67E8F9', 103,232,249,   '浅青',     'Light Cyan',     'Cian Claro', 'ライトシアン', '연한 시안'],
+      ['#A5F3FC', 165,243,252,   '天青',     'Sky Cyan',       'Cian Celeste', 'スカイシアン', '하늘 시안'],
+      ['#CCFBF1', 204,251,241,   '淡青',     'Pale Cyan',      'Cian Pálido', 'ペールシアン', '옅은 시안'],
+      ['#D1F2EB', 209,242,235,   '青白',     'Cyan White',     'Blanco Cian', 'シアンホワイト', '시안 흰색'],
+      ['#E0F7FA', 224,247,250,   '冰青',     'Ice Cyan',       'Cian Hielo', 'アイスシアン', '얼음 시안'],
+      ['#E8F8F5', 232,248,245,   '淡凫绿',   'Pale Teal',      'Verde Azulado Pálido', 'ペールティール', '옅은 청록'],
       // ── 蓝色系（重点加强，覆盖全亮度梯度）──
-      ['#191970',  25, 25,112,   '午夜蓝',   'Midnight Blue',  'Azul Medianoche'],
-      ['#00008B',   0,  0,139,   '暗蓝',     'Dark Blue',      'Azul Oscuro'],
-      ['#0000CD',   0,  0,205,   '中蓝',     'Medium Blue',    'Azul Medio'],
-      ['#0000FF',   0,  0,255,   '蓝色',     'Blue',           'Azul'],
-      ['#1D4ED8',  29, 78,216,   '海军蓝',   'Navy Blue',      'Azul Marino'],
-      ['#2563EB',  37, 99,235,   '深蓝',     'Dark Blue',      'Azul Profundo'],
-      ['#3B82F6',  59,130,246,   '亮蓝',     'Bright Blue',    'Azul Brillante'],
-      ['#1E40AF',  30, 64,175,   '藏蓝',     'Navy',           'Marino'],
-      ['#0EA5E9',  14,165,233,   '天蓝',     'Sky Blue',       'Azul Cielo'],
-      ['#0369A1',   3,105,161,   '钴蓝',     'Cobalt',         'Cobalto'],
-      ['#4F46E5',  79, 70,229,   '靛蓝',     'Indigo',         'Índigo'],
-      ['#60A5FA',  96,165,250,   '矢车菊',   'Cornflower',     'Aciano'],
-      ['#38BDF8',  56,189,248,   '浅天蓝',   'Light Sky',      'Cielo Claro'],
-      ['#0C4A6E',  12, 74,110,   '钢蓝',     'Steel Blue',     'Azul Acero'],
-      ['#87CEEB', 135,206,235,   '天蓝色',   'Sky Blue Web',   'Azul Cielo Web'],
-      ['#7DD3FC', 125,211,252,   '淡蓝',     'Pale Blue',      'Azul Pálido'],
-      ['#ADD8E6', 173,216,230,   '浅蓝',     'Light Blue',     'Azul Claro'],
-      ['#B0E0E6', 176,224,230,   '粉蓝',     'Powder Blue',    'Azul Polvo'],
-      ['#BBDEFB', 187,222,251,   '材料蓝',   'Material Blue',  'Azul Material'],
-      ['#B4D7FF', 180,215,255,   '婴儿蓝',   'Baby Blue',      'Azul Bebé'],
-      ['#C6E2FF', 198,226,255,   '冰蓝',     'Ice Blue',       'Azul Hielo'],
-      ['#D6EAF8', 214,234,248,   '淡冰蓝',   'Pale Ice Blue',  'Azul Hielo Pálido'],
-      ['#E3F2FD', 227,242,253,   '近白蓝',   'Near White Blue','Azul Blanquecino'],
-      ['#EBF5FB', 235,245,251,   '天空白',   'Sky White',      'Blanco Cielo'],
+      ['#191970',  25, 25,112,   '午夜蓝',   'Midnight Blue',  'Azul Medianoche', 'ミッドナイトブルー', '미드나잇 블루'],
+      ['#00008B',   0,  0,139,   '暗蓝',     'Dark Blue',      'Azul Oscuro', 'ダークブルー', '짙은 파랑'],
+      ['#0000CD',   0,  0,205,   '中蓝',     'Medium Blue',    'Azul Medio', 'ミディアムブルー', '미디엄 블루'],
+      ['#0000FF',   0,  0,255,   '蓝色',     'Blue',           'Azul', '青', '파랑'],
+      ['#1D4ED8',  29, 78,216,   '海军蓝',   'Navy Blue',      'Azul Marino', 'ネイビーブルー', '네이비 블루'],
+      ['#2563EB',  37, 99,235,   '深蓝',     'Dark Blue',      'Azul Profundo', 'ディープブルー', '진한 파랑'],
+      ['#3B82F6',  59,130,246,   '亮蓝',     'Bright Blue',    'Azul Brillante', 'ブライトブルー', '밝은 파랑'],
+      ['#1E40AF',  30, 64,175,   '藏蓝',     'Navy',           'Marino', 'ネイビー', '네이비'],
+      ['#0EA5E9',  14,165,233,   '天蓝',     'Sky Blue',       'Azul Cielo', 'スカイブルー', '하늘색'],
+      ['#0369A1',   3,105,161,   '钴蓝',     'Cobalt',         'Cobalto', 'コバルトブルー', '코발트 블루'],
+      ['#4F46E5',  79, 70,229,   '靛蓝',     'Indigo',         'Índigo', 'インディゴ', '인디고'],
+      ['#60A5FA',  96,165,250,   '矢车菊',   'Cornflower',     'Aciano', 'コーンフラワー', '수레국화'],
+      ['#38BDF8',  56,189,248,   '浅天蓝',   'Light Sky',      'Cielo Claro', 'ライトスカイ', '연한 하늘색'],
+      ['#0C4A6E',  12, 74,110,   '钢蓝',     'Steel Blue',     'Azul Acero', 'スチールブルー', '스틸 블루'],
+      ['#87CEEB', 135,206,235,   '天蓝色',   'Sky Blue Web',   'Azul Cielo Web', 'スカイブルー(Web)', '하늘색(웹)'],
+      ['#7DD3FC', 125,211,252,   '淡蓝',     'Pale Blue',      'Azul Pálido', 'ペールブルー', '옅은 파랑'],
+      ['#ADD8E6', 173,216,230,   '浅蓝',     'Light Blue',     'Azul Claro', 'ライトブルー', '연한 파랑'],
+      ['#B0E0E6', 176,224,230,   '粉蓝',     'Powder Blue',    'Azul Polvo', 'パウダーブルー', '파우더 블루'],
+      ['#BBDEFB', 187,222,251,   '材料蓝',   'Material Blue',  'Azul Material', 'マテリアルブルー', '머티리얼 블루'],
+      ['#B4D7FF', 180,215,255,   '婴儿蓝',   'Baby Blue',      'Azul Bebé', 'ベビーブルー', '베이비 블루'],
+      ['#C6E2FF', 198,226,255,   '冰蓝',     'Ice Blue',       'Azul Hielo', 'アイスブルー', '얼음 파랑'],
+      ['#D6EAF8', 214,234,248,   '淡冰蓝',   'Pale Ice Blue',  'Azul Hielo Pálido', 'ペールアイスブルー', '옅은 얼음 파랑'],
+      ['#E3F2FD', 227,242,253,   '近白蓝',   'Near White Blue','Azul Blanquecino', 'ニアホワイトブルー', '흰빛 파랑'],
+      ['#EBF5FB', 235,245,251,   '天空白',   'Sky White',      'Blanco Cielo', 'スカイホワイト', '하늘 흰색'],
       // ── 紫色/紫红系 ──
-      ['#4C1D95',  76, 29,149,   '暗紫',     'Dark Purple',    'Púrpura Oscuro'],
-      ['#5B21B6',  91, 33,182,   '茄紫',     'Aubergine',      'Berenjena'],
-      ['#6D28D9', 109, 40,217,   '紫罗兰',   'Violet',         'Violeta'],
-      ['#7C3AED', 124, 58,237,   '深紫',     'Deep Purple',    'Púrpura Profundo'],
-      ['#800080', 128,  0,128,   '紫色',     'Purple',         'Púrpura'],
-      ['#9333EA', 147, 51,234,   '亮紫',     'Bright Purple',  'Púrpura Brillante'],
-      ['#A855F7', 168, 85,247,   '紫藤色',   'Wisteria',       'Glicina'],
-      ['#8B5CF6', 139, 92,246,   '薰衣草紫', 'Lavender Purple','Lavanda Púrpura'],
-      ['#C084FC', 192,132,252,   '浅紫',     'Light Purple',   'Púrpura Claro'],
-      ['#D7BDE2', 215,189,226,   '淡紫',     'Pale Purple',    'Púrpura Pálido'],
-      ['#E9D5FF', 233,213,255,   '浅紫白',   'Light Purple White','Blanco Púrpura Claro'],
-      ['#E8DAEF', 232,218,239,   '淡紫白',   'Pale Purple White','Blanco Púrpura Pálido'],
-      ['#F4ECF7', 244,236,247,   '紫白',     'Purple White',   'Blanco Púrpura'],
-      ['#D946EF', 217, 70,239,   '洋红',     'Magenta',        'Magenta'],
-      ['#C026D3', 192, 38,211,   '品红',     'Fuchsia',        'Fucsia'],
+      ['#4C1D95',  76, 29,149,   '暗紫',     'Dark Purple',    'Púrpura Oscuro', 'ダークパープル', '짙은 보라'],
+      ['#5B21B6',  91, 33,182,   '茄紫',     'Aubergine',      'Berenjena', 'オーベルジーヌ', '가지색'],
+      ['#6D28D9', 109, 40,217,   '紫罗兰',   'Violet',         'Violeta', 'バイオレット', '바이올렛'],
+      ['#7C3AED', 124, 58,237,   '深紫',     'Deep Purple',    'Púrpura Profundo', 'ディープパープル', '진한 보라'],
+      ['#800080', 128,  0,128,   '紫色',     'Purple',         'Púrpura', '紫', '보라'],
+      ['#9333EA', 147, 51,234,   '亮紫',     'Bright Purple',  'Púrpura Brillante', 'ブライトパープル', '밝은 보라'],
+      ['#A855F7', 168, 85,247,   '紫藤色',   'Wisteria',       'Glicina', 'ウィステリア', '등나무'],
+      ['#8B5CF6', 139, 92,246,   '薰衣草紫', 'Lavender Purple','Lavanda Púrpura', 'ラベンダーパープル', '라벤더 보라'],
+      ['#C084FC', 192,132,252,   '浅紫',     'Light Purple',   'Púrpura Claro', 'ライトパープル', '연한 보라'],
+      ['#D7BDE2', 215,189,226,   '淡紫',     'Pale Purple',    'Púrpura Pálido', 'ペールパープル', '옅은 보라'],
+      ['#E9D5FF', 233,213,255,   '浅紫白',   'Light Purple White','Blanco Púrpura Claro', 'ライトパープルホワイト', '연한 보라 흰색'],
+      ['#E8DAEF', 232,218,239,   '淡紫白',   'Pale Purple White','Blanco Púrpura Pálido', 'ペールパープルホワイト', '옅은 보라 흰색'],
+      ['#F4ECF7', 244,236,247,   '紫白',     'Purple White',   'Blanco Púrpura', 'パープルホワイト', '보라 흰색'],
+      ['#D946EF', 217, 70,239,   '洋红',     'Magenta',        'Magenta', 'マゼンタ', '마젠타'],
+      ['#C026D3', 192, 38,211,   '品红',     'Fuchsia',        'Fucsia', 'フューシャ', '푸시아'],
       // ── 粉色系 ──
-      ['#9D174D', 157, 23, 77,   '暗粉',     'Dark Pink',      'Rosa Oscuro'],
-      ['#BE185D', 190, 24, 93,   '酒红',     'Burgundy',       'Borgoña'],
-      ['#DB2777', 219, 39,119,   '深粉',     'Dark Pink',      'Rosa Profundo'],
-      ['#EC4899', 236, 72,153,   '粉色',     'Pink',           'Rosa'],
-      ['#F43F5E', 244, 63, 94,   '玫瑰',     'Rose',           'Rosado'],
-      ['#FF69B4', 255,105,180,   '热粉',     'Hot Pink',       'Rosa Fuerte'],
-      ['#FFC0CB', 255,192,203,   '粉色',     'Pink',           'Rosado'],
-      ['#F472B6', 244,114,182,   '玫瑰粉',   'Rose Pink',      'Rosa Rosado'],
-      ['#FB7185', 251,113,133,   '珊瑚粉',   'Coral Pink',     'Rosa Coral'],
-      ['#FECDD3', 254,205,211,   '浅粉',     'Light Pink',     'Rosa Claro'],
-      ['#FFB6C1', 255,182,193,   '桃粉',     'Peach Pink',     'Rosa Melocotón'],
-      ['#FBCFE8', 251,207,232,   '淡粉',     'Pale Pink',      'Rosa Pálido'],
-      ['#FDEDF3', 253,237,243,   '粉白',     'Pinkish White',  'Blanco Rosado'],
-      ['#FCE4EC', 252,228,236,   '浅粉白',   'Light Pink White','Blanco Rosa Claro'],
+      ['#9D174D', 157, 23, 77,   '暗粉',     'Dark Pink',      'Rosa Oscuro', 'ダークピンク', '짙은 분홍'],
+      ['#BE185D', 190, 24, 93,   '酒红',     'Burgundy',       'Borgoña', 'バーガンディ', '버건디'],
+      ['#DB2777', 219, 39,119,   '深粉',     'Dark Pink',      'Rosa Profundo', 'ディープピンク', '진한 분홍'],
+      ['#EC4899', 236, 72,153,   '粉色',     'Pink',           'Rosa', 'ピンク', '분홍'],
+      ['#F43F5E', 244, 63, 94,   '玫瑰',     'Rose',           'Rosado', 'ローズ', '로즈'],
+      ['#FF69B4', 255,105,180,   '热粉',     'Hot Pink',       'Rosa Fuerte', 'ホットピンク', '핫 핑크'],
+      ['#FFC0CB', 255,192,203,   '粉色',     'Pink',           'Rosado', 'ピンク', '분홍'],
+      ['#F472B6', 244,114,182,   '玫瑰粉',   'Rose Pink',      'Rosa Rosado', 'ローズピンク', '로즈 핑크'],
+      ['#FB7185', 251,113,133,   '珊瑚粉',   'Coral Pink',     'Rosa Coral', 'コーラルピンク', '산호 핑크'],
+      ['#FECDD3', 254,205,211,   '浅粉',     'Light Pink',     'Rosa Claro', 'ライトピンク', '연한 분홍'],
+      ['#FFB6C1', 255,182,193,   '桃粉',     'Peach Pink',     'Rosa Melocotón', 'ピーチピンク', '복숭아 핑크'],
+      ['#FBCFE8', 251,207,232,   '淡粉',     'Pale Pink',      'Rosa Pálido', 'ペールピンク', '옅은 분홍'],
+      ['#FDEDF3', 253,237,243,   '粉白',     'Pinkish White',  'Blanco Rosado', 'ピンキッシュホワイト', '분홍빛 흰색'],
+      ['#FCE4EC', 252,228,236,   '浅粉白',   'Light Pink White','Blanco Rosa Claro', 'ライトピンクホワイト', '연한 분홍 흰색'],
       // ── 棕色/肤色系 ──
-      ['#654321', 101, 67, 33,   '暗棕',     'Dark Brown',     'Marrón Oscuro'],
-      ['#8B4513', 139, 69, 19,   '鞍棕',     'Saddle Brown',   'Marrón Cuero'],
-      ['#A52A2A', 165, 42, 42,   '棕色',     'Brown',          'Marrón'],
-      ['#A0522D', 160, 82, 45,   '赭色',     'Sienna',         'Siena'],
-      ['#92400E', 146, 64, 14,   '深棕',     'Deep Brown',     'Marrón Profundo'],
-      ['#B45309', 180, 83,  9,   '赤棕',     'Reddish Brown',  'Marrón Rojizo'],
-      ['#D97706', 217,119,  6,   '琥珀棕',   'Amber Brown',    'Marrón Ámbar'],
-      ['#CD853F', 205,133, 63,   '秘鲁棕',   'Peru',           'Perú'],
-      ['#DEB887', 222,184,135,   '浅棕',     'Burlywood',      'Madera Clara'],
-      ['#F5DEB3', 245,222,179,   '小麦色',   'Wheat',          'Trigo'],
-      ['#FAEBD7', 250,235,215,   '古董白',   'Antique White',  'Blanco Antiguo'],
-      ['#FFE4C4', 255,228,196,   '糕点色',   'Bisque',         'Bizcocho'],
-      ['#FFDAB9', 255,218,185,   '桃色',     'Peach',          'Melocotón'],
+      ['#654321', 101, 67, 33,   '暗棕',     'Dark Brown',     'Marrón Oscuro', 'ダークブラウン', '짙은 갈색'],
+      ['#8B4513', 139, 69, 19,   '鞍棕',     'Saddle Brown',   'Marrón Cuero', 'サドルブラウン', '안장 갈색'],
+      ['#A52A2A', 165, 42, 42,   '棕色',     'Brown',          'Marrón', 'ブラウン', '갈색'],
+      ['#A0522D', 160, 82, 45,   '赭色',     'Sienna',         'Siena', 'シェナ', '시에나'],
+      ['#92400E', 146, 64, 14,   '深棕',     'Deep Brown',     'Marrón Profundo', 'ディープブラウン', '진한 갈색'],
+      ['#B45309', 180, 83,  9,   '赤棕',     'Reddish Brown',  'Marrón Rojizo', 'レディッシュブラウン', '붉은 갈색'],
+      ['#D97706', 217,119,  6,   '琥珀棕',   'Amber Brown',    'Marrón Ámbar', 'アンバーブラウン', '앰버 갈색'],
+      ['#CD853F', 205,133, 63,   '秘鲁棕',   'Peru',           'Perú', 'ペルー', '페루'],
+      ['#DEB887', 222,184,135,   '浅棕',     'Burlywood',      'Madera Clara', 'バーリーウッド', '밝은 나무색'],
+      ['#F5DEB3', 245,222,179,   '小麦色',   'Wheat',          'Trigo', 'ウィート', '밀색'],
+      ['#FAEBD7', 250,235,215,   '古董白',   'Antique White',  'Blanco Antiguo', 'アンティークホワイト', '앤틱 화이트'],
+      ['#FFE4C4', 255,228,196,   '糕点色',   'Bisque',         'Bizcocho', 'ビスク', '비스크'],
+      ['#FFDAB9', 255,218,185,   '桃色',     'Peach',          'Melocotón', 'ピーチ', '복숭아색'],
       // ── 灰色/黑白系 ──
-      ['#000000',   0,  0,  0,   '黑色',     'Black',          'Negro'],
-      ['#1A1A1A',  26, 26, 26,   '近黑',     'Near Black',     'Casi Negro'],
-      ['#2D2D2D',  45, 45, 45,   '暗灰',     'Dark Charcoal',  'Carbón Oscuro'],
-      ['#404040',  64, 64, 64,   '炭灰',     'Charcoal',       'Carbón'],
-      ['#525252',  82, 82, 82,   '深灰',     'Dark Gray',      'Gris Oscuro'],
-      ['#808080', 128,128,128,   '灰色',     'Gray',           'Gris'],
-      ['#A3A3A3', 163,163,163,   '中性灰',   'Neutral Gray',   'Gris Neutro'],
-      ['#C0C0C0', 192,192,192,   '银色',     'Silver',         'Plata'],
-      ['#D1D5DB', 209,213,219,   '浅灰',     'Light Gray',     'Gris Claro'],
-      ['#E5E7EB', 229,231,235,   '淡灰',     'Pale Gray',      'Gris Pálido'],
-      ['#F3F4F6', 243,244,246,   '月白',     'Off White',      'Blanco Roto'],
-      ['#F9FAFB', 249,250,251,   '瓷白',     'Porcelain',      'Porcelana'],
-      ['#FFFFFF', 255,255,255,   '白色',     'White',          'Blanco'],
+      ['#000000',   0,  0,  0,   '黑色',     'Black',          'Negro', '黒', '검정'],
+      ['#1A1A1A',  26, 26, 26,   '近黑',     'Near Black',     'Casi Negro', 'ニアブラック', '거의 검정'],
+      ['#2D2D2D',  45, 45, 45,   '暗灰',     'Dark Charcoal',  'Carbón Oscuro', 'ダークチャコール', '짙은 차콜'],
+      ['#404040',  64, 64, 64,   '炭灰',     'Charcoal',       'Carbón', 'チャコール', '차콜'],
+      ['#525252',  82, 82, 82,   '深灰',     'Dark Gray',      'Gris Oscuro', 'ダークグレー', '짙은 회색'],
+      ['#808080', 128,128,128,   '灰色',     'Gray',           'Gris', '灰', '회색'],
+      ['#A3A3A3', 163,163,163,   '中性灰',   'Neutral Gray',   'Gris Neutro', 'ニュートラルグレー', '중성 회색'],
+      ['#C0C0C0', 192,192,192,   '银色',     'Silver',         'Plata', 'シルバー', '은색'],
+      ['#D1D5DB', 209,213,219,   '浅灰',     'Light Gray',     'Gris Claro', 'ライトグレー', '연한 회색'],
+      ['#E5E7EB', 229,231,235,   '淡灰',     'Pale Gray',      'Gris Pálido', 'ペールグレー', '옅은 회색'],
+      ['#F3F4F6', 243,244,246,   '月白',     'Off White',      'Blanco Roto', 'オフホワイト', '오프 화이트'],
+      ['#F9FAFB', 249,250,251,   '瓷白',     'Porcelain',      'Porcelana', 'ポーセリン', '도자기색'],
+      ['#FFFFFF', 255,255,255,   '白色',     'White',          'Blanco', '白', '흰색'],
       // ── 特殊/霓虹色 ──
-      ['#00FF00',   0,255,  0,   '酸橙绿',   'Lime',           'Lima'],
-      ['#39FF14',  57,255, 20,   '霓虹绿',   'Neon Green',     'Verde Neón'],
-      ['#FF00FF', 255,  0,255,   '霓虹粉',   'Neon Pink',      'Rosa Neón'],
-      ['#00FFAA',   0,255,170,   '霓虹青',   'Neon Cyan',      'Cian Neón'],
-      ['#FF00AA', 255,  0,170,   '霓虹紫',   'Neon Purple',    'Púrpura Neón'],
-      ['#FFAA00', 255,170,  0,   '霓虹橙',   'Neon Orange',    'Naranja Neón'],
-      ['#00FF41',   0,255, 65,   '矩阵绿',   'Matrix Green',   'Verde Matrix']
+      ['#00FF00',   0,255,  0,   '酸橙绿',   'Lime',           'Lima', 'ライム', '라임'],
+      ['#39FF14',  57,255, 20,   '霓虹绿',   'Neon Green',     'Verde Neón', 'ネオングリーン', '네온 녹색'],
+      ['#FF00FF', 255,  0,255,   '霓虹粉',   'Neon Pink',      'Rosa Neón', 'ネオンピンク', '네온 분홍'],
+      ['#00FFAA',   0,255,170,   '霓虹青',   'Neon Cyan',      'Cian Neón', 'ネオンシアン', '네온 시안'],
+      ['#FF00AA', 255,  0,170,   '霓虹紫',   'Neon Purple',    'Púrpura Neón', 'ネオンパープル', '네온 보라'],
+      ['#FFAA00', 255,170,  0,   '霓虹橙',   'Neon Orange',    'Naranja Neón', 'ネオンオレンジ', '네온 주황'],
+      ['#00FF41',   0,255, 65,   '矩阵绿',   'Matrix Green',   'Verde Matrix', 'マトリックスグリーン', '매트릭스 녹색']
     ];
 
     // 解析 hex 为 RGB（支持 3 位和 6 位 hex）
@@ -1166,11 +1166,42 @@ class App {
       const dist = dr * dr + dg * dg + db * db;
       if (dist < minDist) {
         minDist = dist;
-        bestName = this.language === 'zh_CN' ? entry[4] : (this.language === 'es' ? entry[6] : entry[5]);
+        bestName = this._colorNameOf(entry);
       }
     });
 
-    return bestName || (this.language === 'zh_CN' ? '自定义颜色' : (this.language === 'es' ? 'Color personalizado' : 'Custom Color'));
+    return bestName || this._customColorLabel();
+  }
+
+  /**
+   * 按当前语言从 {zh,en,es,ja,ko} 字典取值（缺省回退 en）
+   */
+  _langName(dict) {
+    const keyMap = { zh_CN: 'zh', en: 'en', es: 'es', ja: 'ja', ko: 'ko' };
+    const key = keyMap[this.language] || 'en';
+    return dict[key] !== undefined ? dict[key] : dict.en;
+  }
+
+  /**
+   * 从颜色库数组取当前语言颜色名（列索引：4=zh, 5=en, 6=es, 7=ja, 8=ko）
+   */
+  _colorNameOf(entry) {
+    const idx = { zh_CN: 4, en: 5, es: 6, ja: 7, ko: 8 }[this.language] || 5;
+    return entry[idx];
+  }
+
+  /**
+   * 自定义颜色回退标签（按当前语言）
+   */
+  _customColorLabel() {
+    const m = {
+      zh_CN: '自定义颜色',
+      en: 'Custom Color',
+      es: 'Color personalizado',
+      ja: 'カスタムカラー',
+      ko: '사용자 지정 색상'
+    };
+    return m[this.language] || m.en;
   }
 
   /**
@@ -1375,19 +1406,19 @@ class App {
       .slice(0, 8); // 只显示前 8 种
 
     const colorNames = {
-      'none': { zh: '无颜色', en: 'No Color', es: 'Sin color' },
-      'red': { zh: '红色', en: 'Red', es: 'Rojo' },
-      'orange': { zh: '橙色', en: 'Orange', es: 'Naranja' },
-      'yellow': { zh: '黄色', en: 'Yellow', es: 'Amarillo' },
-      'green': { zh: '绿色', en: 'Green', es: 'Verde' },
-      'blue': { zh: '蓝色', en: 'Blue', es: 'Azul' },
-      'purple': { zh: '紫色', en: 'Purple', es: 'Púrpura' }
+      'none': { zh: '无颜色', en: 'No Color', es: 'Sin color', ja: '色なし', ko: '색 없음' },
+      'red': { zh: '红色', en: 'Red', es: 'Rojo', ja: '赤', ko: '빨강' },
+      'orange': { zh: '橙色', en: 'Orange', es: 'Naranja', ja: 'オレンジ', ko: '주황' },
+      'yellow': { zh: '黄色', en: 'Yellow', es: 'Amarillo', ja: '黄', ko: '노랑' },
+      'green': { zh: '绿色', en: 'Green', es: 'Verde', ja: '緑', ko: '초록' },
+      'blue': { zh: '蓝色', en: 'Blue', es: 'Azul', ja: '青', ko: '파랑' },
+      'purple': { zh: '紫色', en: 'Purple', es: 'Púrpura', ja: '紫', ko: '보라' }
     };
 
     const container = document.getElementById('statsColorChart');
     container.innerHTML = colorList.map(([color, count]) => {
       const percent = total > 0 ? (count / total * 100) : 0;
-      const name = colorNames[color] ? (this.language === 'zh_CN' ? colorNames[color].zh : (this.language === 'es' ? colorNames[color].es : colorNames[color].en)) : color;
+      const name = colorNames[color] ? this._langName(colorNames[color]) : color;
       const hex = color.startsWith('#') ? color : (this._getPresetColorHex(color) || '#808080');
       return `
         <div class="stats-bar-item">
@@ -1406,11 +1437,11 @@ class App {
    */
   _renderSizeDistribution() {
     const sizeRanges = [
-      { label: { zh: '0 书签', en: '0 bookmarks', es: '0 marcadores' }, min: 0, max: 0 },
-      { label: { zh: '1-5', en: '1-5', es: '1-5' }, min: 1, max: 5 },
-      { label: { zh: '6-20', en: '6-20', es: '6-20' }, min: 6, max: 20 },
-      { label: { zh: '21-50', en: '21-50', es: '21-50' }, min: 21, max: 50 },
-      { label: { zh: '50+', en: '50+', es: '50+' }, min: 51, max: Infinity }
+      { label: { zh: '0 书签', en: '0 bookmarks', es: '0 marcadores', ja: '0 ブックマーク', ko: '북마크 0' }, min: 0, max: 0 },
+      { label: { zh: '1-5', en: '1-5', es: '1-5', ja: '1-5', ko: '1-5' }, min: 1, max: 5 },
+      { label: { zh: '6-20', en: '6-20', es: '6-20', ja: '6-20', ko: '6-20' }, min: 6, max: 20 },
+      { label: { zh: '21-50', en: '21-50', es: '21-50', ja: '21-50', ko: '21-50' }, min: 21, max: 50 },
+      { label: { zh: '50+', en: '50+', es: '50+', ja: '50+', ko: '50+' }, min: 51, max: Infinity }
     ];
 
     const total = this.folders.length;
@@ -1418,7 +1449,7 @@ class App {
     container.innerHTML = sizeRanges.map(range => {
       const count = this.folders.filter(f => f.bookmarkCount >= range.min && f.bookmarkCount <= range.max).length;
       const percent = total > 0 ? (count / total * 100) : 0;
-      const label = this.language === 'zh_CN' ? range.label.zh : (this.language === 'es' ? range.label.es : range.label.en);
+      const label = this._langName(range.label);
       return `
         <div class="stats-bar-item">
           <span class="stats-bar-label">${label}</span>
@@ -4042,7 +4073,7 @@ class App {
 
     const formatTime = (timestamp) => {
       const d = new Date(timestamp);
-      const locale = this.language === 'zh_CN' ? 'zh-CN' : (this.language === 'es' ? 'es-ES' : 'en-US');
+      const locale = { zh_CN: 'zh-CN', en: 'en-US', es: 'es-ES', ja: 'ja-JP', ko: 'ko-KR' }[this.language] || 'en-US';
       return d.toLocaleString(locale, {
         month: 'short',
         day: 'numeric',

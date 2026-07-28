@@ -1,0 +1,836 @@
+{
+  "extensionName": {
+    "message": "FolderMark - 북마크 폴더 관리자"
+  },
+  "extensionDescription": {
+    "message": "북마크 폴더에 색 라벨을 붙이고 Chrome 북마크를 효율적으로 정리하세요"
+  },
+  "initializationFailed": {
+    "message": "초기화 실패: $1"
+  },
+  "tagline": {
+    "message": "북마크를 더 빠르게 정리하세요."
+  },
+  "searchPlaceholder": {
+    "message": "폴더 검색..."
+  },
+  "totalFolders": {
+    "message": "폴더"
+  },
+  "totalBookmarks": {
+    "message": "북마크"
+  },
+  "emptyFolders": {
+    "message": "빈 폴더"
+  },
+  "duplicates": {
+    "message": "중복"
+  },
+  "tabFolders": {
+    "message": "폴더"
+  },
+  "tabEmpty": {
+    "message": "빈 폴더"
+  },
+  "tabDuplicates": {
+    "message": "중복"
+  },
+  "tabSettings": {
+    "message": "설정"
+  },
+  "sortByName": {
+    "message": "이름"
+  },
+  "sortByCount": {
+    "message": "개수"
+  },
+  "sortByPath": {
+    "message": "경로"
+  },
+  "sortByDate": {
+    "message": "날짜"
+  },
+  "emptyFoldersTitle": {
+    "message": "빈 폴더"
+  },
+  "cleanAllEmpty": {
+    "message": "전체 삭제"
+  },
+  "duplicatesTitle": {
+    "message": "중복"
+  },
+  "settingsTitle": {
+    "message": "설정"
+  },
+  "theme": {
+    "message": "테마"
+  },
+  "themeLight": {
+    "message": "라이트"
+  },
+  "themeBlush": {
+    "message": "블러시"
+  },
+  "themeMatcha": {
+    "message": "말차"
+  },
+  "themeLatte": {
+    "message": "라떼"
+  },
+  "themeIris": {
+    "message": "아이리스"
+  },
+  "themeSky": {
+    "message": "스카이"
+  },
+  "themeCoral": {
+    "message": "코랄"
+  },
+  "themeRose": {
+    "message": "로즈"
+  },
+  "themeMint": {
+    "message": "민트"
+  },
+  "themeDark": {
+    "message": "다크"
+  },
+  "language": {
+    "message": "언어"
+  },
+  "deleteConfirm": {
+    "message": "삭제 확인"
+  },
+  "exportStructure": {
+    "message": "내보내기"
+  },
+  "cancel": {
+    "message": "취소"
+  },
+  "close": {
+    "message": "닫기"
+  },
+  "confirm": {
+    "message": "확인"
+  },
+  "delete": {
+    "message": "삭제"
+  },
+  "rename": {
+    "message": "이름 변경"
+  },
+  "merge": {
+    "message": "병합"
+  },
+  "open": {
+    "message": "열기"
+  },
+  "copyPath": {
+    "message": "복사"
+  },
+  "selectTargetFolder": {
+    "message": "대상 폴더 선택"
+  },
+  "noTargetFolder": {
+    "message": "사용 가능한 대상 폴더가 없습니다"
+  },
+  "confirmMerge": {
+    "message": "병합 확인"
+  },
+  "confirmMergeMessage": {
+    "message": "폴더 \"$1\"을(를) 선택한 폴더로 병합할까요?"
+  },
+  "mergeSuccess": {
+    "message": "북마크 $1개를 이동했습니다"
+  },
+  "mergeFailed": {
+    "message": "병합 실패: $1"
+  },
+  "openFailed": {
+    "message": "열기 실패: $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "삭제 확인"
+  },
+  "confirmDelete": {
+    "message": "이 빈 폴더를 삭제할까요?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "폴더와 북마크 $1개를 모두 삭제할까요?"
+  },
+  "confirmDeleteAll": {
+    "message": "모든 빈 폴더를 삭제할까요?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "빈 폴더 $1개를 모두 삭제할까요?"
+  },
+  "duplicateCount": {
+    "message": "중복 $1개"
+  },
+  "noFoldersFound": {
+    "message": "폴더를 찾을 수 없습니다"
+  },
+  "noEmptyFolders": {
+    "message": "빈 폴더가 없습니다!"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "북마크가 잘 정리되어 있습니다."
+  },
+  "noDuplicates": {
+    "message": "중복 폴더가 없습니다!"
+  },
+  "noDuplicatesDesc": {
+    "message": "폴더 구조가 매우 깔끔합니다."
+  },
+  "loading": {
+    "message": "불러오는 중..."
+  },
+  "rescanBookmarks": {
+    "message": "북마크 다시 검색"
+  },
+  "cannotDeleteRoot": {
+    "message": "시스템 루트 폴더(북마크 바, 기타 북마크 등)는 삭제할 수 없습니다"
+  },
+  "newFolder": {
+    "message": "새로 만들기"
+  },
+  "newFolderPlaceholder": {
+    "message": "폴더 이름을 입력하세요:"
+  },
+  "savePageConfirm": {
+    "message": "페이지를 북마크에 저장할까요?"
+  },
+  "selectFolder": {
+    "message": "기존 폴더 이름 또는 새 폴더 이름을 입력하세요. 취소하면 북마크 바에 저장됩니다."
+  },
+  "pageSaved": {
+    "message": "페이지를 북마크에 저장했습니다"
+  },
+  "saveFailed": {
+    "message": "저장 실패: $1"
+  },
+  "folderCreated": {
+    "message": "폴더를 만들었습니다"
+  },
+  "createFailed": {
+    "message": "만들기 실패: $1"
+  },
+  "renameSuccess": {
+    "message": "폴더 이름을 변경했습니다"
+  },
+  "renameFailed": {
+    "message": "이름 변경 실패: $1"
+  },
+  "appearance": {
+    "message": "모양"
+  },
+  "operations": {
+    "message": "작업"
+  },
+  "addNote": {
+    "message": "메모 추가..."
+  },
+  "noteSaved": {
+    "message": "메모를 저장했습니다"
+  },
+  "saveNoteFailed": {
+    "message": "메모 저장 실패: $1"
+  },
+  "operationFailed": {
+    "message": "작업 실패: $1"
+  },
+  "data": {
+    "message": "데이터"
+  },
+  "about": {
+    "message": "유지 관리"
+  },
+  "importStructure": {
+    "message": "가져오기"
+  },
+  "restoreDefaults": {
+    "message": "기본값 복원"
+  },
+  "confirmRestore": {
+    "message": "기본 설정으로 되돌릴까요?"
+  },
+  "restoreSuccess": {
+    "message": "설정을 기본값으로 되돌렸습니다"
+  },
+  "restoreFailed": {
+    "message": "복원 실패: $1"
+  },
+  "selectAll": {
+    "message": "전체 선택"
+  },
+  "selected": {
+    "message": "선택됨"
+  },
+  "batchMerge": {
+    "message": "병합"
+  },
+  "batchDelete": {
+    "message": "삭제"
+  },
+  "batchExport": {
+    "message": "내보내기"
+  },
+  "batchMergeMin": {
+    "message": "병합하려면 폴더를 2개 이상 선택하세요"
+  },
+  "batchMergeSuccess": {
+    "message": "북마크 $1개 이동"
+  },
+  "batchExportSuccess": {
+    "message": "폴더 $1개를 내보냈습니다"
+  },
+  "confirmBatchDelete": {
+    "message": "폴더 $1개를 삭제할까요?"
+  },
+  "previewItems": {
+    "message": "영향을 받는 항목: $1"
+  },
+  "moreItems": {
+    "message": "+$1 더 보기"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "삭제 전에 백업 JSON이 내보내집니다."
+  },
+  "tabSmart": {
+    "message": "스마트"
+  },
+  "smartTitle": {
+    "message": "스마트 기능"
+  },
+  "duplicateBookmarks": {
+    "message": "중복 북마크"
+  },
+  "cleanDuplicates": {
+    "message": "중복 제거"
+  },
+  "noDuplicateBookmarks": {
+    "message": "중복 북마크가 없습니다!"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "모든 북마크가 고유합니다."
+  },
+  "cleanupSuggestions": {
+    "message": "정리 제안"
+  },
+  "noSuggestions": {
+    "message": "아직 제안이 없습니다"
+  },
+  "noSuggestionsDesc": {
+    "message": "북마크가 잘 정리되어 있습니다."
+  },
+  "confirmCleanDuplicates": {
+    "message": "중복 북마크 제거"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "중복 북마크 $1개를 삭제할까요?"
+  },
+  "emptyTitle": {
+    "message": "빈 폴더"
+  },
+  "emptyDesc": {
+    "message": "삭제 가능한 빈 폴더 $1개를 찾았습니다"
+  },
+  "unusedTitle": {
+    "message": "사용하지 않는 폴더"
+  },
+  "unusedDesc": {
+    "message": "6개월 이상 수정되지 않은 폴더 $1개를 찾았습니다"
+  },
+  "smallTitle": {
+    "message": "작은 폴더"
+  },
+  "smallDesc": {
+    "message": "북마크가 2개 이하인 폴더 $1개를 찾았습니다(병합 고려)"
+  },
+  "deleteAll": {
+    "message": "전체 삭제"
+  },
+  "review": {
+    "message": "빠른 선택"
+  },
+  "mergeAll": {
+    "message": "전체 병합"
+  },
+  "fix": {
+    "message": "수정"
+  },
+  "foldersSelected": {
+    "message": "폴더 $1개를 선택했습니다. 일괄 작업으로 관리하세요."
+  },
+  "healthScoreLabel": {
+    "message": "점수"
+  },
+  "issues": {
+    "message": "문제"
+  },
+  "brokenBookmarks": {
+    "message": "끊어진 북마크"
+  },
+  "scanBroken": {
+    "message": "검사"
+  },
+  "checking": {
+    "message": "확인 중..."
+  },
+  "noBrokenBookmarks": {
+    "message": "아직 검사하지 않았습니다"
+  },
+  "noBookmarksToCheck": {
+    "message": "확인할 북마크가 없습니다"
+  },
+  "scanFailed": {
+    "message": "검사 실패: $1"
+  },
+  "scanComplete": {
+    "message": "검사 완료: 끊어진 $1개, 유효 $2개"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "제거할 끊어진 북마크가 없습니다"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "제거할 중복 북마크가 없습니다"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "제거할 빈 폴더가 없습니다"
+  },
+  "cleanFailed": {
+    "message": "제거 실패: $1"
+  },
+  "cleanEmptyResult": {
+    "message": "폴더 $1개 삭제, $2개 실패"
+  },
+  "deleteFailed": {
+    "message": "삭제 실패: $1"
+  },
+  "deletedWithFailures": {
+    "message": "$1개 삭제, $2개 실패"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "\"검사\"를 클릭하여 끊어진 북마크를 확인하세요."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "끊어진 북마크가 없습니다!"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "모든 북마크에 접근할 수 있습니다."
+  },
+  "cleanBroken": {
+    "message": "끊어진 항목 모두 삭제"
+  },
+  "confirmCleanBroken": {
+    "message": "끊어진 북마크 삭제"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "끊어진 북마크 $1개를 삭제할까요?"
+  },
+  "clearBroken": {
+    "message": "결과 지우기"
+  },
+  "confirmClearResults": {
+    "message": "검사 결과를 지웁니다. 북마크는 삭제되지 않습니다."
+  },
+  "resultsCleared": {
+    "message": "결과를 지웠습니다"
+  },
+  "statusTimeout": {
+    "message": "시간 초과"
+  },
+  "statusBroken": {
+    "message": "끊어짐"
+  },
+  "hostPermissionRequired": {
+    "message": "북마크 상태를 확인하려면 사이트 접근 권한이 필요합니다."
+  },
+  "statusUnreachable": {
+    "message": "연결 불가"
+  },
+  "statusUnknown": {
+    "message": "알 수 없음"
+  },
+  "selectColor": {
+    "message": "색 선택"
+  },
+  "allColors": {
+    "message": "모든 색상"
+  },
+  "actionPosition": {
+    "message": "작업 버튼 위치"
+  },
+  "actionPositionLeft": {
+    "message": "왼쪽"
+  },
+  "actionPositionRight": {
+    "message": "오른쪽"
+  },
+  "filterByColor": {
+    "message": "색으로 필터링"
+  },
+  "setColor": {
+    "message": "색 지정"
+  },
+  "toggleTheme": {
+    "message": "테마 전환"
+  },
+  "keep": {
+    "message": "유지"
+  },
+  "more": {
+    "message": "더 보기"
+  },
+  "colornone": {
+    "message": "없음"
+  },
+  "colorcustom": {
+    "message": "사용자 지정..."
+  },
+  "colorRed": {
+    "message": "빨강"
+  },
+  "colorOrange": {
+    "message": "주황"
+  },
+  "colorYellow": {
+    "message": "노랑"
+  },
+  "colorGreen": {
+    "message": "초록"
+  },
+  "colorBlue": {
+    "message": "파랑"
+  },
+  "colorPurple": {
+    "message": "보라"
+  },
+  "undo": {
+    "message": "실행 취소"
+  },
+  "folderDeleted": {
+    "message": "$1 삭제됨"
+  },
+  "foldersDeletedDesc": {
+    "message": "폴더"
+  },
+  "undoSuccess": {
+    "message": "폴더 $1개를 복원했습니다"
+  },
+  "undoFailed": {
+    "message": "폴더 $1개를 복원할 수 없습니다(상위 폴더 삭제됨)"
+  },
+  "undoActionFailed": {
+    "message": "실행 취소 실패: $1"
+  },
+  "batchColor": {
+    "message": "색"
+  },
+  "batchNote": {
+    "message": "메모"
+  },
+  "batchColorSuccess": {
+    "message": "폴더 $1개에 색을 지정했습니다"
+  },
+  "batchNoteSuccess": {
+    "message": "폴더 $1개에 메모를 추가했습니다"
+  },
+  "batchNotePrompt": {
+    "message": "선택한 폴더의 메모를 입력하세요:"
+  },
+  "exportSuccess": {
+    "message": "설정을 내보냈습니다"
+  },
+  "exportFailed": {
+    "message": "내보내기 실패"
+  },
+  "importSuccess": {
+    "message": "설정을 가져왔습니다"
+  },
+  "importFailed": {
+    "message": "가져오기 실패"
+  },
+  "importInvalidFormat": {
+    "message": "잘못된 파일 형식"
+  },
+  "batchColorDesc": {
+    "message": "색 적용 중:"
+  },
+  "batchColorDesc2": {
+    "message": "폴더"
+  },
+  "batchNoteDesc": {
+    "message": "선택한 폴더에 같은 메모 추가"
+  },
+  "save": {
+    "message": "저장"
+  },
+  "setIcon": {
+    "message": "아이콘 지정"
+  },
+  "selectIcon": {
+    "message": "아이콘 선택"
+  },
+  "iconNone": {
+    "message": "기본"
+  },
+  "iconOpenFolder": {
+    "message": "열린 폴더"
+  },
+  "iconCardFileBox": {
+    "message": "파일함"
+  },
+  "iconChart": {
+    "message": "차트"
+  },
+  "iconMemo": {
+    "message": "메모"
+  },
+  "iconPin": {
+    "message": "고정"
+  },
+  "iconStar": {
+    "message": "별"
+  },
+  "iconBookmark": {
+    "message": "북마크"
+  },
+  "iconHome": {
+    "message": "홈"
+  },
+  "iconBriefcase": {
+    "message": "업무"
+  },
+  "iconTarget": {
+    "message": "대상"
+  },
+  "iconTools": {
+    "message": "도구"
+  },
+  "iconBooks": {
+    "message": "도서"
+  },
+  "iconArt": {
+    "message": "예술"
+  },
+  "iconWrench": {
+    "message": "설정"
+  },
+  "iconIdea": {
+    "message": "아이디어"
+  },
+  "iconMusic": {
+    "message": "음악"
+  },
+  "iconMovie": {
+    "message": "동영상"
+  },
+  "iconLightning": {
+    "message": "중요"
+  },
+  "iconLock": {
+    "message": "비공개"
+  },
+  "iconGlobe": {
+    "message": "웹"
+  },
+  "iconEmail": {
+    "message": "이메일"
+  },
+  "iconImage": {
+    "message": "이미지"
+  },
+  "iconVideo": {
+    "message": "동영상"
+  },
+  "iconFileBox": {
+    "message": "보관함"
+  },
+  "toggleExpand": {
+    "message": "펼치기"
+  },
+  "subfolders": {
+    "message": "하위 폴더"
+  },
+  "bookmarks": {
+    "message": "북마크"
+  },
+  "emptyFolder": {
+    "message": "빈 폴더"
+  },
+  "loadFailed": {
+    "message": "불러오기 실패"
+  },
+  "searchModeFolder": {
+    "message": "폴더 검색"
+  },
+  "searchModeBookmark": {
+    "message": "북마크 검색"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "북마크 검색..."
+  },
+  "noSearchResults": {
+    "message": "결과가 없습니다"
+  },
+  "searchError": {
+    "message": "검색 실패"
+  },
+  "matchingBookmarks": {
+    "message": "일치하는 북마크"
+  },
+  "confirmDeleteBookmark": {
+    "message": "북마크 삭제"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "이 북마크를 삭제할까요?"
+  },
+  "bookmarkDeleted": {
+    "message": "북마크를 삭제했습니다"
+  },
+  "moveBookmark": {
+    "message": "이동"
+  },
+  "selectTargetForBookmark": {
+    "message": "북마크 이동 위치"
+  },
+  "bookmarkMoved": {
+    "message": "북마크를 이동했습니다"
+  },
+  "moveFailed": {
+    "message": "이동 실패: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "병합 확인"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "선택한 폴더 $1개를 대상 폴더로 병합할까요?"
+  },
+  "loadMore": {
+    "message": "더 불러오기"
+  },
+  "noFoldersDesc": {
+    "message": "검색하면 북마크가 여기에 표시됩니다. 폴더를 추가하거나 다시 검색하세요."
+  },
+  "scanningBookmarks": {
+    "message": "북마크를 검색하는 중..."
+  },
+  "collapse": {
+    "message": "접기"
+  },
+  "hideRootFolders": {
+    "message": "루트 폴더 숨기기(북마크 바, 기타 북마크)"
+  },
+  "lastModified": {
+    "message": "마지막 수정"
+  },
+  "undoHistory": {
+    "message": "실행 취소 기록"
+  },
+  "clearHistory": {
+    "message": "지우기"
+  },
+  "noUndoHistory": {
+    "message": "실행 취소 기록이 없습니다"
+  },
+  "historyCleared": {
+    "message": "기록을 지웠습니다"
+  },
+  "tabStats": {
+    "message": "통계"
+  },
+  "statsTitle": {
+    "message": "통계"
+  },
+  "avgBookmarks": {
+    "message": "평균/폴더"
+  },
+  "coloredFolders": {
+    "message": "색 지정됨"
+  },
+  "colorDistribution": {
+    "message": "색 분포"
+  },
+  "sizeDistribution": {
+    "message": "크기 분포"
+  },
+  "smartClassify": {
+    "message": "스마트 분류"
+  },
+  "smartClassifyDesc": {
+    "message": "이름을 기반으로 색이 없는 폴더에 색을 자동 제안"
+  },
+  "runSmartClassify": {
+    "message": "스마트 분류 실행"
+  },
+  "smartClassifyDone": {
+    "message": "스마트 분류 완료, 폴더 $1개에 색 제안"
+  },
+  "apply": {
+    "message": "적용"
+  },
+  "donateTitle": {
+    "message": "후원"
+  },
+  "donateDesc": {
+    "message": "FolderMark가 도움이 되었다면 개발자를 후원해 주세요 ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "QR 코드 스캔"
+  },
+  "buyMeACoffee": {
+    "message": "커피 사주기"
+  },
+  "openPayPal": {
+    "message": "PayPal로 후원"
+  },
+  "thankYou": {
+    "message": "후원해 주셔서 감사합니다!"
+  },
+  "qrCodeNotFound": {
+    "message": "WeChat QR 코드를 icons/wechat-donate.png로 저장하세요"
+  },
+  "clearSearch": {
+    "message": "검색 지우기"
+  },
+  "startScan": {
+    "message": "검사 시작"
+  },
+  "scanningBroken": {
+    "message": "검사 중..."
+  },
+  "scanningBrokenDesc": {
+    "message": "북마크 상태를 확인하는 중입니다. 잠시만 기다려 주세요."
+  },
+  "runAnalysis": {
+    "message": "분석 실행"
+  },
+  "clearFilters": {
+    "message": "필터 지우기"
+  },
+  "analysisComplete": {
+    "message": "분석이 완료되었습니다"
+  },
+  "feedbackTitle": {
+    "message": "피드백"
+  },
+  "feedbackDesc": {
+    "message": "문제나 제안이 있으면 개발자에게 이메일을 보내 주세요."
+  },
+  "sendEmail": {
+    "message": "이메일 보내기"
+  },
+  "filterAllColors": {
+    "message": "모든 색상"
+  },
+  "filterNoColor": {
+    "message": "색 없음"
+  }
+}

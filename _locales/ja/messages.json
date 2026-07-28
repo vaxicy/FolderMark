@@ -1,0 +1,836 @@
+{
+  "extensionName": {
+    "message": "FolderMark - ブックマークフォルダ管理ツール"
+  },
+  "extensionDescription": {
+    "message": "ブックマークフォルダにカラーラベルを付けて、Chromeのブックマークを効率的に整理"
+  },
+  "initializationFailed": {
+    "message": "初期化に失敗しました: $1"
+  },
+  "tagline": {
+    "message": "ブックマークをもっと速く整理。"
+  },
+  "searchPlaceholder": {
+    "message": "フォルダを検索..."
+  },
+  "totalFolders": {
+    "message": "フォルダ"
+  },
+  "totalBookmarks": {
+    "message": "ブックマーク"
+  },
+  "emptyFolders": {
+    "message": "空"
+  },
+  "duplicates": {
+    "message": "重複"
+  },
+  "tabFolders": {
+    "message": "フォルダ"
+  },
+  "tabEmpty": {
+    "message": "空"
+  },
+  "tabDuplicates": {
+    "message": "重複"
+  },
+  "tabSettings": {
+    "message": "設定"
+  },
+  "sortByName": {
+    "message": "名前"
+  },
+  "sortByCount": {
+    "message": "件数"
+  },
+  "sortByPath": {
+    "message": "パス"
+  },
+  "sortByDate": {
+    "message": "日付"
+  },
+  "emptyFoldersTitle": {
+    "message": "空のフォルダ"
+  },
+  "cleanAllEmpty": {
+    "message": "すべて削除"
+  },
+  "duplicatesTitle": {
+    "message": "重複"
+  },
+  "settingsTitle": {
+    "message": "設定"
+  },
+  "theme": {
+    "message": "テーマ"
+  },
+  "themeLight": {
+    "message": "ライト"
+  },
+  "themeBlush": {
+    "message": "ブラッシュ"
+  },
+  "themeMatcha": {
+    "message": "マッチャ"
+  },
+  "themeLatte": {
+    "message": "ラテ"
+  },
+  "themeIris": {
+    "message": "アイリス"
+  },
+  "themeSky": {
+    "message": "スカイ"
+  },
+  "themeCoral": {
+    "message": "コーラル"
+  },
+  "themeRose": {
+    "message": "ローズ"
+  },
+  "themeMint": {
+    "message": "ミント"
+  },
+  "themeDark": {
+    "message": "ダーク"
+  },
+  "language": {
+    "message": "言語"
+  },
+  "deleteConfirm": {
+    "message": "削除の確認"
+  },
+  "exportStructure": {
+    "message": "書き出し"
+  },
+  "cancel": {
+    "message": "キャンセル"
+  },
+  "close": {
+    "message": "閉じる"
+  },
+  "confirm": {
+    "message": "確定"
+  },
+  "delete": {
+    "message": "削除"
+  },
+  "rename": {
+    "message": "名前の変更"
+  },
+  "merge": {
+    "message": "統合"
+  },
+  "open": {
+    "message": "開く"
+  },
+  "copyPath": {
+    "message": "コピー"
+  },
+  "selectTargetFolder": {
+    "message": "移動先フォルダを選択"
+  },
+  "noTargetFolder": {
+    "message": "利用可能な移動先フォルダがありません"
+  },
+  "confirmMerge": {
+    "message": "統合の確認"
+  },
+  "confirmMergeMessage": {
+    "message": "フォルダ「$1」を選択したフォルダに統合しますか？"
+  },
+  "mergeSuccess": {
+    "message": "$1 件のブックマークを移動しました"
+  },
+  "mergeFailed": {
+    "message": "統合に失敗しました: $1"
+  },
+  "openFailed": {
+    "message": "開くのに失敗しました: $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "削除の確認"
+  },
+  "confirmDelete": {
+    "message": "この空のフォルダを削除しますか？"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "フォルダとすべてのブックマーク $1 件を削除しますか？"
+  },
+  "confirmDeleteAll": {
+    "message": "すべての空のフォルダを削除しますか？"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "空のフォルダ $1 件をすべて削除しますか？"
+  },
+  "duplicateCount": {
+    "message": "重複 $1 件"
+  },
+  "noFoldersFound": {
+    "message": "フォルダが見つかりません"
+  },
+  "noEmptyFolders": {
+    "message": "空のフォルダはありません！"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "ブックマークはきちんと整理されています。"
+  },
+  "noDuplicates": {
+    "message": "重複フォルダはありません！"
+  },
+  "noDuplicatesDesc": {
+    "message": "フォルダ構造は非常に整っています。"
+  },
+  "loading": {
+    "message": "読み込み中..."
+  },
+  "rescanBookmarks": {
+    "message": "ブックマークを再スキャン"
+  },
+  "cannotDeleteRoot": {
+    "message": "システムのルートフォルダ（ブックマークバー、他のブックマークなど）は削除できません"
+  },
+  "newFolder": {
+    "message": "新規"
+  },
+  "newFolderPlaceholder": {
+    "message": "フォルダ名を入力:"
+  },
+  "savePageConfirm": {
+    "message": "ページをブックマークに保存しますか？"
+  },
+  "selectFolder": {
+    "message": "既存のフォルダ名、または新しいフォルダ名を入力してください。キャンセルするとブックマークバーに保存されます。"
+  },
+  "pageSaved": {
+    "message": "ページをブックマークに保存しました"
+  },
+  "saveFailed": {
+    "message": "保存に失敗しました: $1"
+  },
+  "folderCreated": {
+    "message": "フォルダを作成しました"
+  },
+  "createFailed": {
+    "message": "作成に失敗しました: $1"
+  },
+  "renameSuccess": {
+    "message": "フォルダ名を変更しました"
+  },
+  "renameFailed": {
+    "message": "名前の変更に失敗しました: $1"
+  },
+  "appearance": {
+    "message": "外観"
+  },
+  "operations": {
+    "message": "操作"
+  },
+  "addNote": {
+    "message": "メモを追加..."
+  },
+  "noteSaved": {
+    "message": "メモを保存しました"
+  },
+  "saveNoteFailed": {
+    "message": "メモの保存に失敗しました: $1"
+  },
+  "operationFailed": {
+    "message": "操作に失敗しました: $1"
+  },
+  "data": {
+    "message": "データ"
+  },
+  "about": {
+    "message": "メンテナンス"
+  },
+  "importStructure": {
+    "message": "読み込み"
+  },
+  "restoreDefaults": {
+    "message": "初期設定に戻す"
+  },
+  "confirmRestore": {
+    "message": "デフォルト設定に戻しますか？"
+  },
+  "restoreSuccess": {
+    "message": "設定を初期値に戻しました"
+  },
+  "restoreFailed": {
+    "message": "復元に失敗しました: $1"
+  },
+  "selectAll": {
+    "message": "すべて選択"
+  },
+  "selected": {
+    "message": "選択済み"
+  },
+  "batchMerge": {
+    "message": "統合"
+  },
+  "batchDelete": {
+    "message": "削除"
+  },
+  "batchExport": {
+    "message": "書き出し"
+  },
+  "batchMergeMin": {
+    "message": "統合するには少なくとも 2 つのフォルダを選択してください"
+  },
+  "batchMergeSuccess": {
+    "message": "$1 件のブックマークを移動"
+  },
+  "batchExportSuccess": {
+    "message": "$1 個のフォルダを書き出しました"
+  },
+  "confirmBatchDelete": {
+    "message": "フォルダ $1 個を削除しますか？"
+  },
+  "previewItems": {
+    "message": "影響する項目: $1"
+  },
+  "moreItems": {
+    "message": "ほか $1 件"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "削除前にバックアップ用 JSON が書き出されます。"
+  },
+  "tabSmart": {
+    "message": "スマート"
+  },
+  "smartTitle": {
+    "message": "スマート機能"
+  },
+  "duplicateBookmarks": {
+    "message": "重複ブックマーク"
+  },
+  "cleanDuplicates": {
+    "message": "重複を削除"
+  },
+  "noDuplicateBookmarks": {
+    "message": "重複ブックマークはありません！"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "すべてのブックマークは重複がありません。"
+  },
+  "cleanupSuggestions": {
+    "message": "整理の提案"
+  },
+  "noSuggestions": {
+    "message": "提案はまだありません"
+  },
+  "noSuggestionsDesc": {
+    "message": "ブックマークはよく整理されています。"
+  },
+  "confirmCleanDuplicates": {
+    "message": "重複ブックマークを削除"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "重複ブックマーク $1 件を削除しますか？"
+  },
+  "emptyTitle": {
+    "message": "空のフォルダ"
+  },
+  "emptyDesc": {
+    "message": "削除可能な空のフォルダが $1 個見つかりました"
+  },
+  "unusedTitle": {
+    "message": "未使用フォルダ"
+  },
+  "unusedDesc": {
+    "message": "6 か月以上更新されていないフォルダが $1 個見つかりました"
+  },
+  "smallTitle": {
+    "message": "小さなフォルダ"
+  },
+  "smallDesc": {
+    "message": "ブックマークが 2 個以下のフォルダが $1 個見つかりました（統合を検討）"
+  },
+  "deleteAll": {
+    "message": "すべて削除"
+  },
+  "review": {
+    "message": "クイック選択"
+  },
+  "mergeAll": {
+    "message": "すべて統合"
+  },
+  "fix": {
+    "message": "修復"
+  },
+  "foldersSelected": {
+    "message": "フォルダ $1 個を選択しました。一括操作で管理できます。"
+  },
+  "healthScoreLabel": {
+    "message": "スコア"
+  },
+  "issues": {
+    "message": "問題"
+  },
+  "brokenBookmarks": {
+    "message": "リン切れブックマーク"
+  },
+  "scanBroken": {
+    "message": "スキャン"
+  },
+  "checking": {
+    "message": "確認中..."
+  },
+  "noBrokenBookmarks": {
+    "message": "まだスキャンしていません"
+  },
+  "noBookmarksToCheck": {
+    "message": "確認するブックマークがありません"
+  },
+  "scanFailed": {
+    "message": "スキャンに失敗しました: $1"
+  },
+  "scanComplete": {
+    "message": "スキャン完了: リン切れ $1 件、有効 $2 件"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "削除するリン切れブックマークはありません"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "削除する重複ブックマークはありません"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "削除する空のフォルダはありません"
+  },
+  "cleanFailed": {
+    "message": "削除に失敗しました: $1"
+  },
+  "cleanEmptyResult": {
+    "message": "$1 個のフォルダを削除、$2 件は失敗"
+  },
+  "deleteFailed": {
+    "message": "削除に失敗しました: $1"
+  },
+  "deletedWithFailures": {
+    "message": "$1 件削除、$2 件失敗"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "「スキャン」をクリックしてリン切れブックマークを確認してください。"
+  },
+  "noBrokenBookmarksFound": {
+    "message": "リン切れブックマークはありません！"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "すべてのブックマークにアクセスできます。"
+  },
+  "cleanBroken": {
+    "message": "リン切れをすべて削除"
+  },
+  "confirmCleanBroken": {
+    "message": "リン切れブックマークを削除"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "リン切れブックマーク $1 件を削除しますか？"
+  },
+  "clearBroken": {
+    "message": "結果をクリア"
+  },
+  "confirmClearResults": {
+    "message": "スキャン結果をクリアします。ブックマークは削除されません。"
+  },
+  "resultsCleared": {
+    "message": "結果をクリアしました"
+  },
+  "statusTimeout": {
+    "message": "タイムアウト"
+  },
+  "statusBroken": {
+    "message": "リン切れ"
+  },
+  "hostPermissionRequired": {
+    "message": "ブックマークの状態を確認するにはサイトへのアクセス権が必要です。"
+  },
+  "statusUnreachable": {
+    "message": "到達不能"
+  },
+  "statusUnknown": {
+    "message": "不明"
+  },
+  "selectColor": {
+    "message": "色を選択"
+  },
+  "allColors": {
+    "message": "すべての色"
+  },
+  "actionPosition": {
+    "message": "操作ボタンの位置"
+  },
+  "actionPositionLeft": {
+    "message": "左"
+  },
+  "actionPositionRight": {
+    "message": "右"
+  },
+  "filterByColor": {
+    "message": "色で絞り込み"
+  },
+  "setColor": {
+    "message": "色を設定"
+  },
+  "toggleTheme": {
+    "message": "テーマを切り替え"
+  },
+  "keep": {
+    "message": "保持"
+  },
+  "more": {
+    "message": "もっと"
+  },
+  "colornone": {
+    "message": "なし"
+  },
+  "colorcustom": {
+    "message": "カスタム..."
+  },
+  "colorRed": {
+    "message": "赤"
+  },
+  "colorOrange": {
+    "message": "オレンジ"
+  },
+  "colorYellow": {
+    "message": "黄"
+  },
+  "colorGreen": {
+    "message": "緑"
+  },
+  "colorBlue": {
+    "message": "青"
+  },
+  "colorPurple": {
+    "message": "紫"
+  },
+  "undo": {
+    "message": "元に戻す"
+  },
+  "folderDeleted": {
+    "message": "$1 を削除しました"
+  },
+  "foldersDeletedDesc": {
+    "message": "フォルダ"
+  },
+  "undoSuccess": {
+    "message": "$1 個のフォルダを復元しました"
+  },
+  "undoFailed": {
+    "message": "$1 個のフォルダは復元できませんでした（親が削除されています）"
+  },
+  "undoActionFailed": {
+    "message": "元に戻すのに失敗しました: $1"
+  },
+  "batchColor": {
+    "message": "色"
+  },
+  "batchNote": {
+    "message": "メモ"
+  },
+  "batchColorSuccess": {
+    "message": "$1 個のフォルダに色を設定しました"
+  },
+  "batchNoteSuccess": {
+    "message": "$1 個のフォルダにメモを追加しました"
+  },
+  "batchNotePrompt": {
+    "message": "選択したフォルダのメモを入力:"
+  },
+  "exportSuccess": {
+    "message": "設定を書き出しました"
+  },
+  "exportFailed": {
+    "message": "書き出しに失敗しました"
+  },
+  "importSuccess": {
+    "message": "設定を読み込みました"
+  },
+  "importFailed": {
+    "message": "読み込みに失敗しました"
+  },
+  "importInvalidFormat": {
+    "message": "ファイル形式が無効です"
+  },
+  "batchColorDesc": {
+    "message": "色を適用中:"
+  },
+  "batchColorDesc2": {
+    "message": "フォルダ"
+  },
+  "batchNoteDesc": {
+    "message": "選択したフォルダに同じメモを追加"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "setIcon": {
+    "message": "アイコンを設定"
+  },
+  "selectIcon": {
+    "message": "アイコンを選択"
+  },
+  "iconNone": {
+    "message": "デフォルト"
+  },
+  "iconOpenFolder": {
+    "message": "開いたフォルダ"
+  },
+  "iconCardFileBox": {
+    "message": "書類箱"
+  },
+  "iconChart": {
+    "message": "グラフ"
+  },
+  "iconMemo": {
+    "message": "メモ"
+  },
+  "iconPin": {
+    "message": "ピン"
+  },
+  "iconStar": {
+    "message": "星"
+  },
+  "iconBookmark": {
+    "message": "ブックマーク"
+  },
+  "iconHome": {
+    "message": "ホーム"
+  },
+  "iconBriefcase": {
+    "message": "仕事"
+  },
+  "iconTarget": {
+    "message": "ターゲット"
+  },
+  "iconTools": {
+    "message": "ツール"
+  },
+  "iconBooks": {
+    "message": "本"
+  },
+  "iconArt": {
+    "message": "アート"
+  },
+  "iconWrench": {
+    "message": "設定"
+  },
+  "iconIdea": {
+    "message": "アイデア"
+  },
+  "iconMusic": {
+    "message": "音楽"
+  },
+  "iconMovie": {
+    "message": "映画"
+  },
+  "iconLightning": {
+    "message": "重要"
+  },
+  "iconLock": {
+    "message": "プライベート"
+  },
+  "iconGlobe": {
+    "message": "ウェブ"
+  },
+  "iconEmail": {
+    "message": "メール"
+  },
+  "iconImage": {
+    "message": "画像"
+  },
+  "iconVideo": {
+    "message": "動画"
+  },
+  "iconFileBox": {
+    "message": "アーカイブ"
+  },
+  "toggleExpand": {
+    "message": "展開"
+  },
+  "subfolders": {
+    "message": "サブフォルダ"
+  },
+  "bookmarks": {
+    "message": "ブックマーク"
+  },
+  "emptyFolder": {
+    "message": "空のフォルダ"
+  },
+  "loadFailed": {
+    "message": "読み込みに失敗しました"
+  },
+  "searchModeFolder": {
+    "message": "フォルダを検索"
+  },
+  "searchModeBookmark": {
+    "message": "ブックマークを検索"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "ブックマークを検索..."
+  },
+  "noSearchResults": {
+    "message": "結果が見つかりません"
+  },
+  "searchError": {
+    "message": "検索に失敗しました"
+  },
+  "matchingBookmarks": {
+    "message": "一致したブックマーク"
+  },
+  "confirmDeleteBookmark": {
+    "message": "ブックマークを削除"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "このブックマークを削除しますか？"
+  },
+  "bookmarkDeleted": {
+    "message": "ブックマークを削除しました"
+  },
+  "moveBookmark": {
+    "message": "移動"
+  },
+  "selectTargetForBookmark": {
+    "message": "ブックマークの移動先"
+  },
+  "bookmarkMoved": {
+    "message": "ブックマークを移動しました"
+  },
+  "moveFailed": {
+    "message": "移動に失敗しました: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "統合の確認"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "選択したフォルダ $1 個を移動先フォルダに統合しますか？"
+  },
+  "loadMore": {
+    "message": "もっと読み込む"
+  },
+  "noFoldersDesc": {
+    "message": "スキャンするとブックマークがここに表示されます。フォルダを追加するか再スキャンしてください。"
+  },
+  "scanningBookmarks": {
+    "message": "ブックマークをスキャン中..."
+  },
+  "collapse": {
+    "message": "折りたたむ"
+  },
+  "hideRootFolders": {
+    "message": "ルートフォルダを非表示（ブックマークバー、他のブックマーク）"
+  },
+  "lastModified": {
+    "message": "最終更新"
+  },
+  "undoHistory": {
+    "message": "操作履歴"
+  },
+  "clearHistory": {
+    "message": "クリア"
+  },
+  "noUndoHistory": {
+    "message": "操作履歴はありません"
+  },
+  "historyCleared": {
+    "message": "履歴をクリアしました"
+  },
+  "tabStats": {
+    "message": "統計"
+  },
+  "statsTitle": {
+    "message": "統計"
+  },
+  "avgBookmarks": {
+    "message": "平均/フォルダ"
+  },
+  "coloredFolders": {
+    "message": "色付き"
+  },
+  "colorDistribution": {
+    "message": "色の分布"
+  },
+  "sizeDistribution": {
+    "message": "サイズの分布"
+  },
+  "smartClassify": {
+    "message": "スマート分類"
+  },
+  "smartClassifyDesc": {
+    "message": "名前に基づいて色付けされていないフォルダに色を自動提案"
+  },
+  "runSmartClassify": {
+    "message": "スマート分類を実行"
+  },
+  "smartClassifyDone": {
+    "message": "スマート分類が完了し、$1 個のフォルダに色を提案しました"
+  },
+  "apply": {
+    "message": "適用"
+  },
+  "donateTitle": {
+    "message": "サポート"
+  },
+  "donateDesc": {
+    "message": "FolderMark が役に立ったら、開発者を支援してください ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "QR コードをスキャン"
+  },
+  "buyMeACoffee": {
+    "message": "コーヒーをおごる"
+  },
+  "openPayPal": {
+    "message": "PayPal で支援"
+  },
+  "thankYou": {
+    "message": "ご支援ありがとうございます！"
+  },
+  "qrCodeNotFound": {
+    "message": "WeChat の QR コードを icons/wechat-donate.png として保存してください"
+  },
+  "clearSearch": {
+    "message": "検索をクリア"
+  },
+  "startScan": {
+    "message": "スキャンを開始"
+  },
+  "scanningBroken": {
+    "message": "スキャン中..."
+  },
+  "scanningBrokenDesc": {
+    "message": "ブックマークの状態を確認中です。お待ちください。"
+  },
+  "runAnalysis": {
+    "message": "分析を実行"
+  },
+  "clearFilters": {
+    "message": "フィルターをクリア"
+  },
+  "analysisComplete": {
+    "message": "分析が完了しました"
+  },
+  "feedbackTitle": {
+    "message": "フィードバック"
+  },
+  "feedbackDesc": {
+    "message": "問題や提案がありましたら、開発者にメールしてください。"
+  },
+  "sendEmail": {
+    "message": "メールを送信"
+  },
+  "filterAllColors": {
+    "message": "すべての色"
+  },
+  "filterNoColor": {
+    "message": "色なし"
+  }
+}
