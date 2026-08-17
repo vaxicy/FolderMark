@@ -847,5 +847,23 @@
   },
   "filterNoColor": {
     "message": "Без цвета"
+  },
+  "langEnglish": {
+    "message": "Английский"
+  },
+  "langChinese": {
+    "message": "Китайский"
+  },
+  "langSpanish": {
+    "message": "Испанский"
+  },
+  "langJapanese": {
+    "message": "Японский"
+  },
+  "langKorean": {
+    "message": "Корейский"
+  },
+  "langRussian": {
+    "message": "Русский"
   }
 }

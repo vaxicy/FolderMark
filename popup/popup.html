@@ -396,14 +396,20 @@
             </div>
             <div class="setting-item">
               <label data-i18n="language">Language</label>
-              <select id="languageSelect">
-                <option value="en">English</option>
-                <option value="zh_CN">中文</option>
-                <option value="es">Español</option>
-                <option value="ja">日本語</option>
-                <option value="ko">한국어</option>
-                <option value="ru">Русский</option>
-              </select>
+              <div class="custom-select" id="languageSelect">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-label" data-i18n="langEnglish">English</span>
+                  <span class="custom-select-arrow">▾</span>
+                </div>
+                <div class="custom-select-dropdown hidden">
+                  <div class="custom-select-option" data-value="en"><span data-i18n="langEnglish">English</span></div>
+                  <div class="custom-select-option" data-value="zh_CN"><span data-i18n="langChinese">中文</span></div>
+                  <div class="custom-select-option" data-value="es"><span data-i18n="langSpanish">Español</span></div>
+                  <div class="custom-select-option" data-value="ja"><span data-i18n="langJapanese">日本語</span></div>
+                  <div class="custom-select-option" data-value="ko"><span data-i18n="langKorean">한국어</span></div>
+                  <div class="custom-select-option" data-value="ru"><span data-i18n="langRussian">Русский</span></div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -420,10 +426,16 @@
             </div>
             <div class="setting-item">
               <label data-i18n="actionPosition">操作按钮位置</label>
-              <select id="actionPositionSelect">
-                <option value="left" data-i18n="actionPositionLeft">靠左</option>
-                <option value="right" data-i18n="actionPositionRight">靠右</option>
-              </select>
+              <div class="custom-select" id="actionPositionSelect">
+                <div class="custom-select-trigger">
+                  <span class="custom-select-label" data-i18n="actionPositionRight">靠右</span>
+                  <span class="custom-select-arrow">▾</span>
+                </div>
+                <div class="custom-select-dropdown hidden">
+                  <div class="custom-select-option" data-value="left"><span data-i18n="actionPositionLeft">靠左</span></div>
+                  <div class="custom-select-option" data-value="right"><span data-i18n="actionPositionRight">靠右</span></div>
+                </div>
+              </div>
             </div>
           </div>
 

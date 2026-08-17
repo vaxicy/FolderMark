@@ -251,12 +251,11 @@ class App {
     // 设置 - 主题选择（自定义下拉）
     this._initThemeCustomSelect();
 
-    // 设置 - 语言选择
-    const languageSelect = document.getElementById('languageSelect');
-    languageSelect.value = this.language;
-    languageSelect.addEventListener('change', (e) => {
-      this.changeLanguage(e.target.value);
-    });
+    // 设置 - 语言选择（自定义下拉）
+    this._initLanguageCustomSelect();
+
+    // 设置 - 操作按钮位置（自定义下拉）
+    this._initActionPositionCustomSelect();
 
     // 设置 - 删除确认
     const deleteConfirmToggle = document.getElementById('deleteConfirmToggle');
@@ -274,16 +273,7 @@ class App {
       });
     }
 
-    // 设置 - 操作按钮位置
-    const actionPositionSelect = document.getElementById('actionPositionSelect');
-    if (actionPositionSelect) {
-      actionPositionSelect.value = this.actionPosition;
-      actionPositionSelect.addEventListener('change', (e) => {
-        this.actionPosition = e.target.value;
-        chrome.storage.local.set({ [STORAGE_KEYS.ACTION_POSITION]: this.actionPosition });
-        this.renderFolders();
-      });
-    }
+    // 设置 - 操作按钮位置（已在上方用自定义下拉初始化）
 
     // 设置 - 导入
     document.getElementById('importStructure').addEventListener('click', () => {
@@ -3842,7 +3832,14 @@ class App {
       });
     }
     const languageSelect = document.getElementById('languageSelect');
-    languageSelect.value = this.language;
+    if (languageSelect) {
+      const llabel = languageSelect.querySelector('.custom-select-label');
+      const lactive = languageSelect.querySelector(`.custom-select-option[data-value="${this.language}"]`);
+      if (llabel && lactive) llabel.textContent = lactive.textContent.trim();
+      languageSelect.querySelectorAll('.custom-select-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === this.language);
+      });
+    }
     const deleteConfirmToggle = document.getElementById('deleteConfirmToggle');
     deleteConfirmToggle.checked = this.deleteConfirm;
     const hideRootFoldersToggle = document.getElementById('hideRootFoldersToggle');
@@ -3851,7 +3848,12 @@ class App {
     }
     const actionPositionSelect = document.getElementById('actionPositionSelect');
     if (actionPositionSelect) {
-      actionPositionSelect.value = this.actionPosition;
+      const alabel = actionPositionSelect.querySelector('.custom-select-label');
+      const aactive = actionPositionSelect.querySelector(`.custom-select-option[data-value="${this.actionPosition}"]`);
+      if (alabel && aactive) alabel.textContent = aactive.textContent.trim();
+      actionPositionSelect.querySelectorAll('.custom-select-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === this.actionPosition);
+      });
     }
     this.renderUndoHistory();
   }
@@ -4288,10 +4290,122 @@ class App {
     });
   }
 
+  /**
+   * 初始化语言自定义下拉（替换原生 select）
+   */
+  _initLanguageCustomSelect() {
+    const container = document.getElementById('languageSelect');
+    if (!container) return;
+
+    const trigger = container.querySelector('.custom-select-trigger');
+    const dropdown = container.querySelector('.custom-select-dropdown');
+    const label = container.querySelector('.custom-select-label');
+    if (!trigger || !dropdown || !label) return;
+
+    const syncUI = () => {
+      dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === this.language);
+      });
+      const active = dropdown.querySelector(`.custom-select-option[data-value="${this.language}"]`);
+      label.textContent = active ? active.textContent.trim() : this.language;
+    };
+    syncUI();
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !dropdown.classList.contains('hidden');
+      document.querySelectorAll('.custom-select-dropdown:not(.hidden)').forEach(d => d.classList.add('hidden'));
+      if (isOpen) {
+        dropdown.classList.add('hidden');
+      } else {
+        dropdown.classList.remove('hidden');
+      }
+    });
+
+    dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = opt.dataset.value;
+        dropdown.classList.add('hidden');
+        if (val !== this.language) {
+          this.changeLanguage(val);
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  }
+
+  /**
+   * 初始化操作按钮位置自定义下拉（替换原生 select）
+   */
+  _initActionPositionCustomSelect() {
+    const container = document.getElementById('actionPositionSelect');
+    if (!container) return;
+
+    const trigger = container.querySelector('.custom-select-trigger');
+    const dropdown = container.querySelector('.custom-select-dropdown');
+    const label = container.querySelector('.custom-select-label');
+    if (!trigger || !dropdown || !label) return;
+
+    const syncUI = () => {
+      dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === this.actionPosition);
+      });
+      const active = dropdown.querySelector(`.custom-select-option[data-value="${this.actionPosition}"]`);
+      label.textContent = active ? active.textContent.trim() : this.actionPosition;
+    };
+    syncUI();
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !dropdown.classList.contains('hidden');
+      document.querySelectorAll('.custom-select-dropdown:not(.hidden)').forEach(d => d.classList.add('hidden'));
+      if (isOpen) {
+        dropdown.classList.add('hidden');
+      } else {
+        dropdown.classList.remove('hidden');
+      }
+    });
+
+    dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = opt.dataset.value;
+        dropdown.classList.add('hidden');
+        if (val !== this.actionPosition) {
+          this.actionPosition = val;
+          chrome.storage.local.set({ [STORAGE_KEYS.ACTION_POSITION]: this.actionPosition });
+          this.renderFolders();
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  }
+
   async changeLanguage(language) {
     this.language = language;
     await i18n.setLanguage(language);
     await chrome.storage.local.set({ [STORAGE_KEYS.LANGUAGE]: language });
+    // 同步语言自定义下拉
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+      const llabel = languageSelect.querySelector('.custom-select-label');
+      const lactive = languageSelect.querySelector(`.custom-select-option[data-value="${language}"]`);
+      if (llabel && lactive) llabel.textContent = lactive.textContent.trim();
+      languageSelect.querySelectorAll('.custom-select-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === language);
+      });
+    }
     this.renderCurrentPage();
     this.updateColorFilterOptions();
   }
@@ -4423,7 +4537,14 @@ class App {
               this.language = data.settings.language;
               await i18n.init(this.language);
               const languageSelect = document.getElementById('languageSelect');
-              if (languageSelect) languageSelect.value = this.language;
+              if (languageSelect) {
+                const llabel = languageSelect.querySelector('.custom-select-label');
+                const lactive = languageSelect.querySelector(`.custom-select-option[data-value="${this.language}"]`);
+                if (llabel && lactive) llabel.textContent = lactive.textContent.trim();
+                languageSelect.querySelectorAll('.custom-select-option').forEach(opt => {
+                  opt.classList.toggle('active', opt.dataset.value === this.language);
+                });
+              }
             }
             if (data.settings.deleteConfirm !== undefined) {
               this.deleteConfirm = data.settings.deleteConfirm;
