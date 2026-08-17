@@ -1,0 +1,842 @@
+{
+  "extensionName": {
+    "message": "FolderMark — Менеджер папок закладок"
+  },
+  "extensionDescription": {
+    "message": "Добавляйте цветные метки папкам закладок и эффективно организуйте закладки Chrome"
+  },
+  "initializationFailed": {
+    "message": "Ошибка инициализации: $1"
+  },
+  "tagline": {
+    "message": "Организуйте закладки быстрее."
+  },
+  "searchPlaceholder": {
+    "message": "Поиск папок..."
+  },
+  "totalFolders": {
+    "message": "Папки"
+  },
+  "totalBookmarks": {
+    "message": "Закладки"
+  },
+  "emptyFolders": {
+    "message": "Пустые"
+  },
+  "duplicates": {
+    "message": "Дубликаты"
+  },
+  "tabFolders": {
+    "message": "Папки"
+  },
+  "tabEmpty": {
+    "message": "Пустые"
+  },
+  "tabDuplicates": {
+    "message": "Дубликаты"
+  },
+  "tabSettings": {
+    "message": "Настройки"
+  },
+  "sortByName": {
+    "message": "Имя"
+  },
+  "sortByCount": {
+    "message": "Кол-во"
+  },
+  "sortByPath": {
+    "message": "Путь"
+  },
+  "sortByDate": {
+    "message": "Дата"
+  },
+  "emptyFoldersTitle": {
+    "message": "Пустые папки"
+  },
+  "cleanAllEmpty": {
+    "message": "Очистить всё"
+  },
+  "duplicatesTitle": {
+    "message": "Дубликаты"
+  },
+  "settingsTitle": {
+    "message": "Настройки"
+  },
+  "theme": {
+    "message": "Тема"
+  },
+  "themeLight": {
+    "message": "Светлая"
+  },
+  "themeBlush": {
+    "message": "Румянец"
+  },
+  "themeMatcha": {
+    "message": "Матча"
+  },
+  "themeLatte": {
+    "message": "Латте"
+  },
+  "themeIris": {
+    "message": "Ирис"
+  },
+  "themeSky": {
+    "message": "Небо"
+  },
+  "themeCoral": {
+    "message": "Коралл"
+  },
+  "themeRose": {
+    "message": "Роза"
+  },
+  "themeMint": {
+    "message": "Мята"
+  },
+  "themeSlate": {
+    "message": "Сланец"
+  },
+  "themeTeal": {
+    "message": "Бирюза"
+  },
+  "themeDark": {
+    "message": "Тёмная"
+  },
+  "language": {
+    "message": "Язык"
+  },
+  "deleteConfirm": {
+    "message": "Подтвердить удаление"
+  },
+  "exportStructure": {
+    "message": "Экспорт"
+  },
+  "cancel": {
+    "message": "Отмена"
+  },
+  "close": {
+    "message": "Закрыть"
+  },
+  "confirm": {
+    "message": "Подтвердить"
+  },
+  "delete": {
+    "message": "Удалить"
+  },
+  "rename": {
+    "message": "Переименовать"
+  },
+  "merge": {
+    "message": "Объединить"
+  },
+  "open": {
+    "message": "Открыть"
+  },
+  "copyPath": {
+    "message": "Копировать"
+  },
+  "selectTargetFolder": {
+    "message": "Выберите целевую папку"
+  },
+  "noTargetFolder": {
+    "message": "Нет доступных целевых папок"
+  },
+  "confirmMerge": {
+    "message": "Подтвердить объединение"
+  },
+  "confirmMergeMessage": {
+    "message": "Объединить папку «$1» в выбранную папку?"
+  },
+  "mergeSuccess": {
+    "message": "Перемещено закладок: $1"
+  },
+  "mergeFailed": {
+    "message": "Ошибка объединения: $1"
+  },
+  "openFailed": {
+    "message": "Ошибка открытия: $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "Подтвердить удаление"
+  },
+  "confirmDelete": {
+    "message": "Удалить эту пустую папку?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "Удалить папку и все закладки ($1)?"
+  },
+  "confirmDeleteAll": {
+    "message": "Удалить все пустые папки?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "Удалить все пустые папки ($1)?"
+  },
+  "duplicateCount": {
+    "message": "$1 дубликатов"
+  },
+  "noFoldersFound": {
+    "message": "Папки не найдены"
+  },
+  "noEmptyFolders": {
+    "message": "Нет пустых папок!"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "Ваши закладки хорошо организованы."
+  },
+  "noDuplicates": {
+    "message": "Нет дубликатов папок!"
+  },
+  "noDuplicatesDesc": {
+    "message": "Структура ваших папок очень аккуратная."
+  },
+  "loading": {
+    "message": "Загрузка..."
+  },
+  "rescanBookmarks": {
+    "message": "Пересканировать закладки"
+  },
+  "cannotDeleteRoot": {
+    "message": "Нельзя удалить системные корневые папки (Панель закладок, Другие закладки и т.д.)"
+  },
+  "newFolder": {
+    "message": "Новая"
+  },
+  "newFolderPlaceholder": {
+    "message": "Введите имя папки:"
+  },
+  "savePageConfirm": {
+    "message": "Сохранить страницу в закладки?"
+  },
+  "selectFolder": {
+    "message": "Введите имя существующей или новой папки. Отмена сохраняет на панель закладок."
+  },
+  "pageSaved": {
+    "message": "Страница сохранена в закладки"
+  },
+  "saveFailed": {
+    "message": "Ошибка сохранения: $1"
+  },
+  "folderCreated": {
+    "message": "Папка успешно создана"
+  },
+  "createFailed": {
+    "message": "Ошибка создания: $1"
+  },
+  "renameSuccess": {
+    "message": "Папка переименована"
+  },
+  "renameFailed": {
+    "message": "Ошибка переименования: $1"
+  },
+  "appearance": {
+    "message": "Внешний вид"
+  },
+  "operations": {
+    "message": "Действия"
+  },
+  "addNote": {
+    "message": "Добавить заметку..."
+  },
+  "noteSaved": {
+    "message": "Заметка сохранена"
+  },
+  "saveNoteFailed": {
+    "message": "Не удалось сохранить заметку: $1"
+  },
+  "operationFailed": {
+    "message": "Ошибка операции: $1"
+  },
+  "data": {
+    "message": "Данные"
+  },
+  "about": {
+    "message": "Обслуживание"
+  },
+  "importStructure": {
+    "message": "Импорт"
+  },
+  "restoreDefaults": {
+    "message": "Сбросить настройки"
+  },
+  "confirmRestore": {
+    "message": "Сбросить настройки по умолчанию?"
+  },
+  "restoreSuccess": {
+    "message": "Настройки сброшены к значениям по умолчанию"
+  },
+  "restoreFailed": {
+    "message": "Не удалось сбросить: $1"
+  },
+  "selectAll": {
+    "message": "Выбрать всё"
+  },
+  "selected": {
+    "message": "выбрано"
+  },
+  "batchMerge": {
+    "message": "Объединить"
+  },
+  "batchDelete": {
+    "message": "Удалить"
+  },
+  "batchExport": {
+    "message": "Экспорт"
+  },
+  "batchMergeMin": {
+    "message": "Выберите минимум 2 папки для объединения"
+  },
+  "batchMergeSuccess": {
+    "message": "Перемещено закладок: $1"
+  },
+  "batchExportSuccess": {
+    "message": "Экспортировано папок: $1"
+  },
+  "confirmBatchDelete": {
+    "message": "Удалить папки ($1)?"
+  },
+  "previewItems": {
+    "message": "Будет затронуто: $1"
+  },
+  "moreItems": {
+    "message": "+$1 ещё"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "Резервная копия JSON будет экспортирована перед удалением."
+  },
+  "tabSmart": {
+    "message": "Умное"
+  },
+  "smartTitle": {
+    "message": "Умные функции"
+  },
+  "duplicateBookmarks": {
+    "message": "Дубликаты закладок"
+  },
+  "cleanDuplicates": {
+    "message": "Очистить дубликаты"
+  },
+  "noDuplicateBookmarks": {
+    "message": "Нет дубликатов закладок!"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "Все ваши закладки уникальны."
+  },
+  "cleanupSuggestions": {
+    "message": "Предложения по очистке"
+  },
+  "noSuggestions": {
+    "message": "Пока нет предложений"
+  },
+  "noSuggestionsDesc": {
+    "message": "Ваши закладки хорошо организованы."
+  },
+  "confirmCleanDuplicates": {
+    "message": "Очистить дубликаты закладок"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "Удалить дубликаты закладок ($1)?"
+  },
+  "emptyTitle": {
+    "message": "Пустые папки"
+  },
+  "emptyDesc": {
+    "message": "Найдено пустых папок: $1 (можно удалить)"
+  },
+  "unusedTitle": {
+    "message": "Неиспользуемые папки"
+  },
+  "unusedDesc": {
+    "message": "Найдено папок, не изменявшихся более 6 месяцев: $1"
+  },
+  "smallTitle": {
+    "message": "Маленькие папки"
+  },
+  "smallDesc": {
+    "message": "Найдено папок с 2 и менее закладками: $1 (рекомендуется объединить)"
+  },
+  "deleteAll": {
+    "message": "Удалить всё"
+  },
+  "review": {
+    "message": "Быстрый выбор"
+  },
+  "mergeAll": {
+    "message": "Объединить всё"
+  },
+  "fix": {
+    "message": "Исправить"
+  },
+  "foldersSelected": {
+    "message": "Выбрано папок: $1. Используйте групповые операции для управления."
+  },
+  "healthScoreLabel": {
+    "message": "Оценка"
+  },
+  "issues": {
+    "message": "Проблемы"
+  },
+  "brokenBookmarks": {
+    "message": "Нерабочие закладки"
+  },
+  "scanBroken": {
+    "message": "Сканировать"
+  },
+  "checking": {
+    "message": "Проверка..."
+  },
+  "noBrokenBookmarks": {
+    "message": "Ещё не сканировалось"
+  },
+  "noBookmarksToCheck": {
+    "message": "Нет закладок для проверки"
+  },
+  "scanFailed": {
+    "message": "Ошибка сканирования: $1"
+  },
+  "scanComplete": {
+    "message": "Сканирование завершено: нерабочих $1, исправных $2"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "Нет нерабочих закладок для очистки"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "Нет дубликатов закладок для очистки"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "Нет пустых папок для очистки"
+  },
+  "cleanFailed": {
+    "message": "Ошибка очистки: $1"
+  },
+  "cleanEmptyResult": {
+    "message": "Удалено папок: $1, с ошибкой: $2"
+  },
+  "deleteFailed": {
+    "message": "Ошибка удаления: $1"
+  },
+  "deletedWithFailures": {
+    "message": "Удалено: $1, с ошибкой: $2"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "Нажмите \"Сканировать\", чтобы проверить нерабочие закладки."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "Нет нерабочих закладок!"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "Все ваши закладки доступны."
+  },
+  "cleanBroken": {
+    "message": "Удалить все нерабочие"
+  },
+  "confirmCleanBroken": {
+    "message": "Удалить нерабочие закладки"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "Удалить нерабочие закладки ($1)?"
+  },
+  "clearBroken": {
+    "message": "Очистить результаты"
+  },
+  "confirmClearResults": {
+    "message": "Это очистит результаты сканирования. Закладки не будут удалены."
+  },
+  "resultsCleared": {
+    "message": "Результаты очищены"
+  },
+  "statusTimeout": {
+    "message": "Тайм-аут"
+  },
+  "statusBroken": {
+    "message": "Нерабочая"
+  },
+  "hostPermissionRequired": {
+    "message": "Для проверки состояния закладок требуется доступ к сайтам."
+  },
+  "statusUnreachable": {
+    "message": "Недоступна"
+  },
+  "statusUnknown": {
+    "message": "Неизвестно"
+  },
+  "selectColor": {
+    "message": "Выбрать цвет"
+  },
+  "allColors": {
+    "message": "Все цвета"
+  },
+  "actionPosition": {
+    "message": "Позиция действия"
+  },
+  "actionPositionLeft": {
+    "message": "Слева"
+  },
+  "actionPositionRight": {
+    "message": "Справа"
+  },
+  "filterByColor": {
+    "message": "Фильтр по цвету"
+  },
+  "setColor": {
+    "message": "Установить цвет"
+  },
+  "toggleTheme": {
+    "message": "Переключить тему"
+  },
+  "keep": {
+    "message": "Оставить"
+  },
+  "more": {
+    "message": "ещё"
+  },
+  "colornone": {
+    "message": "Нет"
+  },
+  "colorcustom": {
+    "message": "Свой..."
+  },
+  "colorRed": {
+    "message": "Красный"
+  },
+  "colorOrange": {
+    "message": "Оранжевый"
+  },
+  "colorYellow": {
+    "message": "Жёлтый"
+  },
+  "colorGreen": {
+    "message": "Зелёный"
+  },
+  "colorBlue": {
+    "message": "Синий"
+  },
+  "colorPurple": {
+    "message": "Фиолетовый"
+  },
+  "undo": {
+    "message": "Отменить"
+  },
+  "folderDeleted": {
+    "message": "$1 удалено"
+  },
+  "foldersDeletedDesc": {
+    "message": "папок"
+  },
+  "undoSuccess": {
+    "message": "Восстановлено папок: $1"
+  },
+  "undoFailed": {
+    "message": "Не удалось восстановить папки ($1): родитель удалён"
+  },
+  "undoActionFailed": {
+    "message": "Ошибка отмены: $1"
+  },
+  "batchColor": {
+    "message": "Цвет"
+  },
+  "batchNote": {
+    "message": "Заметка"
+  },
+  "batchColorSuccess": {
+    "message": "Установлен цвет для папок: $1"
+  },
+  "batchNoteSuccess": {
+    "message": "Добавлена заметка к папкам: $1"
+  },
+  "batchNotePrompt": {
+    "message": "Введите заметку для выбранных папок:"
+  },
+  "exportSuccess": {
+    "message": "Конфигурация успешно экспортирована"
+  },
+  "exportFailed": {
+    "message": "Экспорт не удался"
+  },
+  "importSuccess": {
+    "message": "Конфигурация успешно импортирована"
+  },
+  "importFailed": {
+    "message": "Импорт не удался"
+  },
+  "importInvalidFormat": {
+    "message": "Неверный формат файла"
+  },
+  "batchColorDesc": {
+    "message": "Применение цвета к"
+  },
+  "batchColorDesc2": {
+    "message": "папкам"
+  },
+  "batchNoteDesc": {
+    "message": "Добавить одну заметку выбранным папкам"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "setIcon": {
+    "message": "Установить значок"
+  },
+  "selectIcon": {
+    "message": "Выбрать значок"
+  },
+  "iconNone": {
+    "message": "По умолчанию"
+  },
+  "iconOpenFolder": {
+    "message": "Открытая папка"
+  },
+  "iconCardFileBox": {
+    "message": "Коробка файлов"
+  },
+  "iconChart": {
+    "message": "Диаграмма"
+  },
+  "iconMemo": {
+    "message": "Заметка"
+  },
+  "iconPin": {
+    "message": "Закрепить"
+  },
+  "iconStar": {
+    "message": "Звезда"
+  },
+  "iconBookmark": {
+    "message": "Закладка"
+  },
+  "iconHome": {
+    "message": "Дом"
+  },
+  "iconBriefcase": {
+    "message": "Работа"
+  },
+  "iconTarget": {
+    "message": "Цель"
+  },
+  "iconTools": {
+    "message": "Инструменты"
+  },
+  "iconBooks": {
+    "message": "Книги"
+  },
+  "iconArt": {
+    "message": "Искусство"
+  },
+  "iconWrench": {
+    "message": "Настройки"
+  },
+  "iconIdea": {
+    "message": "Идея"
+  },
+  "iconMusic": {
+    "message": "Музыка"
+  },
+  "iconMovie": {
+    "message": "Фильм"
+  },
+  "iconLightning": {
+    "message": "Важное"
+  },
+  "iconLock": {
+    "message": "Приватное"
+  },
+  "iconGlobe": {
+    "message": "Веб"
+  },
+  "iconEmail": {
+    "message": "Почта"
+  },
+  "iconImage": {
+    "message": "Изображения"
+  },
+  "iconVideo": {
+    "message": "Видео"
+  },
+  "iconFileBox": {
+    "message": "Архив"
+  },
+  "toggleExpand": {
+    "message": "Развернуть"
+  },
+  "subfolders": {
+    "message": "Вложенные папки"
+  },
+  "bookmarks": {
+    "message": "Закладки"
+  },
+  "emptyFolder": {
+    "message": "Пустая папка"
+  },
+  "loadFailed": {
+    "message": "Ошибка загрузки"
+  },
+  "searchModeFolder": {
+    "message": "Поиск папок"
+  },
+  "searchModeBookmark": {
+    "message": "Поиск закладок"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "Поиск закладок..."
+  },
+  "noSearchResults": {
+    "message": "Результаты не найдены"
+  },
+  "searchError": {
+    "message": "Ошибка поиска"
+  },
+  "matchingBookmarks": {
+    "message": "Подходящие закладки"
+  },
+  "confirmDeleteBookmark": {
+    "message": "Удалить закладку"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "Удалить эту закладку?"
+  },
+  "bookmarkDeleted": {
+    "message": "Закладка удалена"
+  },
+  "moveBookmark": {
+    "message": "Переместить"
+  },
+  "selectTargetForBookmark": {
+    "message": "Переместить закладку в"
+  },
+  "bookmarkMoved": {
+    "message": "Закладка перемещена"
+  },
+  "moveFailed": {
+    "message": "Ошибка перемещения: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "Подтвердить объединение"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "Объединить выбранные папки ($1) в целевую папку?"
+  },
+  "loadMore": {
+    "message": "Загрузить ещё"
+  },
+  "noFoldersDesc": {
+    "message": "Ваши закладки появятся здесь после сканирования. Добавьте папку или выполните повторное сканирование."
+  },
+  "scanningBookmarks": {
+    "message": "Сканирование ваших закладок..."
+  },
+  "collapse": {
+    "message": "Свернуть"
+  },
+  "hideRootFolders": {
+    "message": "Скрыть корневые папки (Панель закладок, Другие закладки)"
+  },
+  "lastModified": {
+    "message": "Последнее изменение"
+  },
+  "undoHistory": {
+    "message": "История отмен"
+  },
+  "clearHistory": {
+    "message": "Очистить"
+  },
+  "noUndoHistory": {
+    "message": "Нет истории отмен"
+  },
+  "historyCleared": {
+    "message": "История очищена"
+  },
+  "tabStats": {
+    "message": "Статистика"
+  },
+  "statsTitle": {
+    "message": "Статистика"
+  },
+  "avgBookmarks": {
+    "message": "Среднее/папку"
+  },
+  "coloredFolders": {
+    "message": "С цветом"
+  },
+  "colorDistribution": {
+    "message": "Распределение цветов"
+  },
+  "sizeDistribution": {
+    "message": "Распределение по размеру"
+  },
+  "smartClassify": {
+    "message": "Умная классификация"
+  },
+  "smartClassifyDesc": {
+    "message": "Автоматически предлагает цвета для нераскрашенных папок на основе их названий"
+  },
+  "runSmartClassify": {
+    "message": "Запустить умную классификацию"
+  },
+  "smartClassifyDone": {
+    "message": "Умная классификация завершена, предложены цвета для папок: $1"
+  },
+  "apply": {
+    "message": "Применить"
+  },
+  "donateTitle": {
+    "message": "Поддержка"
+  },
+  "donateDesc": {
+    "message": "Если FolderMark вам помогает, поддержите автора ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "Сканировать QR-код"
+  },
+  "buyMeACoffee": {
+    "message": "Купить кофе"
+  },
+  "openPayPal": {
+    "message": "Поддержать через PayPal"
+  },
+  "thankYou": {
+    "message": "Спасибо за вашу поддержку!"
+  },
+  "qrCodeNotFound": {
+    "message": "Сохраните QR-код WeChat как icons/wechat-donate.png"
+  },
+  "clearSearch": {
+    "message": "Очистить поиск"
+  },
+  "startScan": {
+    "message": "Начать сканирование"
+  },
+  "scanningBroken": {
+    "message": "Сканирование выполняется..."
+  },
+  "scanningBrokenDesc": {
+    "message": "Проверка состояния закладок, пожалуйста, подождите."
+  },
+  "runAnalysis": {
+    "message": "Запустить анализ"
+  },
+  "clearFilters": {
+    "message": "Очистить фильтры"
+  },
+  "analysisComplete": {
+    "message": "Анализ завершён"
+  },
+  "feedbackTitle": {
+    "message": "Обратная связь"
+  },
+  "feedbackDesc": {
+    "message": "Возникла проблема или есть предложение? Напишите автору на почту."
+  },
+  "sendEmail": {
+    "message": "Отправить письмо"
+  },
+  "filterAllColors": {
+    "message": "Все цвета"
+  },
+  "filterNoColor": {
+    "message": "Без цвета"
+  }
+}

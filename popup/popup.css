@@ -1101,6 +1101,15 @@ body {
   box-shadow: var(--shadow-md);
   z-index: 9999;
   padding: 2px 0;
+  /* 隐藏原生滚动条（webkit / firefox / 旧 edge） */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-select-dropdown::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .custom-select-dropdown.hidden {
@@ -1856,6 +1865,22 @@ body {
 
 .setting-item select:focus {
   border-color: var(--primary);
+}
+
+/* 设置页内主题自定义下拉：限制触发器宽度，下拉在左侧对齐展开 */
+.setting-item .custom-select {
+  min-width: 120px;
+}
+
+.setting-item .custom-select .custom-select-trigger {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.setting-item .custom-select-dropdown {
+  right: 0;
+  left: auto;
+  min-width: 100%;
 }
 
 .setting-item input[type="checkbox"] {
