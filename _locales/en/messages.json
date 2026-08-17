@@ -3,7 +3,10 @@
     "message": "FolderMark - Bookmark Folder Manager"
   },
   "extensionDescription": {
-    "message": "Add color labels to bookmark folders and organize Chrome bookmarks efficiently"
+    "message": "Color-code bookmark folders, find empty & duplicate folders, fix broken links, and organize Chrome bookmarks fast"
+  },
+  "storeListingDescription": {
+    "message": "FolderMark is a Chrome extension that helps you tame a messy bookmark collection. Color-code your bookmark folders with 8 preset colors or any custom color, and add fun emoji icons to make important folders instantly recognizable. See everything at a glance: folder name, bookmark count, path, and last-modified date.\n\nKeep your bookmarks healthy with smart detectors that find empty folders, duplicate folders (by name), and duplicate or broken bookmarks (by URL). A health-score dashboard shows the overall state of your collection at a glance.\n\nClean up fast with batch operations — select multiple folders to recolor, merge, or delete them, with a built-in undo (up to 10 history entries) so nothing is lost by mistake. Smart cleanup suggestions and auto-classification recommend colors based on folder names.\n\nAll processing happens locally in your browser; your bookmarks are never uploaded. FolderMark supports English, 中文, Español, 日本語, 한국어 and Русский, with light and dark themes."
   },
   "initializationFailed": {
     "message": "Initialization failed: $1"

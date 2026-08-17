@@ -3,7 +3,10 @@
     "message": "FolderMark - Gestor de carpetas de marcadores"
   },
   "extensionDescription": {
-    "message": "Añade etiquetas de color a las carpetas de marcadores y organiza los marcadores de Chrome de forma eficiente"
+    "message": "Colorea carpetas de marcadores, encuentra vacías y duplicadas, arregla enlaces rotos y organiza Chrome"
+  },
+  "storeListingDescription": {
+    "message": "FolderMark es una extensión de Chrome que te ayuda a domar una colección de marcadores desordenada. Colorea tus carpetas de marcadores con 8 colores predefinidos o cualquier color personalizado, y añade divertidos iconos emoji para reconocer al instante las carpetas importantes. Ve todo de un vistazo: nombre, número de marcadores, ruta y fecha de última modificación.\n\nMantén tus marcadores sanos con detectores inteligentes que encuentran carpetas vacías, carpetas duplicadas (por nombre) y marcadores duplicados o rotos (por URL). Un panel de puntuación de salud muestra el estado general de tu colección al instante.\n\nLimpia rápido con operaciones por lotes: selecciona varias carpetas para recolorearlas, fusionarlas o eliminarlas, con una función de deshacer integrada (hasta 10 entradas de historial) para no perder nada por error. Las sugerencias de limpieza inteligente y la clasificación automática recomiendan colores según el nombre de la carpeta.\n\nTodo el procesamiento ocurre localmente en tu navegador; tus marcadores nunca se suben. FolderMark es compatible con English, 中文, Español, 日本語, 한국어 y Русский, con temas claro y oscuro."
   },
   "initializationFailed": {
     "message": "Error de inicialización: $1"
