@@ -91,12 +91,45 @@ class UndoService {
   }
 
   /**
+   * 推入一次「合并文件夹」操作，使其出现在撤销历史面板
+   * @param {Object} data - { title, parentId, index, childIds }
+   * @param {string} description - 面板/Toast 显示的描述
+   * @returns {Object} 推入的撤销条目（用于需要时精确移除）
+   */
+  static pushMerge(data, description) {
+    const entry = { type: 'merge', mergeData: data, description, timestamp: Date.now() };
+    this._stack.push(entry);
+    if (this._stack.length > this._maxSize) this._stack.shift();
+    this._save();
+    return entry;
+  }
+
+  /**
+   * 从撤销栈中移除指定条目（例如 Toast 已撤销后，避免面板重复撤销）
+   * @param {Object} entry - pushMerge 返回的条目引用
+   */
+  static removeEntry(entry) {
+    const idx = this._stack.indexOf(entry);
+    if (idx !== -1) {
+      this._stack.splice(idx, 1);
+      this._save();
+    }
+  }
+
+  /**
    * 弹出并恢复最近一次删除
    * @returns {Promise<Object>} { restored: number, failed: number }
    */
   static async undo() {
     const entry = this._stack.pop();
     if (!entry) return { restored: 0, failed: 0 };
+
+    // 合并类撤销：重建源文件夹并移回所有子节点（书签 + 子文件夹）
+    if (entry.type === 'merge') {
+      const result = await this.undoMerge(entry.mergeData);
+      this._save();
+      return result;
+    }
 
     let restored = 0;
     let failed = 0;
@@ -140,6 +173,35 @@ class UndoService {
    */
   static getHistory() {
     return this._stack.slice().reverse(); // 最新的在前面
+  }
+
+  /**
+   * 还原一次「合并文件夹」操作：重建源文件夹并移回全部子节点
+   * @param {Object} data - { title, parentId, index, childIds }
+   * @returns {Promise<Object>} { restored, failed }
+   */
+  static async undoMerge(data) {
+    try {
+      const newFolder = await BookmarkService.createFolder(data.title, data.parentId);
+      if (typeof data.index === 'number') {
+        await new Promise((res) => {
+          chrome.bookmarks.move(newFolder.id, { parentId: data.parentId, index: data.index }, () => res());
+        });
+      }
+      let failed = 0;
+      for (const id of data.childIds) {
+        try {
+          await BookmarkService.moveBookmark(id, newFolder.id);
+        } catch (e) {
+          failed++;
+          console.error('Merge undo move failed:', e);
+        }
+      }
+      return { restored: 1, failed };
+    } catch (err) {
+      console.error('Merge undo restore failed:', err);
+      return { restored: 0, failed: 1 };
+    }
   }
 
   /**

@@ -161,6 +161,8 @@
             <option value="path" data-i18n="sortByPath">Path</option>
             <option value="date" data-i18n="sortByDate">Date</option>
           </select>
+          <button id="autoColorBtn" class="btn btn-secondary btn-sm" data-i18n-title="autoColorByDomain" title="Auto Color">🎯</button>
+          <button id="rainbowBtn" class="btn btn-secondary btn-sm" data-i18n-title="rainbow" title="Rainbow">🌈</button>
           <button id="newFolderBtn" class="btn btn-primary btn-sm" data-i18n="newFolder" data-i18n-title="newFolder">＋</button>
         </div>
         <div id="foldersList" class="folders-list">
@@ -451,6 +453,16 @@
             <div class="settings-buttons">
               <button id="importStructure" class="btn btn-secondary btn-sm" data-i18n="importStructure">Import</button>
               <button id="exportStructure" class="btn btn-secondary btn-sm" data-i18n="exportStructure">Export</button>
+            </div>
+          </div>
+
+          <!-- 配色方案分组 -->
+          <div class="settings-section">
+            <div class="settings-section-title" data-i18n="colorScheme">Color Scheme</div>
+            <p class="settings-hint" data-i18n="colorSchemeHint">Export colors by folder name to reuse on any device.</p>
+            <div class="settings-buttons">
+              <button id="exportColorSchemeBtn" class="btn btn-secondary btn-sm" data-i18n="exportColorScheme">Export Colors</button>
+              <button id="importColorSchemeBtn" class="btn btn-secondary btn-sm" data-i18n="importColorScheme">Import Colors</button>
             </div>
           </div>
 

@@ -20,8 +20,116 @@ import NotesService from '../src/features/notesService.js';
 import UndoService from '../src/features/undoService.js';
 import BookmarkService from '../src/core/bookmarkService.js';
 import BookmarkMover from '../src/features/bookmarkMover.js';
-import { STORAGE_KEYS, TABS, SORT_TYPES } from '../src/utils/constants.js';
+import { STORAGE_KEYS, TABS, SORT_TYPES, THEME_LIST } from '../src/utils/constants.js';
 import { formatDate, debounce, showNotification, exportToJSON } from '../src/utils/helpers.js';
+
+/**
+ * 颜色 / 域名 工具函数
+ */
+function hexToHsl(hex) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  const l = (max + min) / 2;
+  const d = max - min;
+  let s = 0;
+  if (d !== 0) {
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      default: h = (r - g) / d + 4;
+    }
+    h *= 60;
+  }
+  return { h, s, l };
+}
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) { r = c; g = x; }
+  else if (h < 120) { r = x; g = c; }
+  else if (h < 180) { g = c; b = x; }
+  else if (h < 240) { g = x; b = c; }
+  else if (h < 300) { r = x; b = c; }
+  else { r = c; b = x; }
+  const to = v => Math.round((v + m) * 255).toString(16).padStart(2, '0');
+  return `#${to(r)}${to(g)}${to(b)}`;
+}
+
+function getDomain(url) {
+  try {
+    const u = new URL(url);
+    return u.hostname.replace(/^www\./, '');
+  } catch (e) {
+    return '';
+  }
+}
+
+function mostFrequent(arr) {
+  const m = {};
+  let best = null, bc = 0;
+  for (const x of arr) {
+    if (!x) continue;
+    m[x] = (m[x] || 0) + 1;
+    if (m[x] > bc) { bc = m[x]; best = x; }
+  }
+  return best;
+}
+
+function hashToPreset(str) {
+  const presets = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+  let h = 0;
+  for (let i = 0; i < (str || '').length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return presets[h % presets.length];
+}
+
+// 常见域名 → 预设颜色（与颜色选择器的预设保持一致）
+const DOMAIN_COLOR_MAP = {
+  'github.com': 'purple',
+  'gitlab.com': 'orange',
+  'youtube.com': 'red',
+  'youtu.be': 'red',
+  'google.com': 'blue',
+  'mail.google.com': 'red',
+  'gmail.com': 'red',
+  'twitter.com': 'blue',
+  'x.com': 'blue',
+  'facebook.com': 'blue',
+  'linkedin.com': 'blue',
+  'instagram.com': 'purple',
+  'reddit.com': 'orange',
+  'amazon.com': 'yellow',
+  'wikipedia.org': 'slate',
+  'notion.so': 'slate',
+  'figma.com': 'purple',
+  'medium.com': 'green',
+  'stackoverflow.com': 'orange',
+  'dev.to': 'green',
+  'netflix.com': 'red',
+  'spotify.com': 'green',
+  'apple.com': 'slate',
+  'microsoft.com': 'blue',
+  'openai.com': 'green',
+  'chatgpt.com': 'green',
+  'docs.google.com': 'blue',
+  'drive.google.com': 'yellow',
+  'bing.com': 'blue',
+  'baidu.com': 'blue',
+  'bilibili.com': 'purple',
+  'weibo.com': 'red',
+  'taobao.com': 'orange',
+  'jd.com': 'red',
+  'zhihu.com': 'blue',
+  'qq.com': 'green'
+};
 
 class App {
   constructor() {
@@ -285,6 +393,20 @@ class App {
       this.exportStructure();
     });
 
+    // 文件夹工具栏 - 按域名自动配色
+    const autoColorBtn = document.getElementById('autoColorBtn');
+    if (autoColorBtn) autoColorBtn.addEventListener('click', () => this.autoColorByDomain());
+
+    // 文件夹工具栏 - 一键彩虹渐变
+    const rainbowBtn = document.getElementById('rainbowBtn');
+    if (rainbowBtn) rainbowBtn.addEventListener('click', () => this.applyRainbow());
+
+    // 设置 - 导出 / 导入配色方案（按文件夹路径）
+    const exportColorSchemeBtn = document.getElementById('exportColorSchemeBtn');
+    if (exportColorSchemeBtn) exportColorSchemeBtn.addEventListener('click', () => this.exportColorScheme());
+    const importColorSchemeBtn = document.getElementById('importColorSchemeBtn');
+    if (importColorSchemeBtn) importColorSchemeBtn.addEventListener('click', () => this.importColorScheme());
+
     // 设置 - 恢复默认设置
     document.getElementById('restoreDefaults').addEventListener('click', () => {
       this.restoreDefaults();
@@ -498,31 +620,22 @@ class App {
         const folderId = this._customColorFolderId;
 
         if (folderId === '_batch_') {
-          // 批量模式：应用自定义颜色到所有选中文件夹
+          // 批量模式：应用自定义颜色到所有选中文件夹（带撤销）
           const ids = Array.from(this.selectedFolderIds);
-          let success = 0;
-          for (const id of ids) {
-            try {
-              await FolderColorService.setColor(id, color);
-              success++;
-            } catch (error) {
-              console.error('Set color failed for ' + id + ':', error);
-            }
-          }
-
+          const previous = this._batchColorOriginal || {};
+          const changes = ids.map(id => ({ folderId: id, color }));
           this._customColorFolderId = '';
-
-          if (success > 0) {
-            showNotification(
-              (i18n.getMessage('batchColorSuccess') || 'Set color for $1 folders').replace('$1', success),
-              'success'
-            );
-            await this.scanBookmarks();
-          }
+          this._batchColorOriginal = null;
+          const applied = await this._commitColorChanges(changes, 'batchColorSuccess', 'Set color for $1 folders', previous);
+          if (applied > 0) await this.scanBookmarks();
           return;
         }
 
+        // 单文件夹自定义颜色：用打开时记录的原始色做撤销
+        const original = this._customColorOriginal || (this.folderColors[folderId] || '');
         this._customColorFolderId = '';
+        this._customColorOriginal = null;
+        await this._commitColorChanges([{ folderId, color }], 'colorApplied', 'Color applied', { [folderId]: original });
       });
     }
 
@@ -1505,13 +1618,8 @@ class App {
       btn.addEventListener('click', async (e) => {
         const folderId = btn.dataset.folderId;
         const color = btn.dataset.color;
-        await FolderColorService.setColor(folderId, color);
-        this.folderColors = await FolderColorService.loadColors();
-        this.folders.forEach(f => {
-          f._color = this.folderColors[f.id] || '';
-        });
+        await this._commitColorChanges([{ folderId, color }], 'colorApplied', 'Color applied');
         this.renderStats();
-        showNotification(i18n.getMessage('smartClassifyDone').replace('$1', results.length), 'success');
       });
     });
 
@@ -1615,7 +1723,7 @@ class App {
       }
       // 首次进入 / 真的没有文件夹：引导型 empty state
       container.innerHTML = '<div class="empty-state">' +
-        '<div class="empty-state-icon">📁</div>' +
+        this.emptyIllustrationSVG('folders') +
         '<div class="empty-state-title">' + i18n.getMessage('noFoldersFound') + '</div>' +
         '<div class="empty-state-desc">' + (i18n.getMessage('noFoldersDesc') || 'Your bookmarks will appear here once scanned. Add a folder or re-scan to get started.') + '</div>' +
         '<div class="empty-state-action"><button id="emptyStateNewFolder" class="btn btn-primary btn-sm">' + (i18n.getMessage('newFolder') || 'New Folder') + '</button></div></div>';
@@ -1625,7 +1733,7 @@ class App {
       return;
     }
     if (folders.length === 0 && this.searchQuery) {
-      container.innerHTML = '<div class="empty-state"><p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p>' +
+      container.innerHTML = '<div class="empty-state">' + this.emptyIllustrationSVG('search') + '<p>' + (i18n.getMessage('noSearchResults') || 'No results found') + '</p>' +
         '<div class="empty-state-action"><button class="btn btn-secondary btn-sm" data-action="clearFilters">' + (i18n.getMessage('clearFilters') || 'Clear Filters') + '</button></div></div>';
       container.querySelector('[data-action="clearFilters"]').addEventListener('click', () => {
         document.getElementById('searchInput').value = '';
@@ -1943,6 +2051,7 @@ class App {
         // 自定义颜色：触发系统颜色选择器
         if (color === '__custom__') {
           this._customColorFolderId = folderId;
+          this._customColorOriginal = this.folderColors[folderId] || '';
           panel.classList.add('hidden');
           // 如果文件夹已有自定义颜色，以该颜色作为默认值
           const currentColor = this.folderColors[folderId] || '#3B82F6';
@@ -1952,14 +2061,8 @@ class App {
           return;
         }
 
-        await FolderColorService.setColor(folderId, color);
-        this.folderColors = await FolderColorService.loadColors();
-        this.folders.forEach(f => {
-          f._color = this.folderColors[f.id] || '';
-        });
+        await this._commitColorChanges([{ folderId, color }], 'colorApplied', 'Color applied');
         panel.classList.add('hidden');
-        this.renderFolders();
-        this.updateColorFilterOptions();
       });
     });
 
@@ -2597,6 +2700,10 @@ class App {
         // 自定义颜色
         if (color === '__custom__') {
           this._customColorFolderId = '_batch_'; // 标记批量模式
+          this._batchColorOriginal = {};
+          for (const id of this.selectedFolderIds) {
+            this._batchColorOriginal[id] = this.folderColors[id] || '';
+          }
           modal.classList.add('hidden');
           const colorInput = document.getElementById('customColorInput');
           colorInput.value = '#3B82F6';
@@ -2604,26 +2711,13 @@ class App {
           return;
         }
 
-        // 应用颜色到所有选中文件夹
-        let success = 0;
-        for (const folderId of ids) {
-          try {
-            await FolderColorService.setColor(folderId, color);
-            success++;
-          } catch (error) {
-            console.error('Set color failed for ' + folderId + ':', error);
-          }
-        }
-
+        // 应用颜色到所有选中文件夹（带撤销）
+        const previous = {};
+        for (const folderId of ids) previous[folderId] = this.folderColors[folderId] || '';
+        const changes = ids.map(folderId => ({ folderId, color }));
         this.closeBatchColorModal();
-
-        if (success > 0) {
-          showNotification(
-            (i18n.getMessage('batchColorSuccess') || 'Set color for $1 folders').replace('$1', success),
-            'success'
-          );
-          await this.scanBookmarks();
-        }
+        const applied = await this._commitColorChanges(changes, 'batchColorSuccess', 'Set color for $1 folders', previous);
+        if (applied > 0) await this.scanBookmarks();
       });
     });
 
@@ -2855,17 +2949,28 @@ class App {
     const folder = this.folders.find(f => f.id === folderId);
     if (!folder) return;
 
+    const oldName = folder.title;
     const newName = await this.showPromptModal({
       title: i18n.getMessage('rename') || 'Rename',
       message: folder.title,
       defaultValue: folder.title
     });
-    if (!newName || newName.trim() === '' || newName === folder.title) return;
+    if (!newName || newName.trim() === '' || newName === oldName) return;
 
     try {
-      await FolderOperations.renameFolder(folderId, newName);
-      showNotification(i18n.getMessage('renameSuccess') || 'Folder renamed successfully', 'success');
+      await FolderOperations.renameFolder(folderId, newName.trim());
       await this.scanBookmarks();
+      showNotification(i18n.getMessage('renameSuccess') || 'Folder renamed successfully', 'success', 5000, {
+        text: i18n.getMessage('undo'),
+        callback: async () => {
+          try {
+            await FolderOperations.renameFolder(folderId, oldName);
+            await this.scanBookmarks();
+          } catch (e) {
+            showNotification((i18n.getMessage('renameFailed') || 'Rename failed: $1').replace('$1', e.message), 'error');
+          }
+        }
+      });
     } catch (error) {
       showNotification((i18n.getMessage('renameFailed') || 'Rename failed: $1').replace('$1', error.message), 'error');
     }
@@ -2922,11 +3027,45 @@ class App {
 
   async doMerge(sourceId, targetId) {
     try {
+      // 合并前记录可还原信息：源文件夹元数据 + 全部子节点 id（书签与子文件夹移动后 id 不变）
+      const sourceInfo = (await BookmarkService.getNode(sourceId))[0];
+      const children = await BookmarkService.getChildren(sourceId);
+      const mergeUndo = {
+        title: sourceInfo.title,
+        parentId: sourceInfo.parentId,
+        index: sourceInfo.index,
+        childIds: children.map(c => c.id)
+      };
+
       const result = await FolderOperations.moveAllBookmarks(sourceId, targetId);
       await FolderOperations.deleteFolder(sourceId);
+
+      // 推入撤销历史，使合并出现在「撤销历史面板」，并支持面板内单条撤销
+      const entry = UndoService.pushMerge(mergeUndo, sourceInfo.title);
+
       showNotification(
         i18n.getMessage('mergeSuccess').replace('$1', result.moved) || `Moved ${result.moved} bookmarks`,
-        'success'
+        'success',
+        5000,
+        {
+          text: i18n.getMessage('undo'),
+          callback: async () => {
+            try {
+              // 从撤销历史中移除该条，避免面板里重复撤销
+              UndoService.removeEntry(entry);
+              const r = await UndoService.undoMerge(mergeUndo);
+              await this.scanBookmarks();
+              this.renderUndoHistory();
+              if (r.restored > 0) {
+                showNotification(i18n.getMessage('mergeUndoDone') || 'Merge undone', 'success');
+              } else {
+                showNotification((i18n.getMessage('mergeFailed') || 'Merge failed: $1').replace('$1', 'could not restore'), 'error');
+              }
+            } catch (e) {
+              showNotification((i18n.getMessage('mergeFailed') || 'Merge failed: $1').replace('$1', e.message), 'error');
+            }
+          }
+        }
       );
       await this.scanBookmarks();
     } catch (error) {
@@ -3831,9 +3970,11 @@ class App {
   renderSettings() {
     const themeSelect = document.getElementById('themeSelect');
     if (themeSelect) {
+      // 动态重建选项（语言切换后刷新预览点与分组标签）
+      this.buildThemeOptions(themeSelect.querySelector('.custom-select-dropdown'));
       const tlabel = themeSelect.querySelector('.custom-select-label');
       const tactive = themeSelect.querySelector(`.custom-select-option[data-value="${this.theme}"]`);
-      if (tlabel && tactive) tlabel.textContent = tactive.textContent.trim();
+      if (tlabel && tactive) tlabel.textContent = tactive.querySelector('.opt-label').textContent.trim();
       themeSelect.querySelectorAll('.custom-select-option').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.value === this.theme);
       });
@@ -4243,6 +4384,53 @@ class App {
   }
 
   /**
+   * 动态构建主题下拉选项（含主色预览点 + 按色相分组）
+   * @param {HTMLElement} dropdown - 下拉容器
+   */
+  buildThemeOptions(dropdown) {
+    if (!dropdown) return;
+    const groups = { base: [], warm: [], cool: [], neutral: [] };
+    for (const t of THEME_LIST) {
+      let g = 'cool';
+      if (t.key === 'light' || t.key === 'dark') {
+        g = 'base';
+      } else {
+        const { h, s } = hexToHsl(t.primary);
+        if (s < 0.18) g = 'neutral';
+        else if (h < 75 || h >= 330) g = 'warm';
+        else g = 'cool';
+      }
+      groups[g].push(t);
+    }
+
+    const order = ['base', 'warm', 'cool', 'neutral'];
+    const labels = {
+      base: i18n.getMessage('themeGroupBase') || 'Base',
+      warm: i18n.getMessage('themeGroupWarm') || 'Warm',
+      cool: i18n.getMessage('themeGroupCool') || 'Cool',
+      neutral: i18n.getMessage('themeGroupNeutral') || 'Neutral'
+    };
+
+    let html = '';
+    for (const g of order) {
+      if (!groups[g].length) continue;
+      html += '<div class="custom-select-group">';
+      if (g !== 'base') {
+        html += `<div class="custom-select-group-label">${labels[g]}</div>`;
+      }
+      for (const t of groups[g]) {
+        const active = t.key === this.theme ? ' active' : '';
+        html += `<div class="custom-select-option${active}" data-value="${t.key}">` +
+          `<span class="theme-dot" style="background:${t.primary}"></span>` +
+          `<span class="opt-label">${i18n.getMessage(t.i18n)}</span>` +
+          `</div>`;
+      }
+      html += '</div>';
+    }
+    dropdown.innerHTML = html;
+  }
+
+  /**
    * 初始化主题自定义下拉（替换原生 select，支持滚动 + 隐藏原生滚动条）
    */
   _initThemeCustomSelect() {
@@ -4254,15 +4442,22 @@ class App {
     const label = container.querySelector('.custom-select-label');
     if (!trigger || !dropdown || !label) return;
 
+    // 动态构建选项（含色相分组 + 主色预览点）
+    this.buildThemeOptions(dropdown);
+
     // 当前选中值高亮 + 触发器显示
     const syncUI = () => {
       dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.value === this.theme);
       });
       const active = dropdown.querySelector(`.custom-select-option[data-value="${this.theme}"]`);
-      label.textContent = active ? active.textContent.trim() : this.theme;
+      label.textContent = active ? active.querySelector('.opt-label').textContent.trim() : this.theme;
     };
     syncUI();
+
+    // 仅绑定一次，避免重复监听
+    if (container.dataset.themeBound) return;
+    container.dataset.themeBound = 'true';
 
     // 点击 trigger → toggle 下拉
     trigger.addEventListener('click', (e) => {
@@ -4277,16 +4472,16 @@ class App {
       }
     });
 
-    // 点击选项 → 切换主题
-    dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
-      opt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const val = opt.dataset.value;
-        dropdown.classList.add('hidden');
-        if (val !== this.theme) {
-          this.changeTheme(val);
-        }
-      });
+    // 点击选项 → 切换主题（事件委托，兼容动态重建）
+    dropdown.addEventListener('click', (e) => {
+      const opt = e.target.closest('.custom-select-option');
+      if (!opt) return;
+      e.stopPropagation();
+      dropdown.classList.add('hidden');
+      const val = opt.dataset.value;
+      if (val !== this.theme) {
+        this.changeTheme(val);
+      }
     });
 
     // 点击外部 → 关闭
@@ -4415,6 +4610,9 @@ class App {
     }
     this.renderCurrentPage();
     this.updateColorFilterOptions();
+    // 主题下拉选项由 JS 构建文案，需随语言重建
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) this.buildThemeOptions(themeSelect.querySelector('.custom-select-dropdown'));
   }
 
   async toggleDeleteConfirm(enabled) {
@@ -4431,6 +4629,239 @@ class App {
   /**
    * 导出配置（颜色、图标、备注、设置等）
    */
+  /**
+   * 空状态插图（SVG）
+   * @param {string} type - 插图类型
+   * @returns {string} SVG 字符串
+   */
+  emptyIllustrationSVG(type) {
+    if (type === 'search') {
+      return `<svg class="empty-state-illustration" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="52" cy="52" r="30" stroke="currentColor" stroke-width="4" opacity="0.5"/>
+        <line x1="74" y1="74" x2="98" y2="98" stroke="currentColor" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+        <path d="M40 52h24M52 40v24" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+      </svg>`;
+    }
+    // 默认：文件夹插图
+    return `<svg class="empty-state-illustration" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 38c0-6 4-10 10-10h20l8 9h38c6 0 10 4 10 10v44c0 6-4 10-10 10H28c-6 0-10-4-10-10V38z" fill="currentColor" opacity="0.18" stroke="currentColor" stroke-width="4"/>
+      <path d="M18 52h84" stroke="currentColor" stroke-width="4" opacity="0.4"/>
+      <circle cx="86" cy="76" r="14" fill="var(--bg-primary)" stroke="currentColor" stroke-width="3"/>
+      <path d="M86 70v12M80 76h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  /**
+   * 将一组 {folderId: oldColor} 还原（用于撤销）
+   * @param {Object} map - { folderId: colorValue }
+   */
+  async restoreColorMap(map) {
+    for (const [id, color] of Object.entries(map)) {
+      await FolderColorService.setColor(id, color); // color 为空字符串表示清除
+    }
+    this.folderColors = await FolderColorService.loadColors();
+    this.folders.forEach(f => { f._color = this.folderColors[f.id] || ''; });
+    this.renderFolders();
+    this.updateColorFilterOptions();
+  }
+
+  /**
+   * 统一的「改色 + 撤销」提交：记录改色前状态 → 套用新色 → 弹出带「撤销」的通知
+   * @param {Array<{folderId:string, color:string}>} changes
+   * @param {string} msgKey - 成功提示 i18n key（支持 $1 占位数量）
+   * @param {string} msgFallback - 回退文案
+   * @param {Object} [previousMap] - 预先记录的原始配色 { folderId: color }（用于实时预览后提交等场景）
+   * @returns {number} 实际改色数量
+   */
+  async _commitColorChanges(changes, msgKey, msgFallback, previousMap) {
+    const previous = previousMap || {};
+    if (!previousMap) {
+      for (const c of changes) previous[c.folderId] = this.folderColors[c.folderId] || '';
+    }
+    let applied = 0;
+    for (const c of changes) {
+      try {
+        await FolderColorService.setColor(c.folderId, c.color);
+        applied++;
+      } catch (err) {
+        console.error('Set color failed for ' + c.folderId + ':', err);
+      }
+    }
+    if (applied === 0) return 0;
+    this.folderColors = await FolderColorService.loadColors();
+    this.folders.forEach(f => { f._color = this.folderColors[f.id] || ''; });
+    this.renderFolders();
+    this.updateColorFilterOptions();
+    const msg = (i18n.getMessage(msgKey) || msgFallback).replace('$1', applied);
+    showNotification(msg, 'success', 5000, {
+      text: i18n.getMessage('undo'),
+      callback: () => this.restoreColorMap(previous)
+    });
+    return applied;
+  }
+
+  /**
+   * 批量改色前的通用流程：确认 → 执行 → 通知（带撤销）
+   * @param {string} titleKey - 确认弹窗标题 i18n key
+   * @param {string} messageKey - 确认弹窗内容 i18n key
+   * @param {Function} worker - 真正执行改色的异步函数，需返回 { changes, previous } 或 { applied, previous }
+   */
+  async runBulkColor(titleKey, messageKey, worker) {
+    this.showConfirmModal(
+      i18n.getMessage(titleKey) || titleKey,
+      i18n.getMessage(messageKey) || messageKey,
+      async () => {
+        try {
+          const result = await worker();
+          if (!result || result.applied === 0) {
+            showNotification(i18n.getMessage('autoColorNoData') || 'No folders to color', 'info');
+            return;
+          }
+          const msg = (i18n.getMessage('bulkColorDone') || 'Updated $1 folders')
+            .replace('$1', result.applied);
+          showNotification(msg, 'success', 5000, {
+            text: i18n.getMessage('undo'),
+            callback: () => this.restoreColorMap(result.previous)
+          });
+        } catch (err) {
+          showNotification((i18n.getMessage('operationFailed') || 'Operation failed: $1').replace('$1', err.message), 'error');
+        }
+      }
+    );
+  }
+
+  /**
+   * 按域名自动配色：根据文件夹中书签出现最多的域名推断颜色
+   */
+  autoColorByDomain() {
+    this.runBulkColor('autoColorConfirmTitle', 'autoColorConfirmMessage', async () => {
+      const previous = {};
+      let applied = 0;
+      for (const folder of this.folders) {
+        if (folder.isRoot) continue;
+        if (!folder.bookmarkCount) continue;
+        const children = await BookmarkService.getChildren(folder.id);
+        const domains = children.filter(c => c.url).map(c => getDomain(c.url)).filter(Boolean);
+        if (!domains.length) continue;
+        const domain = mostFrequent(domains);
+        const color = DOMAIN_COLOR_MAP[domain] || hashToPreset(domain);
+        const old = this.folderColors[folder.id] || '';
+        if (old === color) continue;
+        previous[folder.id] = old;
+        await FolderColorService.setColor(folder.id, color);
+        applied++;
+      }
+      if (applied > 0) {
+        this.folderColors = await FolderColorService.loadColors();
+        this.folders.forEach(f => { f._color = this.folderColors[f.id] || ''; });
+        this.renderFolders();
+        this.updateColorFilterOptions();
+      }
+      return { applied, previous };
+    });
+  }
+
+  /**
+   * 一键彩虹渐变：按列表顺序均匀铺开色相
+   */
+  applyRainbow() {
+    this.runBulkColor('rainbowConfirmTitle', 'rainbowConfirmMessage', async () => {
+      const list = this.folders.slice();
+      const n = list.length;
+      const previous = {};
+      let applied = 0;
+      for (let i = 0; i < n; i++) {
+        const folder = list[i];
+        const hue = n > 1 ? Math.round((i / n) * 360) : 200;
+        const color = hslToHex(hue, 70, 55);
+        const old = this.folderColors[folder.id] || '';
+        if (old === color) continue;
+        previous[folder.id] = old;
+        await FolderColorService.setColor(folder.id, color);
+        applied++;
+      }
+      if (applied > 0) {
+        this.folderColors = await FolderColorService.loadColors();
+        this.folders.forEach(f => { f._color = this.folderColors[f.id] || ''; });
+        this.renderFolders();
+        this.updateColorFilterOptions();
+      }
+      return { applied, previous };
+    });
+  }
+
+  /**
+   * 导出配色方案（按文件夹路径，跨设备可复用）
+   */
+  async exportColorScheme() {
+    const scheme = {
+      type: 'foldermark-colorscheme',
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      colors: {}
+    };
+    for (const f of this.folders) {
+      const c = this.folderColors[f.id];
+      if (c) scheme.colors[f.path || f.title] = c;
+    }
+    if (Object.keys(scheme.colors).length === 0) {
+      showNotification(i18n.getMessage('noColorsToExport') || 'No colored folders to export', 'info');
+      return;
+    }
+    exportToJSON(scheme, `foldermark-colors-${new Date().toISOString().slice(0, 10)}.json`);
+    showNotification(i18n.getMessage('colorSchemeExported') || 'Color scheme exported', 'success');
+  }
+
+  /**
+   * 导入配色方案（按文件夹路径匹配后套用颜色）
+   */
+  importColorScheme() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          if (data.type !== 'foldermark-colorscheme' || !data.colors) {
+            showNotification(i18n.getMessage('colorSchemeInvalid') || 'Invalid color scheme file', 'error');
+            return;
+          }
+          const previous = {};
+          let applied = 0;
+          for (const [key, color] of Object.entries(data.colors)) {
+            const folder = this.folders.find(f => (f.path || f.title) === key)
+              || this.folders.find(f => f.title === key);
+            if (!folder) continue;
+            previous[folder.id] = this.folderColors[folder.id] || '';
+            if (previous[folder.id] === color) continue;
+            await FolderColorService.setColor(folder.id, color);
+            applied++;
+          }
+          if (applied === 0) {
+            showNotification(i18n.getMessage('colorSchemeNoMatch') || 'No matching folders found', 'info');
+            return;
+          }
+          this.folderColors = await FolderColorService.loadColors();
+          this.folders.forEach(f => { f._color = this.folderColors[f.id] || ''; });
+          this.renderFolders();
+          this.updateColorFilterOptions();
+          showNotification(
+            (i18n.getMessage('colorSchemeSuccess') || 'Imported $1 colors').replace('$1', applied),
+            'success', 5000, { text: i18n.getMessage('undo'), callback: () => this.restoreColorMap(previous) }
+          );
+        } catch (err) {
+          showNotification((i18n.getMessage('importFailed') || 'Import failed') + ': ' + err.message, 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
   async exportStructure() {
     try {
       // 收集所有配置数据

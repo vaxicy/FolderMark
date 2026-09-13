@@ -25,3 +25,22 @@
 - manifest 的 `default_locale` 为 `en`，多 locale 自动生效，无需改 manifest。
 - 加新语言标准步骤：① 建 `_locales/{lang}/messages.json`（280 key 与 en 对齐，**值必须是 `{ "message": "..." }` 对象，不能是扁平字符串**）② `_langName` keyMap、`_colorNameOf` idx、`_customColorLabel` 字典、`formatTime` locale 都加该语言 ③ `presetList`/`presetMap` 各条目加该语言字段 ④ colorDB 每条追加名称列 ⑤ `smartClassify` 关键词加该语言 ⑥ `popup.html` 下拉加 option ⑦ 校验 6 locale key 对齐 + 值类型为 object + `node --check popup.js`。
 - 新增 locale 后必做格式检查：`node -e "const v=Object.values(require('./_locales/{lang}/messages.json'))[0]; console.log(typeof v);"` 应输出 `object`，若为 `string` 则 `i18n.getMessage` 会返回 `undefined`，导致标签空白/placeholder 显示 undefined。
+
+## 主题管理增强（2026-09-13）
+- 新增 `THEME_LIST`（`src/utils/constants.js`）：20 个主题的 `{key, i18n, primary}`，`primary` 取各主题 CSS `--primary` 代表色，用于「主色预览点」与「按色相分组」。
+- 主题下拉（`#themeSelect`）改为 JS 动态构建（`popup.js` 的 `buildThemeOptions()` + 重写 `_initThemeCustomSelect`）：选项含 `.theme-dot` 主色圆点，并按色相分 基础/暖色/冷色/中性 四组（`themeGroupBase/Warm/Cool/Neutral`）；事件改为对 dropdown 委托，动态重建后仍生效。原 `popup.html` 里的静态 `<option>` 保留为降级兜底（运行时被覆盖）。
+- 文件夹卡片 `.folder-card` 加 hover 微交互（CSS：translateY + 阴影 + 边框主色）。
+- 空状态 emoji 改为 SVG 插图（`emptyIllustrationSVG(type)`：folders / search）。
+
+## 着色新功能（2026-09-13，均在 `popup.js`）
+- **按域名自动配色** `autoColorByDomain()`：遍历文件夹，取其子书签最多域名 → `DOMAIN_COLOR_MAP` 或 `hashToPreset` 推断预设色；工具栏 🎯 按钮。
+- **一键彩虹** `applyRainbow()`：按列表顺序用 HSL 均匀铺开色相套色；工具栏 🌈 按钮。
+- **配色方案导出/导入** `exportColorScheme()` / `importColorScheme()`：按「文件夹路径」存 `{type:'foldermark-colorscheme',colors:{path:color}}`，跨设备按路径匹配套色；设置页「配色方案」分区两个按钮。注意：与既有 `exportStructure`/`importStructure`（按 folderId，含颜色/图标/便签/设置）不同，这是轻量的「仅配色 + 路径可移植」方案。
+- 上述批量改色统一走 `runBulkColor()`（确认弹窗 + 通知带「撤销」action → `restoreColorMap()`）。
+- **多选批量改色早已存在**（`selectedFolderIds` + `#batchColorBtn` + `#batchColorModal`），本次无需新增。
+
+## 构建/部署注意
+- 实时运行用 `popup/popup.html`（manifest `default_popup`），源码即 `popup/` + `src/`，**无打包脚本**。
+- `dist/_pkg` 为解压态暂存（manifest + background.js + popup/ + src/ + icons/ + _locales/），**不是默认输出位置**。
+- **全局规则：商店发布包 `FolderMark-<ver>.zip` 默认输出到项目根目录**（即 `Chrome Extensions\FolderMark\` 下），不要放到 `dist/`；`dist/` 已加入 `.gitignore` 且只放暂存文件。
+- 版本号在 `manifest.json` 中管理；发布前同步 `_pkg` 并生成根目录 zip（`Compress-Archive -Path dist\_pkg\*`）。

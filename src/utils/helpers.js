@@ -120,8 +120,11 @@ function showNotificationInternal(message, type, duration, action, onComplete) {
   content.appendChild(text);
   
   notification.appendChild(content);
-  
-  // 操作按钮
+
+  // 右侧操作区：操作按钮 + 关闭按钮
+  const actions = document.createElement('div');
+  actions.className = 'notification-actions';
+
   if (action && action.text) {
     const actionBtn = document.createElement('button');
     actionBtn.className = 'notification-action';
@@ -130,15 +133,16 @@ function showNotificationInternal(message, type, duration, action, onComplete) {
       if (action.callback) action.callback();
       removeNotification(notification, onComplete);
     };
-    notification.appendChild(actionBtn);
+    actions.appendChild(actionBtn);
   }
-  
-  // 关闭按钮
+
   const closeBtn = document.createElement('button');
   closeBtn.className = 'notification-close';
   closeBtn.textContent = '×';
   closeBtn.onclick = () => removeNotification(notification, onComplete);
-  notification.appendChild(closeBtn);
+  actions.appendChild(closeBtn);
+
+  notification.appendChild(actions);
   
   // 添加到容器
   container.appendChild(notification);

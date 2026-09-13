@@ -1,4 +1,70 @@
 {
+  "themeGroupBase": {
+    "message": "Base"
+  },
+  "themeGroupWarm": {
+    "message": "Warm"
+  },
+  "themeGroupCool": {
+    "message": "Cool"
+  },
+  "themeGroupNeutral": {
+    "message": "Neutral"
+  },
+  "autoColorByDomain": {
+    "message": "Auto color by domain"
+  },
+  "autoColorConfirmTitle": {
+    "message": "Auto Color by Domain"
+  },
+  "autoColorConfirmMessage": {
+    "message": "Assign a color to each folder based on the most common website in its bookmarks. This overwrites existing colors."
+  },
+  "autoColorNoData": {
+    "message": "No folders to color"
+  },
+  "rainbow": {
+    "message": "Rainbow"
+  },
+  "rainbowConfirmTitle": {
+    "message": "Rainbow Colors"
+  },
+  "rainbowConfirmMessage": {
+    "message": "Apply a smooth rainbow gradient across all folders. This overwrites existing colors."
+  },
+  "bulkColorDone": {
+    "message": "Updated $1 folders"
+  },
+  "exportColorScheme": {
+    "message": "Export Colors"
+  },
+  "importColorScheme": {
+    "message": "Import Colors"
+  },
+  "colorScheme": {
+    "message": "Color Scheme"
+  },
+  "colorSchemeHint": {
+    "message": "Export colors by folder name to reuse on any device."
+  },
+  "colorSchemeInvalid": {
+    "message": "Invalid color scheme file"
+  },
+  "colorSchemeSuccess": {
+    "message": "Imported $1 colors"
+  },
+  "colorSchemeExported": {
+    "message": "Color scheme exported"
+  },
+  "colorSchemeNoMatch": {
+    "message": "No matching folders found"
+  },
+  "noColorsToExport": {
+    "message": "No colored folders to export"
+  },
+  "colorApplied": {
+    "message": "Color applied"
+  },
   "extensionName": {
     "message": "FolderMark - Gestionnaire de dossiers de signets"
   },
