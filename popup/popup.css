@@ -948,10 +948,10 @@
 
 /* 晨曦主题（Sunrise - 暖黄 → 橙 → 珊瑚粉，清晨阳光感） */
 [data-theme="sunrise"] {
-  --primary: #FFA259;
-  --icon-glow: rgba(255, 162, 89, 0.22); /* 暖橙 */
-  --primary-hover: #FF8F3D;
-  --primary-light: #FFF2CC;
+  --primary: #E86A3F;
+  --icon-glow: rgba(255, 126, 126, 0.22); /* 珊瑚粉 */
+  --primary-hover: #D95A33;
+  --primary-light: #FFE8E0;
 
   --danger: #EF4444;
   --danger-hover: #DC2626;
@@ -960,44 +960,45 @@
   --success: #10B981;
   --success-light: #D1FAE5;
 
-  --bg-primary: #FFF9E6;
-  --bg-secondary: #FFF2CC;
-  --bg-tertiary: #FFE4A1;
+  --bg-primary: #FFF5F0;
+  --bg-secondary: #FFE8E0;
+  --bg-tertiary: #FFD4C4;
 
-  --text-primary: #7A3E1A;
-  --text-secondary: #A05A2E;
-  --text-tertiary: #C97A4A;
+  --text-primary: #7A2E1A;
+  --text-secondary: #A05A3E;
+  --text-tertiary: #C97A5A;
 
-  --border-color: #FFE0B2;
-  --shadow-sm: 0 1px 2px 0 rgba(120, 60, 20, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(120, 60, 20, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(120, 60, 20, 0.15);
+  --border-color: #FFD4C4;
+  --shadow-sm: 0 1px 2px 0 rgba(120, 50, 30, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(120, 50, 30, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(120, 50, 30, 0.15);
 }
 
-/* 晨曦主题下的 header 渐变（奶油黄 → 浅金黄，温暖过渡） */
+/* 晨曦主题下的 header 渐变（金黄 → 珊瑚粉，日出天际线） */
 [data-theme="sunrise"] .header {
-  background: linear-gradient(135deg, #FFEDB9 0%, #FFF2CC 100%);
+  background: linear-gradient(135deg, #FFCB56 0%, #FF7E7E 100%);
 }
 
-/* 晨曦主题下的主按钮：亮金黄底 + 暖棕字，保证 WCAG AA 对比度 */
+/* 晨曦主题下的主按钮：亮金黄底 + 深暖棕字，保证 WCAG AA 对比度 */
 [data-theme="sunrise"] .btn-primary {
   background: #FFCB56;
-  color: #7A3E1A;
+  color: #5C2415;
 }
 
 [data-theme="sunrise"] .btn-primary:hover {
   background: #FFB73D;
 }
 
-/* 晨曦主题下的文字型强调（logo / 统计数字）：用更深的暖橙保证可读 */
+/* 晨曦主题下的文字型强调（logo / 统计数字）：用更深的珊瑚红保证可读 */
 [data-theme="sunrise"] .logo,
 [data-theme="sunrise"] .stat-number {
-  color: #E67E22;
+  color: #D35400;
 }
 
-/* 晨曦主题 header 内副标题：浅底色上用暖棕字，避免对比不足 */
+/* 晨曦主题 header 内标题与副标题：在渐变上用深暖棕，避免对比不足 */
+[data-theme="sunrise"] .header .logo,
 [data-theme="sunrise"] .header .tagline {
-  color: #7A3E1A;
+  color: #5C2415;
 }
 
 /* 深色主题下的特殊样式优化 */
