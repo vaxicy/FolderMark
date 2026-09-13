@@ -838,7 +838,7 @@
   color: #F5E6B0;
 }
 
-/* 空青主题（Aqua - 明亮水蓝 + 薄荷绿，清爽夏日感） */
+/* 碧波主题（Aqua - 明亮水蓝 + 薄荷绿，清爽夏日感） */
 [data-theme="aqua"] {
   --primary: #30AFFF;
   --icon-glow: rgba(48, 175, 255, 0.22);
@@ -866,12 +866,12 @@
   --shadow-lg: 0 10px 15px -3px rgba(10, 70, 90, 0.15);
 }
 
-/* 空青主题下的 header 渐变（水蓝 → 薄荷绿，清爽过渡） */
+/* 碧波主题下的 header 渐变（水蓝 → 薄荷绿，清爽过渡） */
 [data-theme="aqua"] .header {
   background: linear-gradient(135deg, #92EEFF 0%, #D8FFC5 100%);
 }
 
-/* 空青主题下的主按钮：亮水蓝底 + 深海字，保证 WCAG AA 对比度 */
+/* 碧波主题下的主按钮：亮水蓝底 + 深海字，保证 WCAG AA 对比度 */
 [data-theme="aqua"] .btn-primary {
   background: #30AFFF;
   color: #0D4A66;
@@ -881,7 +881,7 @@
   background: #0E9CEF;
 }
 
-/* 空青主题下的文字型强调（logo / 统计数字）：用更深的钴蓝保证可读 */
+/* 碧波主题下的文字型强调（logo / 统计数字）：用更深的钴蓝保证可读 */
 [data-theme="aqua"] .logo,
 [data-theme="aqua"] .stat-number {
   color: #0D7BB5;
