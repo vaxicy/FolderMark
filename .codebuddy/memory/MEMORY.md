@@ -6,7 +6,8 @@
 - 已加主题清单（2026-07-28）：
   - 浅色 Light `light` / 暗色 Dark `dark`（默认内置）
   - 腮粉 Blush `blush`、抹茶 Matcha `matcha`、拿铁 Latte `latte`、鸢尾 Iris `iris`、晴空 Sky `sky`、珊瑚 Coral `coral`、玫红 Rose `rose`、薄荷 Mint `mint`、银灰 Slate `slate`、湖青 Teal `teal`、薰紫 Lavender `lavender`、春雾 SpringMist `springmist`、藕荷 Mauve `mauve`（2026-08-17 新增，色值取自用户渐变图：藕荷紫#C599B6→烟粉#E6B2BA→蜜桃#FAD0C4→奶白#FFF7F3）
-  - 共 15 个主题（light/dark + 13 个彩色）
+  - 冬青 Holly `holly`（2026-09-13 新增，圣诞风味：暗酒红#6D0808 + 奶油#EEEAD7 + 灰绿#757D6F，主按钮浅灰绿呼应红配绿）
+  - 共 16 个主题（light/dark + 14 个彩色）
 - 通用无障碍做法：主按钮一律「浅色底 + 深色字」，logo/stat-number 用更深的同色系文字，确保 WCAG AA；`header` 有硬编码渐变需按主题覆盖。
 
 ## 关于/维护区（2026-07-28 重构）

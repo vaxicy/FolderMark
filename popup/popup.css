@@ -750,9 +750,9 @@
   --shadow-lg: 0 10px 15px -3px rgba(61, 24, 18, 0.15);
 }
 
-/* 冬青主题下的 header 渐变（暗酒红 → 奶油，圣诞氛围） */
+/* 冬青主题下的 header 渐变（同色系微渐变，接近纯色） */
 [data-theme="holly"] .header {
-  background: linear-gradient(135deg, #6D0808 0%, #EEEAD7 100%);
+  background: linear-gradient(135deg, #6D0808 0%, #7A0F0F 100%);
 }
 
 /* 冬青主题下的主按钮：浅灰绿底 + 深酒红字，呼应圣诞红配绿 */
