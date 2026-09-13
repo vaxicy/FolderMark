@@ -887,9 +887,63 @@
   color: #0D7BB5;
 }
 
-/* 水色主题 header 内副标题：浅底色上用深海字，避免对比不足 */
+/* 碧波主题 header 内副标题：浅底色上用深海字，避免对比不足 */
 [data-theme="aqua"] .header .tagline {
   color: #0D4A66;
+}
+
+/* 星云主题（Nebula - 深紫 → 玫粉渐变，霓虹星云感） */
+[data-theme="nebula"] {
+  --primary: #831C91;
+  --icon-glow: rgba(131, 28, 145, 0.22); /* 电光紫 */
+  --primary-hover: #6A1575;
+  --primary-light: #F8E6FA;
+
+  --danger: #E91E63;
+  --danger-hover: #C2185B;
+  --danger-light: #FCE4EC;
+
+  --success: #00BFA5;
+  --success-light: #E0F7FA;
+
+  --bg-primary: #FBF5FF;
+  --bg-secondary: #F5E8FA;
+  --bg-tertiary: #EDD4F5;
+
+  --text-primary: #4A1A52;
+  --text-secondary: #6B2E75;
+  --text-tertiary: #8A3E96;
+
+  --border-color: #E8C8F0;
+  --shadow-sm: 0 1px 2px 0 rgba(60, 20, 70, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(60, 20, 70, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(60, 20, 70, 0.15);
+}
+
+/* 星云主题下的 header 渐变（浅玫粉 → 浅紫，梦幻过渡） */
+[data-theme="nebula"] .header {
+  background: linear-gradient(135deg, #E8B4D9 0%, #F5E6FA 100%);
+}
+
+/* 星云主题下的主按钮：浅玫粉底 + 深紫字，保证 WCAG AA 对比度 */
+[data-theme="nebula"] .btn-primary {
+  background: #D98AC0;
+  color: var(--text-primary);
+}
+
+[data-theme="nebula"] .btn-primary:hover {
+  background: #C978AD;
+}
+
+/* 星云主题下的文字型强调（logo / 统计数字）：用更深的电光紫保证可读 */
+[data-theme="nebula"] .logo,
+[data-theme="nebula"] .stat-number {
+  color: #7A2085;
+}
+
+/* 星云主题 header 内副标题：浅底色上用深紫字，避免对比不足 */
+[data-theme="nebula"] .header .tagline {
+  color: #4A1A52;
 }
 
 /* 深色主题下的特殊样式优化 */
