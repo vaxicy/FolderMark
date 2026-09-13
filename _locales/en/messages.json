@@ -122,6 +122,9 @@
   "themeNebula": {
     "message": "Nebula"
   },
+  "themeSunrise": {
+    "message": "Sunrise"
+  },
   "themeDark": {
     "message": "Dark"
   },

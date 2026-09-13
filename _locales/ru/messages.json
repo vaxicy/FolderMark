@@ -122,6 +122,9 @@
   "themeNebula": {
     "message": "Туманность"
   },
+  "themeSunrise": {
+    "message": "Рассвет"
+  },
   "themeDark": {
     "message": "Тёмная"
   },

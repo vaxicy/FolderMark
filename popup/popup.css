@@ -946,6 +946,60 @@
   color: #4A1A52;
 }
 
+/* 晨曦主题（Sunrise - 暖黄 → 橙 → 珊瑚粉，清晨阳光感） */
+[data-theme="sunrise"] {
+  --primary: #FFA259;
+  --icon-glow: rgba(255, 162, 89, 0.22); /* 暖橙 */
+  --primary-hover: #FF8F3D;
+  --primary-light: #FFF2CC;
+
+  --danger: #EF4444;
+  --danger-hover: #DC2626;
+  --danger-light: #FEE2E2;
+
+  --success: #10B981;
+  --success-light: #D1FAE5;
+
+  --bg-primary: #FFF9E6;
+  --bg-secondary: #FFF2CC;
+  --bg-tertiary: #FFE4A1;
+
+  --text-primary: #7A3E1A;
+  --text-secondary: #A05A2E;
+  --text-tertiary: #C97A4A;
+
+  --border-color: #FFE0B2;
+  --shadow-sm: 0 1px 2px 0 rgba(120, 60, 20, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(120, 60, 20, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(120, 60, 20, 0.15);
+}
+
+/* 晨曦主题下的 header 渐变（奶油黄 → 浅金黄，温暖过渡） */
+[data-theme="sunrise"] .header {
+  background: linear-gradient(135deg, #FFEDB9 0%, #FFF2CC 100%);
+}
+
+/* 晨曦主题下的主按钮：亮金黄底 + 暖棕字，保证 WCAG AA 对比度 */
+[data-theme="sunrise"] .btn-primary {
+  background: #FFCB56;
+  color: #7A3E1A;
+}
+
+[data-theme="sunrise"] .btn-primary:hover {
+  background: #FFB73D;
+}
+
+/* 晨曦主题下的文字型强调（logo / 统计数字）：用更深的暖橙保证可读 */
+[data-theme="sunrise"] .logo,
+[data-theme="sunrise"] .stat-number {
+  color: #E67E22;
+}
+
+/* 晨曦主题 header 内副标题：浅底色上用暖棕字，避免对比不足 */
+[data-theme="sunrise"] .header .tagline {
+  color: #7A3E1A;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);
