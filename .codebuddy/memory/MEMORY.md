@@ -42,5 +42,5 @@
 ## 构建/部署注意
 - 实时运行用 `popup/popup.html`（manifest `default_popup`），源码即 `popup/` + `src/`，**无打包脚本**。
 - `dist/_pkg` 为解压态暂存（manifest + background.js + popup/ + src/ + icons/ + _locales/），**不是默认输出位置**。
-- **全局规则：商店发布包 `FolderMark-<ver>.zip` 默认输出到项目根目录**（即 `Chrome Extensions\FolderMark\` 下），不要放到 `dist/`；`dist/` 已加入 `.gitignore` 且只放暂存文件。
-- 版本号在 `manifest.json` 中管理；发布前同步 `_pkg` 并生成根目录 zip（`Compress-Archive -Path dist\_pkg\*`）。
+- **全局用户规则：商店发布包 `FolderMark-<ver>.zip` 默认输出到项目父级工作目录**（对当前项目即 `D:\迅雷下载\vibe coding\`，截图里那个文件夹），不要放到项目根目录或 `dist/`；`dist/` 已加入 `.gitignore` 且只放 `_pkg` 暂存。
+- 版本号在 `manifest.json` 中管理；发布前同步 `dist/_pkg` 并生成 zip 到项目父目录（`..\..\FolderMark-<ver>.zip`）。
