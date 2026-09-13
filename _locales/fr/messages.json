@@ -1,0 +1,875 @@
+{
+  "extensionName": {
+    "message": "FolderMark - Gestionnaire de dossiers de signets"
+  },
+  "extensionDescription": {
+    "message": "Colorez vos dossiers de signets, repérez les dossiers vides et en double, corrigez les liens cassés et organisez vos signets Chrome rapidement"
+  },
+  "storeListingDescription": {
+    "message": "FolderMark est une extension Chrome qui vous aide à dompter une collection de signets en désordre. Colorez vos dossiers de signets avec 8 couleurs prédéfinies ou n'importe quelle couleur personnalisée, et ajoutez de drôles d'icônes emoji pour rendre les dossiers importants immédiatement reconnaissables. Voyez tout d'un coup d'œil : nom du dossier, nombre de signets, chemin et date de dernière modification.\n\nGardez vos signets sains grâce à des détecteurs intelligents qui repèrent les dossiers vides, les dossiers en double (par nom) ainsi que les signets en double ou cassés (par URL). Un tableau de bord de score de santé affiche l'état général de votre collection d'un coup d'œil.\n\nNettoyez rapidement avec des opérations par lot — sélectionnez plusieurs dossiers pour les recoloriser, les fusionner ou les supprimer, avec une annulation intégrée (jusqu'à 10 entrées d'historique) pour ne rien perdre par erreur. Des suggestions de nettoyage intelligentes et une classification automatique recommandent des couleurs selon les noms de dossiers.\n\nTout le traitement s'effectue localement dans votre navigateur ; vos signets ne sont jamais téléversés. FolderMark prend en charge l'anglais, le 中文, l'espagnol, le 日本語, le 한국어, le russe et le français, avec les thèmes clair et sombre."
+  },
+  "initializationFailed": {
+    "message": "Échec de l'initialisation : $1"
+  },
+  "tagline": {
+    "message": "Organisez vos signets plus vite."
+  },
+  "searchPlaceholder": {
+    "message": "Rechercher des dossiers..."
+  },
+  "totalFolders": {
+    "message": "Dossiers"
+  },
+  "totalBookmarks": {
+    "message": "Signets"
+  },
+  "emptyFolders": {
+    "message": "Vides"
+  },
+  "duplicates": {
+    "message": "Doublons"
+  },
+  "tabFolders": {
+    "message": "Dossiers"
+  },
+  "tabEmpty": {
+    "message": "Vides"
+  },
+  "tabDuplicates": {
+    "message": "Doublons"
+  },
+  "tabSettings": {
+    "message": "Paramètres"
+  },
+  "sortByName": {
+    "message": "Nom"
+  },
+  "sortByCount": {
+    "message": "Nombre"
+  },
+  "sortByPath": {
+    "message": "Chemin"
+  },
+  "sortByDate": {
+    "message": "Date"
+  },
+  "emptyFoldersTitle": {
+    "message": "Dossiers vides"
+  },
+  "cleanAllEmpty": {
+    "message": "Tout nettoyer"
+  },
+  "duplicatesTitle": {
+    "message": "Doublons"
+  },
+  "settingsTitle": {
+    "message": "Paramètres"
+  },
+  "theme": {
+    "message": "Thème"
+  },
+  "themeLight": {
+    "message": "Clair"
+  },
+  "themeBlush": {
+    "message": "Blush"
+  },
+  "themeMatcha": {
+    "message": "Matcha"
+  },
+  "themeLatte": {
+    "message": "Latte"
+  },
+  "themeIris": {
+    "message": "Iris"
+  },
+  "themeSky": {
+    "message": "Sky"
+  },
+  "themeCoral": {
+    "message": "Coral"
+  },
+  "themeRose": {
+    "message": "Rose"
+  },
+  "themeMint": {
+    "message": "Mint"
+  },
+  "themeSlate": {
+    "message": "Slate"
+  },
+  "themeTeal": {
+    "message": "Teal"
+  },
+  "themeLavender": {
+    "message": "Lavender"
+  },
+  "themeSpringmist": {
+    "message": "Brume de printemps"
+  },
+  "themeMauve": {
+    "message": "Mauve"
+  },
+  "themeDark": {
+    "message": "Sombre"
+  },
+  "language": {
+    "message": "Langue"
+  },
+  "deleteConfirm": {
+    "message": "Confirmer la suppression"
+  },
+  "exportStructure": {
+    "message": "Exporter"
+  },
+  "cancel": {
+    "message": "Annuler"
+  },
+  "close": {
+    "message": "Fermer"
+  },
+  "confirm": {
+    "message": "Confirmer"
+  },
+  "delete": {
+    "message": "Supprimer"
+  },
+  "rename": {
+    "message": "Renommer"
+  },
+  "merge": {
+    "message": "Fusionner"
+  },
+  "open": {
+    "message": "Ouvrir"
+  },
+  "copyPath": {
+    "message": "Copier"
+  },
+  "selectTargetFolder": {
+    "message": "Sélectionner le dossier cible"
+  },
+  "noTargetFolder": {
+    "message": "Aucun dossier cible disponible"
+  },
+  "confirmMerge": {
+    "message": "Confirmer la fusion"
+  },
+  "confirmMergeMessage": {
+    "message": "Fusionner le dossier « $1 » dans le dossier sélectionné ?"
+  },
+  "mergeSuccess": {
+    "message": "$1 signets déplacés avec succès"
+  },
+  "mergeFailed": {
+    "message": "Échec de la fusion : $1"
+  },
+  "openFailed": {
+    "message": "Échec de l'ouverture : $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "Confirmer la suppression"
+  },
+  "confirmDelete": {
+    "message": "Supprimer ce dossier vide ?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "Supprimer le dossier et ses $1 signets ?"
+  },
+  "confirmDeleteAll": {
+    "message": "Supprimer tous les dossiers vides ?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "Supprimer les $1 dossiers vides ?"
+  },
+  "duplicateCount": {
+    "message": "$1 doublons"
+  },
+  "noFoldersFound": {
+    "message": "Aucun dossier trouvé"
+  },
+  "noEmptyFolders": {
+    "message": "Aucun dossier vide !"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "Vos signets sont bien organisés."
+  },
+  "noDuplicates": {
+    "message": "Aucun dossier en double !"
+  },
+  "noDuplicatesDesc": {
+    "message": "Votre structure de dossiers est très ordonnée."
+  },
+  "loading": {
+    "message": "Chargement..."
+  },
+  "rescanBookmarks": {
+    "message": "Réanalyser les signets"
+  },
+  "cannotDeleteRoot": {
+    "message": "Impossible de supprimer les dossiers racines système (Barre de signets, Autres signets, etc.)"
+  },
+  "newFolder": {
+    "message": "Nouveau"
+  },
+  "newFolderPlaceholder": {
+    "message": "Saisir le nom du dossier :"
+  },
+  "savePageConfirm": {
+    "message": "Enregistrer la page dans les signets ?"
+  },
+  "selectFolder": {
+    "message": "Saisissez le nom d'un dossier existant ou nouveau. Annuler enregistre vers la barre de signets."
+  },
+  "pageSaved": {
+    "message": "Page enregistrée dans les signets"
+  },
+  "saveFailed": {
+    "message": "Échec de l'enregistrement : $1"
+  },
+  "folderCreated": {
+    "message": "Dossier créé avec succès"
+  },
+  "createFailed": {
+    "message": "Échec de la création : $1"
+  },
+  "renameSuccess": {
+    "message": "Dossier renommé avec succès"
+  },
+  "renameFailed": {
+    "message": "Échec du renommage : $1"
+  },
+  "appearance": {
+    "message": "Apparence"
+  },
+  "operations": {
+    "message": "Opérations"
+  },
+  "addNote": {
+    "message": "Ajouter une note..."
+  },
+  "noteSaved": {
+    "message": "Note enregistrée"
+  },
+  "saveNoteFailed": {
+    "message": "Échec de l'enregistrement de la note : $1"
+  },
+  "operationFailed": {
+    "message": "Échec de l'opération : $1"
+  },
+  "data": {
+    "message": "Données"
+  },
+  "about": {
+    "message": "Maintenance"
+  },
+  "importStructure": {
+    "message": "Importer"
+  },
+  "restoreDefaults": {
+    "message": "Réinitialiser"
+  },
+  "confirmRestore": {
+    "message": "Réinitialiser les paramètres par défaut ?"
+  },
+  "restoreSuccess": {
+    "message": "Paramètres réinitialisés"
+  },
+  "restoreFailed": {
+    "message": "Échec de la réinitialisation : $1"
+  },
+  "selectAll": {
+    "message": "Tout sélectionner"
+  },
+  "selected": {
+    "message": "sélectionné(s)"
+  },
+  "batchMerge": {
+    "message": "Fusionner"
+  },
+  "batchDelete": {
+    "message": "Supprimer"
+  },
+  "batchExport": {
+    "message": "Exporter"
+  },
+  "batchMergeMin": {
+    "message": "Sélectionnez au moins 2 dossiers à fusionner"
+  },
+  "batchMergeSuccess": {
+    "message": "$1 signets déplacés"
+  },
+  "batchExportSuccess": {
+    "message": "$1 dossiers exportés"
+  },
+  "confirmBatchDelete": {
+    "message": "Supprimer $1 dossiers ?"
+  },
+  "previewItems": {
+    "message": "Éléments concernés : $1"
+  },
+  "moreItems": {
+    "message": "+$1 de plus"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "Une sauvegarde JSON sera exportée avant la suppression."
+  },
+  "tabSmart": {
+    "message": "Intelligent"
+  },
+  "smartTitle": {
+    "message": "Fonctionnalités intelligentes"
+  },
+  "duplicateBookmarks": {
+    "message": "Signets en double"
+  },
+  "cleanDuplicates": {
+    "message": "Nettoyer les doublons"
+  },
+  "noDuplicateBookmarks": {
+    "message": "Aucun signet en double !"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "Tous vos signets sont uniques."
+  },
+  "cleanupSuggestions": {
+    "message": "Suggestions de nettoyage"
+  },
+  "noSuggestions": {
+    "message": "Aucune suggestion pour l'instant"
+  },
+  "noSuggestionsDesc": {
+    "message": "Vos signets sont bien organisés."
+  },
+  "confirmCleanDuplicates": {
+    "message": "Nettoyer les signets en double"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "Supprimer $1 signets en double ?"
+  },
+  "emptyTitle": {
+    "message": "Dossiers vides"
+  },
+  "emptyDesc": {
+    "message": "$1 dossiers vides supprimables trouvés"
+  },
+  "unusedTitle": {
+    "message": "Dossiers inutilisés"
+  },
+  "unusedDesc": {
+    "message": "$1 dossiers non modifiés depuis plus de 6 mois"
+  },
+  "smallTitle": {
+    "message": "Petits dossiers"
+  },
+  "smallDesc": {
+    "message": "$1 dossiers contenant 2 signets ou moins (envisagez une fusion)"
+  },
+  "deleteAll": {
+    "message": "Tout supprimer"
+  },
+  "review": {
+    "message": "Sélection rapide"
+  },
+  "mergeAll": {
+    "message": "Tout fusionner"
+  },
+  "fix": {
+    "message": "Corriger"
+  },
+  "foldersSelected": {
+    "message": "$1 dossiers sélectionnés. Utilisez les opérations par lot pour les gérer."
+  },
+  "healthScoreLabel": {
+    "message": "Score"
+  },
+  "issues": {
+    "message": "Problèmes"
+  },
+  "brokenBookmarks": {
+    "message": "Signets cassés"
+  },
+  "scanBroken": {
+    "message": "Analyser"
+  },
+  "checking": {
+    "message": "Vérification..."
+  },
+  "noBrokenBookmarks": {
+    "message": "Pas encore analysé"
+  },
+  "noBookmarksToCheck": {
+    "message": "Aucun signet à vérifier"
+  },
+  "scanFailed": {
+    "message": "Échec de l'analyse : $1"
+  },
+  "scanComplete": {
+    "message": "Analyse terminée : $1 cassés, $2 valides"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "Aucun signet cassé à nettoyer"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "Aucun signet en double à nettoyer"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "Aucun dossier vide à nettoyer"
+  },
+  "cleanFailed": {
+    "message": "Échec du nettoyage : $1"
+  },
+  "cleanEmptyResult": {
+    "message": "$1 dossiers supprimés, $2 échecs"
+  },
+  "deleteFailed": {
+    "message": "Échec de la suppression : $1"
+  },
+  "deletedWithFailures": {
+    "message": "$1 supprimés, $2 échecs"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "Cliquez sur « Analyser » pour vérifier les signets cassés."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "Aucun signet cassé !"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "Tous vos signets sont accessibles."
+  },
+  "cleanBroken": {
+    "message": "Tout supprimer (cassés)"
+  },
+  "confirmCleanBroken": {
+    "message": "Supprimer les signets cassés"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "Supprimer $1 signets cassés ?"
+  },
+  "clearBroken": {
+    "message": "Effacer les résultats"
+  },
+  "confirmClearResults": {
+    "message": "Cela effacera les résultats de l'analyse. Les signets ne seront pas supprimés."
+  },
+  "resultsCleared": {
+    "message": "Résultats effacés"
+  },
+  "statusTimeout": {
+    "message": "Délai dépassé"
+  },
+  "statusBroken": {
+    "message": "Cassé"
+  },
+  "hostPermissionRequired": {
+    "message": "L'accès au site est requis pour vérifier l'état des signets."
+  },
+  "statusUnreachable": {
+    "message": "Inaccessible"
+  },
+  "statusUnknown": {
+    "message": "Inconnu"
+  },
+  "selectColor": {
+    "message": "Choisir une couleur"
+  },
+  "allColors": {
+    "message": "Toutes les couleurs"
+  },
+  "actionPosition": {
+    "message": "Position des actions"
+  },
+  "actionPositionLeft": {
+    "message": "Gauche"
+  },
+  "actionPositionRight": {
+    "message": "Droite"
+  },
+  "filterByColor": {
+    "message": "Filtrer par couleur"
+  },
+  "setColor": {
+    "message": "Définir la couleur"
+  },
+  "toggleTheme": {
+    "message": "Changer de thème"
+  },
+  "keep": {
+    "message": "Conserver"
+  },
+  "more": {
+    "message": "plus"
+  },
+  "colornone": {
+    "message": "Aucune"
+  },
+  "colorcustom": {
+    "message": "Personnalisée..."
+  },
+  "colorRed": {
+    "message": "Rouge"
+  },
+  "colorOrange": {
+    "message": "Orange"
+  },
+  "colorYellow": {
+    "message": "Jaune"
+  },
+  "colorGreen": {
+    "message": "Vert"
+  },
+  "colorBlue": {
+    "message": "Bleu"
+  },
+  "colorPurple": {
+    "message": "Violet"
+  },
+  "undo": {
+    "message": "Annuler"
+  },
+  "folderDeleted": {
+    "message": "$1 supprimé(s)"
+  },
+  "foldersDeletedDesc": {
+    "message": "dossiers"
+  },
+  "undoSuccess": {
+    "message": "$1 dossiers restaurés"
+  },
+  "undoFailed": {
+    "message": "$1 dossiers n'ont pas pu être restaurés (parent supprimé)"
+  },
+  "undoActionFailed": {
+    "message": "Échec de l'annulation : $1"
+  },
+  "batchColor": {
+    "message": "Couleur"
+  },
+  "batchNote": {
+    "message": "Note"
+  },
+  "batchColorSuccess": {
+    "message": "Couleur appliquée à $1 dossiers"
+  },
+  "batchNoteSuccess": {
+    "message": "Note ajoutée à $1 dossiers"
+  },
+  "batchNotePrompt": {
+    "message": "Saisissez la note pour les dossiers sélectionnés :"
+  },
+  "exportSuccess": {
+    "message": "Configuration exportée avec succès"
+  },
+  "exportFailed": {
+    "message": "Échec de l'exportation"
+  },
+  "importSuccess": {
+    "message": "Configuration importée avec succès"
+  },
+  "importFailed": {
+    "message": "Échec de l'importation"
+  },
+  "importInvalidFormat": {
+    "message": "Format de fichier non valide"
+  },
+  "batchColorDesc": {
+    "message": "Application de la couleur à"
+  },
+  "batchColorDesc2": {
+    "message": "dossiers"
+  },
+  "batchNoteDesc": {
+    "message": "Ajouter la même note aux dossiers sélectionnés"
+  },
+  "save": {
+    "message": "Enregistrer"
+  },
+  "setIcon": {
+    "message": "Définir l'icône"
+  },
+  "selectIcon": {
+    "message": "Choisir une icône"
+  },
+  "iconNone": {
+    "message": "Par défaut"
+  },
+  "iconOpenFolder": {
+    "message": "Dossier ouvert"
+  },
+  "iconCardFileBox": {
+    "message": "Boîte de fichiers"
+  },
+  "iconChart": {
+    "message": "Graphique"
+  },
+  "iconMemo": {
+    "message": "Mémo"
+  },
+  "iconPin": {
+    "message": "Épingle"
+  },
+  "iconStar": {
+    "message": "Étoile"
+  },
+  "iconBookmark": {
+    "message": "Signet"
+  },
+  "iconHome": {
+    "message": "Accueil"
+  },
+  "iconBriefcase": {
+    "message": "Travail"
+  },
+  "iconTarget": {
+    "message": "Cible"
+  },
+  "iconTools": {
+    "message": "Outils"
+  },
+  "iconBooks": {
+    "message": "Livres"
+  },
+  "iconArt": {
+    "message": "Art"
+  },
+  "iconWrench": {
+    "message": "Paramètres"
+  },
+  "iconIdea": {
+    "message": "Idée"
+  },
+  "iconMusic": {
+    "message": "Musique"
+  },
+  "iconMovie": {
+    "message": "Film"
+  },
+  "iconLightning": {
+    "message": "Important"
+  },
+  "iconLock": {
+    "message": "Privé"
+  },
+  "iconGlobe": {
+    "message": "Web"
+  },
+  "iconEmail": {
+    "message": "E-mail"
+  },
+  "iconImage": {
+    "message": "Images"
+  },
+  "iconVideo": {
+    "message": "Vidéos"
+  },
+  "iconFileBox": {
+    "message": "Archive"
+  },
+  "toggleExpand": {
+    "message": "Déployer"
+  },
+  "subfolders": {
+    "message": "Sous-dossiers"
+  },
+  "bookmarks": {
+    "message": "Signets"
+  },
+  "emptyFolder": {
+    "message": "Dossier vide"
+  },
+  "loadFailed": {
+    "message": "Échec du chargement"
+  },
+  "searchModeFolder": {
+    "message": "Rechercher des dossiers"
+  },
+  "searchModeBookmark": {
+    "message": "Rechercher des signets"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "Rechercher des signets..."
+  },
+  "noSearchResults": {
+    "message": "Aucun résultat trouvé"
+  },
+  "searchError": {
+    "message": "Échec de la recherche"
+  },
+  "matchingBookmarks": {
+    "message": "Signets correspondants"
+  },
+  "confirmDeleteBookmark": {
+    "message": "Supprimer le signet"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "Supprimer ce signet ?"
+  },
+  "bookmarkDeleted": {
+    "message": "Signet supprimé"
+  },
+  "moveBookmark": {
+    "message": "Déplacer"
+  },
+  "selectTargetForBookmark": {
+    "message": "Déplacer le signet vers"
+  },
+  "bookmarkMoved": {
+    "message": "Signet déplacé"
+  },
+  "moveFailed": {
+    "message": "Échec du déplacement : $1"
+  },
+  "confirmBatchMerge": {
+    "message": "Confirmer la fusion"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "Fusionner les $1 dossiers sélectionnés dans le dossier cible ?"
+  },
+  "loadMore": {
+    "message": "Charger plus"
+  },
+  "noFoldersDesc": {
+    "message": "Vos signets apparaîtront ici après l'analyse. Ajoutez un dossier ou relancez l'analyse pour commencer."
+  },
+  "scanningBookmarks": {
+    "message": "Analyse de vos signets..."
+  },
+  "collapse": {
+    "message": "Réduire"
+  },
+  "hideRootFolders": {
+    "message": "Masquer les dossiers racines (Barre de signets, Autres signets)"
+  },
+  "lastModified": {
+    "message": "Dernière modification"
+  },
+  "undoHistory": {
+    "message": "Historique d'annulation"
+  },
+  "clearHistory": {
+    "message": "Effacer"
+  },
+  "noUndoHistory": {
+    "message": "Aucun historique d'annulation"
+  },
+  "historyCleared": {
+    "message": "Historique effacé"
+  },
+  "tabStats": {
+    "message": "Statistiques"
+  },
+  "statsTitle": {
+    "message": "Statistiques"
+  },
+  "avgBookmarks": {
+    "message": "Moy/Dossier"
+  },
+  "coloredFolders": {
+    "message": "Colorés"
+  },
+  "colorDistribution": {
+    "message": "Répartition des couleurs"
+  },
+  "sizeDistribution": {
+    "message": "Répartition par taille"
+  },
+  "smartClassify": {
+    "message": "Classification intelligente"
+  },
+  "smartClassifyDesc": {
+    "message": "Suggère automatiquement des couleurs pour les dossiers sans couleur selon leur nom"
+  },
+  "runSmartClassify": {
+    "message": "Lancer la classification intelligente"
+  },
+  "smartClassifyDone": {
+    "message": "Classification intelligente terminée, couleurs suggérées pour $1 dossiers"
+  },
+  "apply": {
+    "message": "Appliquer"
+  },
+  "donateTitle": {
+    "message": "Soutenir"
+  },
+  "donateDesc": {
+    "message": "Si FolderMark vous aide, envisagez de soutenir le développeur ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "Scanner le QR code"
+  },
+  "buyMeACoffee": {
+    "message": "Offrez-moi un café"
+  },
+  "openPayPal": {
+    "message": "Soutenir via PayPal"
+  },
+  "thankYou": {
+    "message": "Merci pour votre soutien !"
+  },
+  "qrCodeNotFound": {
+    "message": "Enregistrez le QR code WeChat sous icons/wechat-donate.png"
+  },
+  "clearSearch": {
+    "message": "Effacer la recherche"
+  },
+  "startScan": {
+    "message": "Démarrer l'analyse"
+  },
+  "scanningBroken": {
+    "message": "Analyse en cours..."
+  },
+  "scanningBrokenDesc": {
+    "message": "Vérification de l'état des signets, veuillez patienter."
+  },
+  "runAnalysis": {
+    "message": "Lancer l'analyse"
+  },
+  "clearFilters": {
+    "message": "Effacer les filtres"
+  },
+  "analysisComplete": {
+    "message": "Analyse terminée"
+  },
+  "feedbackTitle": {
+    "message": "Commentaires"
+  },
+  "feedbackDesc": {
+    "message": "Un problème ou une suggestion ? N'hésitez pas à écrire à l'auteur."
+  },
+  "sendEmail": {
+    "message": "Envoyer un e-mail"
+  },
+  "filterAllColors": {
+    "message": "Toutes les couleurs"
+  },
+  "filterNoColor": {
+    "message": "Aucune couleur"
+  },
+  "langEnglish": {
+    "message": "English"
+  },
+  "langChinese": {
+    "message": "Chinois"
+  },
+  "langSpanish": {
+    "message": "Español"
+  },
+  "langJapanese": {
+    "message": "Japonais"
+  },
+  "langKorean": {
+    "message": "Coréen"
+  },
+  "langRussian": {
+    "message": "Russe"
+  },
+  "langFrench": {
+    "message": "Français"
+  }
+}

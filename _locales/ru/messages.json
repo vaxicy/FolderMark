@@ -868,5 +868,8 @@
   },
   "langRussian": {
     "message": "Русский"
+  },
+  "langFrench": {
+    "message": "Français"
   }
 }

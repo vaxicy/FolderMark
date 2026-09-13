@@ -5,7 +5,7 @@ Keep your bookmarks healthy with smart detectors that find empty folders, duplic
 
 Clean up fast with batch operations — select multiple folders to recolor, merge, or delete them, with a built-in undo (up to 10 history entries) so nothing is lost by mistake. Smart cleanup suggestions and auto-classification recommend colors based on folder names.
 
-All processing happens locally in your browser; your bookmarks are never uploaded. FolderMark supports English, 中文, Español, 日本語, 한국어 and Русский, with light and dark themes.
+All processing happens locally in your browser; your bookmarks are never uploaded. FolderMark supports English, 中文, Español, 日本語, 한국어 and Русский, with 15 carefully crafted themes — Light, Dark, plus Blush, Matcha, Latte, Iris, Sky, Coral, Rose, Mint, Slate, Teal, Lavender, Spring Mist and Mauve color themes to match your style.
 
 === 中文详细说明 ===
 FolderMark 是一款帮你整理杂乱书签的 Chrome 扩展。用 8 种预设颜色或任意自定义颜色为书签文件夹上色，再配上有趣的 Emoji 图标，让重要文件夹一眼可辨。概览中清晰显示文件夹名称、书签数量、路径与最后修改时间。
@@ -14,7 +14,7 @@ FolderMark 是一款帮你整理杂乱书签的 Chrome 扩展。用 8 种预设�
 
 批量操作让清理更高效——勾选多个文件夹即可统一改色、合并或删除，内置撤销功能（最多 10 条历史）避免误删。智能清理建议与自动分类会根据文件夹名推荐颜色。
 
-所有处理都在浏览器本地完成，书签绝不上传。FolderMark 支持中文、English、Español、日本語、한국어、Русский，并提供浅色与深色主题。
+所有处理都在浏览器本地完成，书签绝不上传。FolderMark 支持中文、English、Español、日本語、한국어、Русский，并提供 15 款精致主题——浅色、深色，以及腮粉、抹茶、拿铁、鸢尾、晴空、珊瑚、玫红、薄荷、银灰、湖青、薰紫、春雾、藕荷等彩色主题，总有一款适合你。
 
 === Español Descripción Detallada ===
 FolderMark es una extensión de Chrome que te ayuda a domar una colección de marcadores desordenada. Colorea tus carpetas de marcadores con 8 colores predefinidos o cualquier color personalizado, y añade divertidos iconos emoji para reconocer al instante las carpetas importantes. Ve todo de un vistazo: nombre, número de marcadores, ruta y fecha de última modificación.
@@ -23,7 +23,7 @@ Mantén tus marcadores sanos con detectores inteligentes que encuentran carpetas
 
 Limpia rápido con operaciones por lotes: selecciona varias carpetas para recolorearlas, fusionarlas o eliminarlas, con una función de deshacer integrada (hasta 10 entradas de historial) para no perder nada por error. Las sugerencias de limpieza inteligente y la clasificación automática recomiendan colores según el nombre de la carpeta.
 
-Todo el procesamiento ocurre localmente en tu navegador; tus marcadores nunca se suben. FolderMark es compatible con English, 中文, Español, 日本語, 한국어 y Русский, con temas claro y oscuro.
+Todo el procesamiento ocurre localmente en tu navegador; tus marcadores nunca se suben. FolderMark es compatible con English, 中文, Español, 日本語, 한국어 y Русский, con 15 temas cuidadosamente diseñados — Claro, Oscuro, y los temas de color Blush, Matcha, Latte, Iris, Sky, Coral, Rose, Mint, Slate, Teal, Lavender, Spring Mist y Mauve para que elijas el que mejor vaya contigo.
 
 === 日本語 詳細説明 ===
 FolderMark は乱雑なブックマークを整理する Chrome 拡張機能です。8 種のプリセットカラーまたは任意のカスタムカラーでブックマークフォルダに色を付け、楽しい絵文字アイコンを追加して重要なフォルダを見分けやすくします。フォルダ名、ブックマーク数、パス、最終更新日が一目でわかります。
@@ -32,7 +32,7 @@ FolderMark は乱雑なブックマークを整理する Chrome 拡張機能で�
 
 複数のフォルダを選んで一括で色変更・統合・削除でき、内蔵の元に戻す機能（最大 10 件の履歴）でうっかり削除も安心です。スマート清理提案と自動分類はフォルダ名から色をおすすめします。
 
-すべての処理はブラウザ内でローカルに行われ、ブックマークがアップロードされることはありません。FolderMark は English、中文、Español、日本語、한국어、Русский に対応し、ライトとダークのテーマを備えています。
+すべての処理はブラウザ内でローカルに行われ、ブックマークがアップロードされることはありません。FolderMark は English、中文、Español、日本語、한국어、Русский に対応し、15 種類の洗練されたテーマを備えています——ライト、ダーク、そしてブラッシュ、マッチャ、ラテ、アイリス、スカイ、コーラル、ローズ、ミント、スレート、ティール、ラベンダー、スプリングミスト、モーヴのカラーテーマからお好みを選べます。
 
 === 한국어 상세 설명 ===
 FolderMark 는 지저분한 북마크를 정리하는 Chrome 확장 프로그램입니다. 8가지 프리셋 색상이나 원하는 사용자 지정 색상으로 북마크 폴더에 색을 칠하고 재미있는 이모지 아이콘을 붙여 중요한 폴더를 한눈에 알아보세요. 폴더 이름, 북마크 수, 경로, 마지막 수정일을 한곳에서 확인할 수 있습니다.
@@ -41,7 +41,7 @@ FolderMark 는 지저분한 북마크를 정리하는 Chrome 확장 프로그램
 
 여러 폴더를 선택해 한 번에 색 변경·병합·삭제할 수 있고, 내장된 실행 취소 기능(최대 10개 기록)으로 실수로 삭제해도 안전합니다. 스마트 정리 제안과 자동 분류는 폴더 이름을 기준으로 색을 추천합니다.
 
-모든 처리는 브라우저 내에서 로컬로 이루어지며 북마크가 업로드되지 않습니다. FolderMark 는 English, 中文, Español, 日本語, 한국어, Русский 를 지원하며 라이트·다크 테마를 제공합니다。
+모든 처리는 브라우저 내에서 로컬로 이루어지며 북마크가 업로드되지 않습니다. FolderMark 는 English, 中文, Español, 日本語, 한국어, Русский 를 지원하며 15가지 정교한 테마를 제공합니다——라이트, 다크, 그리고 블러시, 말차, 라떼, 아이리스, 스카이, 코랄, 로즈, 민트, 슬레이트, 틸, 라벤더, 스프링미스트, 모브 컬러 테마 중에서 취향에 맞는 것을 고르세요.
 
 === Русский Подробное описание ===
 FolderMark — это расширение Chrome, которое помогает привести в порядок хаотичные закладки. Раскрасьте папки закладок 8 предустановленными цветами или любым собственным, добавьте забавные эмодзи-иконки, чтобы важные папки были сразу заметны. Всё видно одним взглядом: имя папки, число закладок, путь и дата изменения.
@@ -50,4 +50,4 @@ FolderMark — это расширение Chrome, которое помогае
 
 Убирайтесь быстро пакетными операциями: выберите несколько папок, чтобы перекрасить, объединить или удалить их, а встроенная отмена (до 10 записей истории) убережёт от случайной потери. Умные советы по очистке и автоклассификация рекомендуют цвета по имени папки.
 
-Вся обработка происходит локально в браузере, закладки никуда не загружаются. FolderMark поддерживает English, 中文, Español, 日本語, 한국어 и Русский с светлой и тёмной темами.
+Вся обработка происходит локально в браузере, закладки никуда не загружаются. FolderMark поддерживает English, 中文, Español, 日本語, 한국어 и Русский с 15 тщательно проработанными темами — Светлая, Тёмная, а также цветные темы Blush, Matcha, Latte, Iris, Sky, Coral, Rose, Mint, Slate, Teal, Lavender, Spring Mist и Mauve на любой вкус.

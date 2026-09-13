@@ -848,24 +848,6 @@
   "filterAllColors": {
     "message": "All Colors"
   },
-  "colorRed": {
-    "message": "Red"
-  },
-  "colorOrange": {
-    "message": "Orange"
-  },
-  "colorYellow": {
-    "message": "Yellow"
-  },
-  "colorGreen": {
-    "message": "Green"
-  },
-  "colorBlue": {
-    "message": "Blue"
-  },
-  "colorPurple": {
-    "message": "Purple"
-  },
   "filterNoColor": {
     "message": "No Color"
   },
@@ -886,5 +868,8 @@
   },
   "langRussian": {
     "message": "Russian"
+  },
+  "langFrench": {
+    "message": "Français"
   }
 }
