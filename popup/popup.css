@@ -780,8 +780,8 @@
   color: #E9D9B8;
 }
 
-/* 苹果酒主题（Cider - 橄榄绿 + 奶油黄 + 金橙 + 陶土红，温暖秋收感） */
-[data-theme="cider"] {
+/* 秋日主题（Autumn - 橄榄绿 + 奶油黄 + 金橙 + 陶土红，温暖秋收感） */
+[data-theme="autumn"] {
   --primary: #84994F;
   --icon-glow: rgba(132, 153, 79, 0.22);
   --primary-hover: #6F7F42;
@@ -808,33 +808,33 @@
   --shadow-lg: 0 10px 15px -3px rgba(90, 80, 30, 0.15);
 }
 
-/* 苹果酒主题下的 header 渐变（深橄榄微渐变，接近纯色） */
-[data-theme="cider"] .header {
+/* 秋日主题下的 header 渐变（深橄榄微渐变，接近纯色） */
+[data-theme="autumn"] .header {
   background: linear-gradient(135deg, #6F7F42 0%, #5C6B35 100%);
 }
 
-/* 苹果酒主题下的主按钮：金橙底 + 深橄榄字，呼应陶土红与橄榄 */
-[data-theme="cider"] .btn-primary {
+/* 秋日主题下的主按钮：金橙底 + 深橄榄字，呼应陶土红与橄榄 */
+[data-theme="autumn"] .btn-primary {
   background: #FCB53B;
   color: #4A4528;
 }
 
-[data-theme="cider"] .btn-primary:hover {
+[data-theme="autumn"] .btn-primary:hover {
   background: #EAA32A;
 }
 
-/* 苹果酒主题下的文字型强调（logo / 统计数字）：深橄榄保证可读 */
-[data-theme="cider"] .logo,
-[data-theme="cider"] .stat-number {
+/* 秋日主题下的文字型强调（logo / 统计数字）：深橄榄保证可读 */
+[data-theme="autumn"] .logo,
+[data-theme="autumn"] .stat-number {
   color: #6B6338;
 }
 
-/* 苹果酒主题 header 内文字：深橄榄底上用奶油色，避免对比不足 */
-[data-theme="cider"] .header .logo {
+/* 秋日主题 header 内文字：深橄榄底上用奶油色，避免对比不足 */
+[data-theme="autumn"] .header .logo {
   color: #FFF9E2;
 }
 
-[data-theme="cider"] .header .tagline {
+[data-theme="autumn"] .header .tagline {
   color: #F5E6B0;
 }
 
