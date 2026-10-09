@@ -1,5 +1,8 @@
 # FolderMark 项目长期记忆
 
+## 用户沟通偏好
+- 交付的纯文本内容（如商店说明、文案、提示语等）**一律放进复制框（代码块 ` ``` `）**，方便用户一键复制；且尽量简短（1 段最佳，最多 2 段）。此规则为长期默认，跨会话稳定。
+
 ## 主题命名规则（与 daily-tracker 不同）
 - FolderMark 主题中文显示名**允许 2 个汉字**（不受 daily-tracker 的「3 字」规则限制）。
 - 主题系统为配置驱动：`data-theme` 值 + `popup.css` 变量块 + 下拉 `<option>` + `_locales` 的 `themeXxx` 键。加新主题只需四处改动。
@@ -38,6 +41,13 @@
 - **配色方案导出/导入** `exportColorScheme()` / `importColorScheme()`：按「文件夹路径」存 `{type:'foldermark-colorscheme',colors:{path:color}}`，跨设备按路径匹配套色；设置页「配色方案」分区两个按钮。注意：与既有 `exportStructure`/`importStructure`（按 folderId，含颜色/图标/便签/设置）不同，这是轻量的「仅配色 + 路径可移植」方案。
 - 上述批量改色统一走 `runBulkColor()`（确认弹窗 + 通知带「撤销」action → `restoreColorMap()`）。
 - **多选批量改色早已存在**（`selectedFolderIds` + `#batchColorBtn` + `#batchColorModal`），本次无需新增。
+
+## 商店素材（promo / 截图）
+- 生成/修改商店图统一用 Pillow 脚本：`scripts/generate-promo-small.py`（440×280 → `store-assets-real-cn-en/promo-small-440x280-cn-en.png`）与 `scripts/generate-promo-large.py`（1400×560 → `promo-marquee-1400x560-cn-en.png`）。两者版式一致：顶部橙条、左列 logo+文案+三胶囊卡、右侧 popup mock（大 promo 为两张层叠 popup + 悬浮「数据统计」卡）。
+- 防溢出：脚本内用 `fit_font()`（按最大宽度自动降字号）和 `wrap()`（按最大宽度折行）；底部元素须留 ≥12px 安全边距。
+- **Logo 必须用真实扩展图标** `icons/icon128.png`（RGBA 透明底，双色琥珀文件夹 flap #F59E0B + body #FAC231），RGBA + LANCZOS resize + alpha mask 贴图；**不要自绘纯色文件夹**，也不要「白图标+白字橙条」的反色版本。
+- 配色取自 `store-assets-real-cn-en/01-real-folders-cn-en-1280x800.png`：米白 #FFFBEB / 暖黄 #FEF3C7 / 橙 #E07700 / 棕 #743112 / 琥珀 #F6CF5B / 绿 #109A60。
+- 版式对标大 promo `promo-marquee-1400x560-cn-en.png`：顶部橙条、左列 logo+文案+胶囊卡、右侧 mock（浅卡+橙 logo、搜索栏、2×2 统计、彩点行、右下悬浮徽章）。
 
 ## 构建/部署注意
 - 实时运行用 `popup/popup.html`（manifest `default_popup`），源码即 `popup/` + `src/`，**无打包脚本**。
