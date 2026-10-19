@@ -84,7 +84,8 @@ export const THEME_LIST = [
   { key: 'watery',     i18n: 'themeWatery',     primary: '#2F7F8A' },
   { key: 'lime',       i18n: 'themeLime',       primary: '#4F7A20' },
   { key: 'paradise',   i18n: 'themeParadise',   primary: '#A8495F' },
-  { key: 'delusion',   i18n: 'themeDelusion',   primary: '#5F5AA8' }
+  { key: 'delusion',   i18n: 'themeDelusion',   primary: '#5F5AA8' },
+  { key: 'wisteria',   i18n: 'themeWisteria',   primary: '#7A5C8E' }
 ];
 
 // 搜索类型

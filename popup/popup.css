@@ -1225,6 +1225,59 @@
   color: #3F3D63;
 }
 
+/* 紫藤主题（Wisteria - 丁香紫 → 兰紫 → 蜜桃，梦幻紫粉调） */
+[data-theme="wisteria"] {
+  --primary: #7A5C8E;
+  --icon-glow: rgba(122, 92, 142, 0.22);
+  --primary-hover: #684C7A;
+  --primary-light: #F3E8F7;
+
+  --danger: #C2453F;
+  --danger-hover: #A63832;
+  --danger-light: #FBE3E0;
+
+  --success: #4E8F6A;
+  --success-light: #E3F3EA;
+
+  --bg-primary: #FCF8FD;
+  --bg-secondary: #F3E8F7;
+  --bg-tertiary: #E0BBE4;
+
+  --text-primary: #3A2340;
+  --text-secondary: #5C3F63;
+  --text-tertiary: #7E6184;
+
+  --border-color: #EBD5EF;
+  --shadow-sm: 0 1px 2px 0 rgba(58, 35, 64, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(58, 35, 64, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(58, 35, 64, 0.15);
+}
+
+/* 紫藤主题下的 header 渐变（丁香紫 → 兰紫） */
+[data-theme="wisteria"] .header {
+  background: linear-gradient(135deg, #E0BBE4 0%, #D291BC 100%);
+}
+
+/* 紫藤主题下的主按钮：浅丁香紫底 + 深梅子字，保证 WCAG AA 对比度 */
+[data-theme="wisteria"] .btn-primary {
+  background: #E0BBE4;
+  color: #3A2340;
+}
+
+[data-theme="wisteria"] .btn-primary:hover {
+  background: #D8A9DE;
+}
+
+/* 紫藤主题下的文字型强调（logo / 统计数字） */
+[data-theme="wisteria"] .logo,
+[data-theme="wisteria"] .stat-number {
+  color: #5E3B68;
+}
+
+[data-theme="wisteria"] .header .tagline {
+  color: #4E3157;
+}
+
 /* 深色主题下的特殊样式优化 */
 [data-theme="dark"] .header {
   background: linear-gradient(135deg, #292524 0%, #1C1917 100%);
