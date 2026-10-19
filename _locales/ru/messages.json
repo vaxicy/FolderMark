@@ -65,6 +65,9 @@
   "colorApplied": {
     "message": "Color applied"
   },
+  "mergeUndoDone": {
+    "message": "Объединение отменено"
+  },
   "extensionName": {
     "message": "FolderMark — Менеджер папок закладок"
   },
@@ -967,5 +970,8 @@
   },
   "langFrench": {
     "message": "Французский"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
   }
 }

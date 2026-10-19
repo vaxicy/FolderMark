@@ -65,6 +65,9 @@
   "colorApplied": {
     "message": "Color applied"
   },
+  "mergeUndoDone": {
+    "message": "Fusión deshecha"
+  },
   "extensionName": {
     "message": "FolderMark - Gestor de carpetas de marcadores"
   },
@@ -967,5 +970,8 @@
   },
   "langFrench": {
     "message": "Francés"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
   }
 }

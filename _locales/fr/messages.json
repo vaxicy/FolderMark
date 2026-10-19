@@ -65,6 +65,9 @@
   "colorApplied": {
     "message": "Color applied"
   },
+  "mergeUndoDone": {
+    "message": "Fusion annulée"
+  },
   "extensionName": {
     "message": "FolderMark - Gestionnaire de dossiers de signets"
   },
@@ -967,5 +970,8 @@
   },
   "langFrench": {
     "message": "Français"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
   }
 }

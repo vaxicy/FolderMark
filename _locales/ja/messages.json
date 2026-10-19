@@ -65,6 +65,9 @@
   "colorApplied": {
     "message": "Color applied"
   },
+  "mergeUndoDone": {
+    "message": "結合を元に戻しました"
+  },
   "extensionName": {
     "message": "FolderMark - ブックマークフォルダ管理ツール"
   },
@@ -967,5 +970,8 @@
   },
   "langFrench": {
     "message": "フランス語"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
   }
 }

@@ -65,6 +65,9 @@
   "colorApplied": {
     "message": "Color applied"
   },
+  "mergeUndoDone": {
+    "message": "병합 실행 취소됨"
+  },
   "extensionName": {
     "message": "FolderMark - 북마크 폴더 관리자"
   },
@@ -967,5 +970,8 @@
   },
   "langFrench": {
     "message": "프랑스어"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
   }
 }

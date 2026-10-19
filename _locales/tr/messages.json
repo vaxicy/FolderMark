@@ -1,0 +1,977 @@
+{
+  "themeGroupBase": {
+    "message": "Temel"
+  },
+  "themeGroupWarm": {
+    "message": "Sıcak"
+  },
+  "themeGroupCool": {
+    "message": "Soğuk"
+  },
+  "themeGroupNeutral": {
+    "message": "Nötr"
+  },
+  "autoColorByDomain": {
+    "message": "Alana göre otomatik renk"
+  },
+  "autoColorConfirmTitle": {
+    "message": "Alana Göre Otomatik Renk"
+  },
+  "autoColorConfirmMessage": {
+    "message": "Her klasöre, yer imlerindeki en yaygın web sitesine göre bir renk atayın. Mevcut renklerin üzerine yazılır."
+  },
+  "autoColorNoData": {
+    "message": "Renklendirilecek klasör yok"
+  },
+  "rainbow": {
+    "message": "Gökkuşağı"
+  },
+  "rainbowConfirmTitle": {
+    "message": "Gökkuşağı Renkleri"
+  },
+  "rainbowConfirmMessage": {
+    "message": "Tüm klasörlere yumuşak bir gökkuşağı geçişi uygulayın. Mevcut renklerin üzerine yazılır."
+  },
+  "bulkColorDone": {
+    "message": "$1 klasör güncellendi"
+  },
+  "exportColorScheme": {
+    "message": "Renkleri Dışa Aktar"
+  },
+  "importColorScheme": {
+    "message": "Renkleri İçe Aktar"
+  },
+  "colorScheme": {
+    "message": "Renk Şeması"
+  },
+  "colorSchemeHint": {
+    "message": "Renkleri klasör adına göre dışa aktarın, her cihazda yeniden kullanın."
+  },
+  "colorSchemeInvalid": {
+    "message": "Geçersiz renk şeması dosyası"
+  },
+  "colorSchemeSuccess": {
+    "message": "$1 renk içe aktarıldı"
+  },
+  "colorSchemeExported": {
+    "message": "Renk şeması dışa aktarıldı"
+  },
+  "colorSchemeNoMatch": {
+    "message": "Eşleşen klasör bulunamadı"
+  },
+  "noColorsToExport": {
+    "message": "Dışa aktarılacak renkli klasör yok"
+  },
+  "colorApplied": {
+    "message": "Renk uygulandı"
+  },
+  "mergeUndoDone": {
+    "message": "Birleştirme geri alındı"
+  },
+  "extensionName": {
+    "message": "FolderMark - Yer İmi Klasör Yöneticisi"
+  },
+  "extensionDescription": {
+    "message": "Yer imi klasörlerini renklendirin, boş ve yinelenen klasörleri bulun, bozuk bağlantıları düzeltin ve Chrome yer imlerinizi hızlıca düzenleyin"
+  },
+  "storeListingDescription": {
+    "message": "FolderMark, dağınık bir yer imi koleksiyonunu düzene sokmanıza yardımcı olan bir Chrome uzantısıdır. Yer imi klasörlerinizi 8 hazır renk veya istediğiniz özel renkle renklendirin ve önemli klasörleri anında tanınabilir hale getirmek için eğlenceli emoji simgeler ekleyin. Her şeyi tek bakışta görün: klasör adı, yer imi sayısı, yol ve son değiştirilme tarihi.\n\nBoş klasörleri, yinelenen klasörleri (ada göre) ve yinelenen veya bozuk yer imlerini (URL'ye göre) bulan akıllı algılayıcılarla yer imlerinizi sağlıklı tutun. Bir sağlık puanı panosu, koleksiyonunuzun genel durumunu tek bakışta gösterir.\n\nToplu işlemlerle hızlıca temizlik yapın — birden fazla klasörü seçerek yeniden renklendirin, birleştirin veya silin; yerleşik geri alma (10 geçmiş kaydına kadar) sayesinde hiçbir şey yanlışlıkla kaybolmaz. Akıllı temizlik önerileri ve otomatik sınıflandırma, klasör adlarına göre renk önerir.\n\nTüm işlemler tarayıcınızda yerel olarak gerçekleşir; yer imleriniz asla yüklenmez. FolderMark İngilizce, Çince, İspanyolca, Japonca, Korece, Rusça, Fransızca ve Türkçe dillerini destekler; açık ve koyu temalar sunar."
+  },
+  "initializationFailed": {
+    "message": "Başlatma başarısız: $1"
+  },
+  "tagline": {
+    "message": "Yer imlerinizi daha hızlı düzenleyin."
+  },
+  "searchPlaceholder": {
+    "message": "Klasör ara..."
+  },
+  "totalFolders": {
+    "message": "Klasör"
+  },
+  "totalBookmarks": {
+    "message": "Yer İmi"
+  },
+  "emptyFolders": {
+    "message": "Boş"
+  },
+  "duplicates": {
+    "message": "Yinelenen"
+  },
+  "tabFolders": {
+    "message": "Klasörler"
+  },
+  "tabEmpty": {
+    "message": "Boş"
+  },
+  "tabDuplicates": {
+    "message": "Yinelenen"
+  },
+  "tabSettings": {
+    "message": "Ayarlar"
+  },
+  "sortByName": {
+    "message": "Ad"
+  },
+  "sortByCount": {
+    "message": "Sayı"
+  },
+  "sortByPath": {
+    "message": "Yol"
+  },
+  "sortByDate": {
+    "message": "Tarih"
+  },
+  "emptyFoldersTitle": {
+    "message": "Boş Klasörler"
+  },
+  "cleanAllEmpty": {
+    "message": "Tümünü Temizle"
+  },
+  "duplicatesTitle": {
+    "message": "Yinelenenler"
+  },
+  "settingsTitle": {
+    "message": "Ayarlar"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeLight": {
+    "message": "Açık"
+  },
+  "themeBlush": {
+    "message": "Allık"
+  },
+  "themeMatcha": {
+    "message": "Matcha"
+  },
+  "themeLatte": {
+    "message": "Latte"
+  },
+  "themeIris": {
+    "message": "İris"
+  },
+  "themeSky": {
+    "message": "Gökyüzü"
+  },
+  "themeCoral": {
+    "message": "Mercan"
+  },
+  "themeRose": {
+    "message": "Gül"
+  },
+  "themeMint": {
+    "message": "Nane"
+  },
+  "themeSlate": {
+    "message": "Arduvaz"
+  },
+  "themeTeal": {
+    "message": "Turkuaz"
+  },
+  "themeLavender": {
+    "message": "Lavanta"
+  },
+  "themeSpringmist": {
+    "message": "Bahar Sisi"
+  },
+  "themeMauve": {
+    "message": "Leylak"
+  },
+  "themeHolly": {
+    "message": "Çobanpüskülü"
+  },
+  "themeAutumn": {
+    "message": "Sonbahar"
+  },
+  "themeAqua": {
+    "message": "Su Mavisi"
+  },
+  "themeNebula": {
+    "message": "Nebula"
+  },
+  "themeSunrise": {
+    "message": "Gün Doğumu"
+  },
+  "themeWatery": {
+    "message": "Su Rengi"
+  },
+  "themeLime": {
+    "message": "Misket Limonu"
+  },
+  "themeParadise": {
+    "message": "Cennet"
+  },
+  "themeDelusion": {
+    "message": "Hayal"
+  },
+  "themeWisteria": {
+    "message": "Mor Salkım"
+  },
+  "themeDark": {
+    "message": "Koyu"
+  },
+  "language": {
+    "message": "Dil"
+  },
+  "deleteConfirm": {
+    "message": "Silmeyi Onayla"
+  },
+  "exportStructure": {
+    "message": "Dışa Aktar"
+  },
+  "cancel": {
+    "message": "İptal"
+  },
+  "close": {
+    "message": "Kapat"
+  },
+  "confirm": {
+    "message": "Onayla"
+  },
+  "delete": {
+    "message": "Sil"
+  },
+  "rename": {
+    "message": "Yeniden Adlandır"
+  },
+  "merge": {
+    "message": "Birleştir"
+  },
+  "open": {
+    "message": "Aç"
+  },
+  "copyPath": {
+    "message": "Kopyala"
+  },
+  "selectTargetFolder": {
+    "message": "Hedef klasör seç"
+  },
+  "noTargetFolder": {
+    "message": "Kullanılabilir hedef klasör yok"
+  },
+  "confirmMerge": {
+    "message": "Birleştirmeyi Onayla"
+  },
+  "confirmMergeMessage": {
+    "message": "\"$1\" klasörü seçili klasörle birleştirilsin mi?"
+  },
+  "mergeSuccess": {
+    "message": "$1 yer imi taşındı"
+  },
+  "mergeFailed": {
+    "message": "Birleştirme başarısız: $1"
+  },
+  "openFailed": {
+    "message": "Açma başarısız: $1"
+  },
+  "confirmDeleteTitle": {
+    "message": "Silmeyi Onayla"
+  },
+  "confirmDelete": {
+    "message": "Bu boş klasör silinsin mi?"
+  },
+  "confirmDeleteNonEmpty": {
+    "message": "Klasör ve içindeki $1 yer imi silinsin mi?"
+  },
+  "confirmDeleteAll": {
+    "message": "Tüm boş klasörler silinsin mi?"
+  },
+  "confirmDeleteAllMessage": {
+    "message": "$1 boş klasör silinsin mi?"
+  },
+  "duplicateCount": {
+    "message": "$1 yinelenen"
+  },
+  "noFoldersFound": {
+    "message": "Klasör bulunamadı"
+  },
+  "noEmptyFolders": {
+    "message": "Boş klasör yok!"
+  },
+  "noEmptyFoldersDesc": {
+    "message": "Yer imleriniz iyi düzenlenmiş."
+  },
+  "noDuplicates": {
+    "message": "Yinelenen klasör yok!"
+  },
+  "noDuplicatesDesc": {
+    "message": "Klasör yapınız çok düzenli."
+  },
+  "loading": {
+    "message": "Yükleniyor..."
+  },
+  "rescanBookmarks": {
+    "message": "Yer İmlerini Yeniden Tara"
+  },
+  "cannotDeleteRoot": {
+    "message": "Sistem kök klasörleri silinemez (Yer İmi Çubuğu, Diğer Yer İmleri vb.)"
+  },
+  "newFolder": {
+    "message": "Yeni"
+  },
+  "newFolderPlaceholder": {
+    "message": "Klasör adı girin:"
+  },
+  "savePageConfirm": {
+    "message": "Sayfa yer imlerine kaydedilsin mi?"
+  },
+  "selectFolder": {
+    "message": "Mevcut bir klasör adı veya yeni bir klasör adı girin. İptal, yer imi çubuğuna kaydeder."
+  },
+  "pageSaved": {
+    "message": "Sayfa yer imlerine kaydedildi"
+  },
+  "saveFailed": {
+    "message": "Kaydetme başarısız: $1"
+  },
+  "folderCreated": {
+    "message": "Klasör başarıyla oluşturuldu"
+  },
+  "createFailed": {
+    "message": "Oluşturma başarısız: $1"
+  },
+  "renameSuccess": {
+    "message": "Klasör başarıyla yeniden adlandırıldı"
+  },
+  "renameFailed": {
+    "message": "Yeniden adlandırma başarısız: $1"
+  },
+  "appearance": {
+    "message": "Görünüm"
+  },
+  "operations": {
+    "message": "İşlemler"
+  },
+  "addNote": {
+    "message": "Not ekle..."
+  },
+  "noteSaved": {
+    "message": "Not kaydedildi"
+  },
+  "saveNoteFailed": {
+    "message": "Not kaydetme başarısız: $1"
+  },
+  "operationFailed": {
+    "message": "İşlem başarısız: $1"
+  },
+  "data": {
+    "message": "Veriler"
+  },
+  "about": {
+    "message": "Bakım"
+  },
+  "importStructure": {
+    "message": "İçe Aktar"
+  },
+  "restoreDefaults": {
+    "message": "Varsayılanlara Dön"
+  },
+  "confirmRestore": {
+    "message": "Varsayılan ayarlara dönülsün mü?"
+  },
+  "restoreSuccess": {
+    "message": "Ayarlar varsayılana döndürüldü"
+  },
+  "restoreFailed": {
+    "message": "Geri yükleme başarısız: $1"
+  },
+  "selectAll": {
+    "message": "Tümünü Seç"
+  },
+  "selected": {
+    "message": "seçili"
+  },
+  "batchMerge": {
+    "message": "Birleştir"
+  },
+  "batchDelete": {
+    "message": "Sil"
+  },
+  "batchExport": {
+    "message": "Dışa Aktar"
+  },
+  "batchMergeMin": {
+    "message": "Birleştirmek için en az 2 klasör seçin"
+  },
+  "batchMergeSuccess": {
+    "message": "$1 yer imi taşındı"
+  },
+  "batchExportSuccess": {
+    "message": "$1 klasör dışa aktarıldı"
+  },
+  "confirmBatchDelete": {
+    "message": "$1 klasör silinsin mi?"
+  },
+  "previewItems": {
+    "message": "Etkilenecek öğeler: $1"
+  },
+  "moreItems": {
+    "message": "+$1 daha"
+  },
+  "backupExportedBeforeDelete": {
+    "message": "Silmeden önce bir JSON yedeği dışa aktarılacak."
+  },
+  "tabSmart": {
+    "message": "Akıllı"
+  },
+  "smartTitle": {
+    "message": "Akıllı Özellikler"
+  },
+  "duplicateBookmarks": {
+    "message": "Yinelenen Yer İmleri"
+  },
+  "cleanDuplicates": {
+    "message": "Yinelenenleri Temizle"
+  },
+  "noDuplicateBookmarks": {
+    "message": "Yinelenen yer imi yok!"
+  },
+  "noDuplicateBookmarksDesc": {
+    "message": "Tüm yer imleriniz benzersiz."
+  },
+  "cleanupSuggestions": {
+    "message": "Temizlik Önerileri"
+  },
+  "noSuggestions": {
+    "message": "Henüz öneri yok"
+  },
+  "noSuggestionsDesc": {
+    "message": "Yer imleriniz iyi düzenlenmiş."
+  },
+  "confirmCleanDuplicates": {
+    "message": "Yinelenen Yer İmlerini Temizle"
+  },
+  "confirmCleanDuplicatesMessage": {
+    "message": "$1 yinelenen yer imi silinsin mi?"
+  },
+  "emptyTitle": {
+    "message": "Boş Klasörler"
+  },
+  "emptyDesc": {
+    "message": "Silinebilecek $1 boş klasör bulundu"
+  },
+  "unusedTitle": {
+    "message": "Kullanılmayan Klasörler"
+  },
+  "unusedDesc": {
+    "message": "6 aydan uzun süredir değiştirilmeyen $1 klasör bulundu"
+  },
+  "smallTitle": {
+    "message": "Küçük Klasörler"
+  },
+  "smallDesc": {
+    "message": "2 veya daha az yer imi içeren $1 klasör bulundu (birleştirmeyi düşünün)"
+  },
+  "deleteAll": {
+    "message": "Tümünü Sil"
+  },
+  "review": {
+    "message": "Hızlı Seç"
+  },
+  "mergeAll": {
+    "message": "Tümünü Birleştir"
+  },
+  "fix": {
+    "message": "Düzelt"
+  },
+  "foldersSelected": {
+    "message": "$1 klasör seçildi. Yönetmek için toplu işlemleri kullanın."
+  },
+  "healthScoreLabel": {
+    "message": "Puan"
+  },
+  "issues": {
+    "message": "Sorunlar"
+  },
+  "brokenBookmarks": {
+    "message": "Bozuk Yer İmleri"
+  },
+  "scanBroken": {
+    "message": "Tara"
+  },
+  "checking": {
+    "message": "Kontrol ediliyor..."
+  },
+  "noBrokenBookmarks": {
+    "message": "Henüz taranmadı"
+  },
+  "noBookmarksToCheck": {
+    "message": "Kontrol edilecek yer imi yok"
+  },
+  "scanFailed": {
+    "message": "Tarama başarısız: $1"
+  },
+  "scanComplete": {
+    "message": "Tarama tamamlandı: $1 bozuk, $2 geçerli"
+  },
+  "noBrokenBookmarksToClean": {
+    "message": "Temizlenecek bozuk yer imi yok"
+  },
+  "noDuplicateBookmarksToClean": {
+    "message": "Temizlenecek yinelenen yer imi yok"
+  },
+  "noEmptyFoldersToClean": {
+    "message": "Temizlenecek boş klasör yok"
+  },
+  "cleanFailed": {
+    "message": "Temizleme başarısız: $1"
+  },
+  "cleanEmptyResult": {
+    "message": "$1 klasör silindi, $2 başarısız"
+  },
+  "deleteFailed": {
+    "message": "Silme başarısız: $1"
+  },
+  "deletedWithFailures": {
+    "message": "$1 silindi, $2 başarısız"
+  },
+  "noBrokenBookmarksDesc": {
+    "message": "Bozuk yer imlerini kontrol etmek için \"Tara\" düğmesine tıklayın."
+  },
+  "noBrokenBookmarksFound": {
+    "message": "Bozuk yer imi yok!"
+  },
+  "noBrokenBookmarksFoundDesc": {
+    "message": "Tüm yer imleriniz erişilebilir."
+  },
+  "cleanBroken": {
+    "message": "Tüm Bozukları Sil"
+  },
+  "confirmCleanBroken": {
+    "message": "Bozuk Yer İmlerini Sil"
+  },
+  "confirmCleanBrokenMessage": {
+    "message": "$1 bozuk yer imi silinsin mi?"
+  },
+  "clearBroken": {
+    "message": "Sonuçları Temizle"
+  },
+  "confirmClearResults": {
+    "message": "Bu, tarama sonuçlarını temizler. Yer imleri silinmez."
+  },
+  "resultsCleared": {
+    "message": "Sonuçlar temizlendi"
+  },
+  "statusTimeout": {
+    "message": "Zaman aşımı"
+  },
+  "statusBroken": {
+    "message": "Bozuk"
+  },
+  "hostPermissionRequired": {
+    "message": "Yer imi durumunu kontrol etmek için site erişimi gerekir."
+  },
+  "statusUnreachable": {
+    "message": "Erişilemiyor"
+  },
+  "statusUnknown": {
+    "message": "Bilinmiyor"
+  },
+  "selectColor": {
+    "message": "Renk Seç"
+  },
+  "allColors": {
+    "message": "Tüm Renkler"
+  },
+  "actionPosition": {
+    "message": "İşlem Konumu"
+  },
+  "actionPositionLeft": {
+    "message": "Sol"
+  },
+  "actionPositionRight": {
+    "message": "Sağ"
+  },
+  "filterByColor": {
+    "message": "Renge göre filtrele"
+  },
+  "setColor": {
+    "message": "Renk ayarla"
+  },
+  "toggleTheme": {
+    "message": "Temayı değiştir"
+  },
+  "keep": {
+    "message": "Tut"
+  },
+  "more": {
+    "message": "daha"
+  },
+  "colornone": {
+    "message": "Yok"
+  },
+  "colorcustom": {
+    "message": "Özel..."
+  },
+  "colorRed": {
+    "message": "Kırmızı"
+  },
+  "colorOrange": {
+    "message": "Turuncu"
+  },
+  "colorYellow": {
+    "message": "Sarı"
+  },
+  "colorGreen": {
+    "message": "Yeşil"
+  },
+  "colorBlue": {
+    "message": "Mavi"
+  },
+  "colorPurple": {
+    "message": "Mor"
+  },
+  "undo": {
+    "message": "Geri Al"
+  },
+  "folderDeleted": {
+    "message": "$1 silindi"
+  },
+  "foldersDeletedDesc": {
+    "message": "klasör"
+  },
+  "undoSuccess": {
+    "message": "$1 klasör geri yüklendi"
+  },
+  "undoFailed": {
+    "message": "$1 klasör geri yüklenemedi (üst klasör silinmiş)"
+  },
+  "undoActionFailed": {
+    "message": "Geri alma başarısız: $1"
+  },
+  "batchColor": {
+    "message": "Renk"
+  },
+  "batchNote": {
+    "message": "Not"
+  },
+  "batchColorSuccess": {
+    "message": "$1 klasörün rengi ayarlandı"
+  },
+  "batchNoteSuccess": {
+    "message": "$1 klasöre not eklendi"
+  },
+  "batchNotePrompt": {
+    "message": "Seçili klasörler için not girin:"
+  },
+  "exportSuccess": {
+    "message": "Yapılandırma başarıyla dışa aktarıldı"
+  },
+  "exportFailed": {
+    "message": "Dışa aktarma başarısız"
+  },
+  "importSuccess": {
+    "message": "Yapılandırma başarıyla içe aktarıldı"
+  },
+  "importFailed": {
+    "message": "İçe aktarma başarısız"
+  },
+  "importInvalidFormat": {
+    "message": "Geçersiz dosya biçimi"
+  },
+  "batchColorDesc": {
+    "message": "Renk uygulanıyor:"
+  },
+  "batchColorDesc2": {
+    "message": "klasör"
+  },
+  "batchNoteDesc": {
+    "message": "Seçili klasörlere aynı notu ekle"
+  },
+  "save": {
+    "message": "Kaydet"
+  },
+  "setIcon": {
+    "message": "Simge ayarla"
+  },
+  "selectIcon": {
+    "message": "Simge Seç"
+  },
+  "iconNone": {
+    "message": "Varsayılan"
+  },
+  "iconOpenFolder": {
+    "message": "Açık Klasör"
+  },
+  "iconCardFileBox": {
+    "message": "Dosya Kutusu"
+  },
+  "iconChart": {
+    "message": "Grafik"
+  },
+  "iconMemo": {
+    "message": "Not"
+  },
+  "iconPin": {
+    "message": "Raptiye"
+  },
+  "iconStar": {
+    "message": "Yıldız"
+  },
+  "iconBookmark": {
+    "message": "Yer İmi"
+  },
+  "iconHome": {
+    "message": "Ev"
+  },
+  "iconBriefcase": {
+    "message": "İş"
+  },
+  "iconTarget": {
+    "message": "Hedef"
+  },
+  "iconTools": {
+    "message": "Araçlar"
+  },
+  "iconBooks": {
+    "message": "Kitaplar"
+  },
+  "iconArt": {
+    "message": "Sanat"
+  },
+  "iconWrench": {
+    "message": "Ayarlar"
+  },
+  "iconIdea": {
+    "message": "Fikir"
+  },
+  "iconMusic": {
+    "message": "Müzik"
+  },
+  "iconMovie": {
+    "message": "Film"
+  },
+  "iconLightning": {
+    "message": "Önemli"
+  },
+  "iconLock": {
+    "message": "Gizli"
+  },
+  "iconGlobe": {
+    "message": "Web"
+  },
+  "iconEmail": {
+    "message": "E-posta"
+  },
+  "iconImage": {
+    "message": "Görseller"
+  },
+  "iconVideo": {
+    "message": "Videolar"
+  },
+  "iconFileBox": {
+    "message": "Arşiv"
+  },
+  "toggleExpand": {
+    "message": "Genişlet"
+  },
+  "subfolders": {
+    "message": "Alt klasörler"
+  },
+  "bookmarks": {
+    "message": "Yer İmleri"
+  },
+  "emptyFolder": {
+    "message": "Boş klasör"
+  },
+  "loadFailed": {
+    "message": "Yükleme başarısız"
+  },
+  "searchModeFolder": {
+    "message": "Klasör ara"
+  },
+  "searchModeBookmark": {
+    "message": "Yer imi ara"
+  },
+  "searchBookmarkPlaceholder": {
+    "message": "Yer imi ara..."
+  },
+  "noSearchResults": {
+    "message": "Sonuç bulunamadı"
+  },
+  "searchError": {
+    "message": "Arama başarısız"
+  },
+  "matchingBookmarks": {
+    "message": "Eşleşen Yer İmleri"
+  },
+  "confirmDeleteBookmark": {
+    "message": "Yer İmini Sil"
+  },
+  "confirmDeleteBookmarkMessage": {
+    "message": "Bu yer imi silinsin mi?"
+  },
+  "bookmarkDeleted": {
+    "message": "Yer imi silindi"
+  },
+  "moveBookmark": {
+    "message": "Taşı"
+  },
+  "selectTargetForBookmark": {
+    "message": "Yer imini taşı"
+  },
+  "bookmarkMoved": {
+    "message": "Yer imi taşındı"
+  },
+  "moveFailed": {
+    "message": "Taşıma başarısız: $1"
+  },
+  "confirmBatchMerge": {
+    "message": "Birleştirmeyi Onayla"
+  },
+  "confirmBatchMergeMessage": {
+    "message": "Seçili $1 klasör hedef klasörle birleştirilsin mi?"
+  },
+  "loadMore": {
+    "message": "Daha Fazla Yükle"
+  },
+  "noFoldersDesc": {
+    "message": "Yer imleriniz tarandıktan sonra burada görünecek. Başlamak için bir klasör ekleyin veya yeniden tarayın."
+  },
+  "scanningBookmarks": {
+    "message": "Yer imleriniz taranıyor..."
+  },
+  "collapse": {
+    "message": "Daralt"
+  },
+  "hideRootFolders": {
+    "message": "Kök klasörleri gizle (Yer İmi Çubuğu, Diğer Yer İmleri)"
+  },
+  "lastModified": {
+    "message": "Son değişiklik"
+  },
+  "undoHistory": {
+    "message": "Geri Alma Geçmişi"
+  },
+  "clearHistory": {
+    "message": "Temizle"
+  },
+  "noUndoHistory": {
+    "message": "Geri alma geçmişi yok"
+  },
+  "historyCleared": {
+    "message": "Geçmiş temizlendi"
+  },
+  "tabStats": {
+    "message": "İstatistik"
+  },
+  "statsTitle": {
+    "message": "İstatistikler"
+  },
+  "avgBookmarks": {
+    "message": "Ort./Klasör"
+  },
+  "coloredFolders": {
+    "message": "Renkli"
+  },
+  "colorDistribution": {
+    "message": "Renk Dağılımı"
+  },
+  "sizeDistribution": {
+    "message": "Boyut Dağılımı"
+  },
+  "smartClassify": {
+    "message": "Akıllı Sınıflandırma"
+  },
+  "smartClassifyDesc": {
+    "message": "Renksiz klasörler için adlarına göre otomatik renk öner"
+  },
+  "runSmartClassify": {
+    "message": "Akıllı Sınıflandırmayı Çalıştır"
+  },
+  "smartClassifyDone": {
+    "message": "Akıllı sınıflandırma tamamlandı, $1 klasör için renk önerildi"
+  },
+  "apply": {
+    "message": "Uygula"
+  },
+  "donateTitle": {
+    "message": "Destek"
+  },
+  "donateDesc": {
+    "message": "FolderMark işinize yarıyorsa, geliştiriciyi desteklemeyi düşünün ❤️"
+  },
+  "wechatDonate": {
+    "message": "WeChat"
+  },
+  "paypalDonate": {
+    "message": "PayPal"
+  },
+  "scanQrCode": {
+    "message": "QR Kodu Tara"
+  },
+  "buyMeACoffee": {
+    "message": "Bana bir kahve ısmarla"
+  },
+  "openPayPal": {
+    "message": "PayPal ile destek ol"
+  },
+  "thankYou": {
+    "message": "Desteğiniz için teşekkürler!"
+  },
+  "qrCodeNotFound": {
+    "message": "Lütfen WeChat QR kodunu icons/wechat-donate.png olarak kaydedin"
+  },
+  "clearSearch": {
+    "message": "Aramayı temizle"
+  },
+  "startScan": {
+    "message": "Taramayı Başlat"
+  },
+  "scanningBroken": {
+    "message": "Tarama sürüyor..."
+  },
+  "scanningBrokenDesc": {
+    "message": "Yer imi durumu kontrol ediliyor, lütfen bekleyin."
+  },
+  "runAnalysis": {
+    "message": "Analizi Çalıştır"
+  },
+  "clearFilters": {
+    "message": "Filtreleri Temizle"
+  },
+  "analysisComplete": {
+    "message": "Analiz tamamlandı"
+  },
+  "feedbackTitle": {
+    "message": "Geri Bildirim"
+  },
+  "feedbackDesc": {
+    "message": "Bir sorun veya öneriniz mi var? Yazarı e-posta ile bilgilendirebilirsiniz."
+  },
+  "sendEmail": {
+    "message": "E-posta Gönder"
+  },
+  "filterAllColors": {
+    "message": "Tüm Renkler"
+  },
+  "filterNoColor": {
+    "message": "Renk Yok"
+  },
+  "langEnglish": {
+    "message": "İngilizce"
+  },
+  "langChinese": {
+    "message": "Çince"
+  },
+  "langSpanish": {
+    "message": "İspanyolca"
+  },
+  "langJapanese": {
+    "message": "Japonca"
+  },
+  "langKorean": {
+    "message": "Korece"
+  },
+  "langRussian": {
+    "message": "Rusça"
+  },
+  "langFrench": {
+    "message": "Fransızca"
+  },
+  "langTurkish": {
+    "message": "Türkçe"
+  }
+}
