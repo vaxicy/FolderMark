@@ -28,6 +28,7 @@
 - 日期格式：`formatTime` 内 locale 映射（zh-CN/en-US/es-ES/ja-JP/ko-KR/ru-RU/fr-FR/tr-TR）。
 - 统计页还有两组内联字典也要同步：`_renderColorDistribution` 的 `colorNames`、`_renderSizeDistribution` 的 `sizeRanges.label`（2026-10-19 发现这两处原先漏了 ru，已一并补 ru + tr）。
 - 语言下拉为自定义组件（`.custom-select`），选项是 `popup.html` 静态节点，`#languageSelect` 选项：`en/zh_CN/es/ja/ko/ru/fr/tr`；新增语言必须加 `<div class="custom-select-option" data-value="tr">`。
+- `langXxx` 显示名必须**按当前 locale 翻译**，不能统一用母语名（例：zh_CN 的 `langTurkish` 用「土耳其语」，en 用 "Turkish"，tr 才用 "Türkçe"）。2026-10-19 已按此规则修正 8 个 locale 的语言下拉。
 - **不要**再散落 `this.language === 'zh_CN' ? zh : (this.language==='es' ? es : en)` 三元；统一用上述辅助方法，否则新增语言会漏改。
 - smartClassify 的「文件夹名→颜色」关键词映射已覆盖 8 语言（6 色 × 若干词/色）。
 - manifest 的 `default_locale` 为 `en`，多 locale 自动生效，无需改 manifest。
