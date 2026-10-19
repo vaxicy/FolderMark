@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "Sin color"
   },
+  "trashTitle": {
+    "message": "Eliminados recientemente"
+  },
+  "trashEmpty": {
+    "message": "No hay carpetas eliminadas"
+  },
+  "trashRestore": {
+    "message": "Restaurar"
+  },
+  "trashRestoreSuccess": {
+    "message": "Restaurados $1 carpetas"
+  },
+  "trashRestoreFailed": {
+    "message": "Error al restaurar: $1"
+  },
+  "trashClear": {
+    "message": "Vaciar"
+  },
+  "trashClearConfirm": {
+    "message": "¿Vaciar todas las carpetas eliminadas? Esta acción no se puede deshacer."
+  },
+  "trashCleared": {
+    "message": "Papelera vaciada"
+  },
+  "similarFolders": {
+    "message": "Carpetas similares"
+  },
+  "similarNone": {
+    "message": "No hay carpetas similares"
+  },
+  "similarMergeTo": {
+    "message": "Combinar en \"$1\""
+  },
   "langEnglish": {
     "message": "Inglés"
   },

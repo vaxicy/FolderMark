@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "색 없음"
   },
+  "trashTitle": {
+    "message": "최근 삭제됨"
+  },
+  "trashEmpty": {
+    "message": "삭제된 폴더 없음"
+  },
+  "trashRestore": {
+    "message": "복원"
+  },
+  "trashRestoreSuccess": {
+    "message": "$1개 폴더 복원됨"
+  },
+  "trashRestoreFailed": {
+    "message": "복원 실패: $1"
+  },
+  "trashClear": {
+    "message": "비우기"
+  },
+  "trashClearConfirm": {
+    "message": "삭제된 폴더를 모두 비울까요? 이 작업은 되돌릴 수 없습니다."
+  },
+  "trashCleared": {
+    "message": "휴지통 비움"
+  },
+  "similarFolders": {
+    "message": "유사한 폴더"
+  },
+  "similarNone": {
+    "message": "유사한 폴더 없음"
+  },
+  "similarMergeTo": {
+    "message": "\"$1\"에 병합"
+  },
   "langEnglish": {
     "message": "영어"
   },

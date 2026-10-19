@@ -55,6 +55,11 @@
 - 配色取自 `store-assets-real-cn-en/01-real-folders-cn-en-1280x800.png`：米白 #FFFBEB / 暖黄 #FEF3C7 / 橙 #E07700 / 棕 #743112 / 琥珀 #F6CF5B / 绿 #109A60。
 - 版式对标大 promo `promo-marquee-1400x560-cn-en.png`：顶部橙条、左列 logo+文案+胶囊卡、右侧 mock（浅卡+橙 logo、搜索栏、2×2 统计、彩点行、右下悬浮徽章）。
 
+## 功能增强（2026-10-19）
+- **扫描缓存**：`STORAGE_KEYS.SCAN_RESULT` 存 `{version:1, ts, folders}`（folders 去掉 `children` 避免重复存储）；`init()` 用 `scanBookmarks({force:false})` 先渲染缓存，超过 5 分钟则静默后台重扫（stale-while-revalidate）；`background.js` 监听 `bookmarks.onCreated/onRemoved/onChanged/onMoved` 删除缓存。
+- **回收站**：`src/features/trashService.js`，存储键 `foldermark_trash`，保留 7 天 / 最多 20 条；`deleteFolder`、`doBatchDelete`、`doCleanAllEmpty` 删除前 `UndoService.snapshot()` 并写入；设置页「最近删除」区块可单条还原/清空；还原走新增的 `UndoService.restoreSnapshot(parentId, snap)`（含颜色/备注），父文件夹不存在时回退到 ID `2`（其他书签）。
+- **相似文件夹**：`findSimilarFolderGroups()`（名称归一化 + union-find + 编辑距离/包含关系，首字符 + 长度差预筛）；重复页新增「相似文件夹」区块；`mergeSimilarGroup()` 复用 `moveAllBookmarks` + `deleteFolder`，每个源文件夹推入 `UndoService.pushMerge` 支持撤销；若移动有失败项则跳过删除源文件夹，避免数据丢失。
+
 ## 构建/部署注意
 - 实时运行用 `popup/popup.html`（manifest `default_popup`），源码即 `popup/` + `src/`，**无打包脚本**。
 - `dist/_pkg` 为解压态暂存（manifest + background.js + popup/ + src/ + icons/ + _locales/），**不是默认输出位置**。

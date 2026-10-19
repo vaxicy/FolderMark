@@ -205,6 +205,26 @@ class UndoService {
   }
 
   /**
+   * 在指定父文件夹下恢复一个完整快照（含颜色与备注）
+   * 供回收站/撤销复用
+   * @param {string} parentId
+   * @param {Object} snap - { title, children, color, note }
+   * @returns {Promise<Object>} 新建的文件夹节点
+   */
+  static async restoreSnapshot(parentId, snap) {
+    const newFolder = await this._restoreTree(parentId, snap);
+    if (snap.color) {
+      await FolderColorService.setColor(newFolder.id, snap.color);
+    }
+    if (snap.note) {
+      const notes = await NotesService.loadNotes();
+      notes[newFolder.id] = snap.note;
+      await NotesService.saveNotes(notes);
+    }
+    return newFolder;
+  }
+
+  /**
    * 清空撤销历史
    */
   static clearHistory() {

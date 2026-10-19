@@ -6,6 +6,14 @@
 import BrokenBookmarkDetector from './src/features/brokenBookmarkDetector.js';
 
 const BROKEN_SCAN_KEY = 'brokenScanState';
+const SCAN_CACHE_KEY = 'foldermark_scan_result';
+
+// 书签发生变化时清除扫描缓存，popup 下次打开会重新扫描
+for (const eventName of ['onCreated', 'onRemoved', 'onChanged', 'onMoved']) {
+  chrome.bookmarks[eventName].addListener(() => {
+    chrome.storage.local.remove(SCAN_CACHE_KEY);
+  });
+}
 
 // 创建右键菜单
 chrome.runtime.onInstalled.addListener(() => {

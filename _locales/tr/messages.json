@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "Renk Yok"
   },
+  "trashTitle": {
+    "message": "Son Silinenler"
+  },
+  "trashEmpty": {
+    "message": "Silinen klasör yok"
+  },
+  "trashRestore": {
+    "message": "Geri Yükle"
+  },
+  "trashRestoreSuccess": {
+    "message": "$1 klasör geri yüklendi"
+  },
+  "trashRestoreFailed": {
+    "message": "Geri yükleme başarısız: $1"
+  },
+  "trashClear": {
+    "message": "Temizle"
+  },
+  "trashClearConfirm": {
+    "message": "Silinen tüm klasörler temizlensin mi? Bu işlem geri alınamaz."
+  },
+  "trashCleared": {
+    "message": "Geri dönüşüm kutusu temizlendi"
+  },
+  "similarFolders": {
+    "message": "Benzer Klasörler"
+  },
+  "similarNone": {
+    "message": "Benzer klasör yok"
+  },
+  "similarMergeTo": {
+    "message": "\"$1\" içine birleştir"
+  },
   "langEnglish": {
     "message": "İngilizce"
   },

@@ -18,6 +18,7 @@ import FolderAccessService from '../src/features/folderAccessService.js';
 import FolderOperations from '../src/features/folderOperations.js';
 import NotesService from '../src/features/notesService.js';
 import UndoService from '../src/features/undoService.js';
+import TrashService from '../src/features/trashService.js';
 import BookmarkService from '../src/core/bookmarkService.js';
 import BookmarkMover from '../src/features/bookmarkMover.js';
 import { STORAGE_KEYS, TABS, SORT_TYPES, THEME_LIST } from '../src/utils/constants.js';
@@ -184,7 +185,7 @@ class App {
       this.folderColors = await FolderColorService.loadColors();
       this.folderIcons = await FolderIconService.loadIcons();
 
-      await this.scanBookmarks();
+      await this.scanBookmarks({ force: false });
 
       // 检查是否有待保存的页面（从右键菜单触发）
       await this.checkPendingSave();
@@ -419,6 +420,14 @@ class App {
         UndoService.clearHistory();
         this.renderUndoHistory();
         showNotification(i18n.getMessage('historyCleared') || 'History cleared', 'success');
+      });
+    }
+
+    // 设置 - 清空回收站
+    const clearTrashBtn = document.getElementById('clearTrash');
+    if (clearTrashBtn) {
+      clearTrashBtn.addEventListener('click', () => {
+        this.clearTrash();
       });
     }
 
@@ -1308,46 +1317,109 @@ class App {
 
   /**
    * 扫描书签
+   * force=false 时优先使用本地缓存先渲染，再在后台重新扫描（stale-while-revalidate）
    */
-  async scanBookmarks() {
+  async scanBookmarks({ force = true, silent = false } = {}) {
     try {
-      this.showLoading(true);
+      if (!silent) this.showLoading(true);
+
+      if (!force) {
+        const cached = await this._loadScanCache();
+        if (cached) {
+          this.folders = cached.folders;
+          await this._enrichScannedFolders();
+          this._hasScanned = true;
+          if (!silent) this.showLoading(false);
+          if (cached.stale) {
+            // 缓存过期：静默后台刷新，不打断当前界面
+            this.scanBookmarks({ force: true, silent: true });
+          }
+          return;
+        }
+      }
+
       const scanner = new FolderScanner();
       const result = await scanner.scanAll();
       this.folders = result.folders;
 
-      const notes = await NotesService.loadNotes();
-      this.folders.forEach(folder => {
-        folder.note = notes[folder.id] || '';
-      });
+      // 先写缓存（剔除 children，避免重复存储整棵子树）
+      await this._saveScanCache(result.folders);
+      await this._enrichScannedFolders();
 
-      this.emptyFolders = EmptyFolderDetector.detectFromList(this.folders);
-      this.duplicates = DuplicateDetector.detect(this.folders);
-
-      // 加载文件夹颜色
-      this.folderColors = await FolderColorService.loadColors();
-      this.folders.forEach(folder => {
-        folder._color = this.folderColors[folder.id] || '';
-      });
-      
-      // 扫描重复书签
-      const bookmarkTree = await this.getBookmarkTree();
-      this.duplicateBookmarks = DuplicateBookmarkDetector.detect(bookmarkTree);
-      
-      // 生成清理建议（传入已计算的 duplicates 和访问数据）
-      const accessData = await FolderAccessService.loadAccessData();
-      this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates, accessData);
-      
-      this.updateStats();
-      this.clearSelection();
-      this.renderCurrentPage();
-      this.updateColorFilterOptions();
       this._hasScanned = true;
-      this.showLoading(false);
+      if (!silent) this.showLoading(false);
     } catch (error) {
       console.error('Scan failed:', error);
-      this.showLoading(false);
+      if (!silent) this.showLoading(false);
       showNotification((i18n.getMessage('scanFailed') || 'Scan failed: $1').replace('$1', error.message), 'error');
+    }
+  }
+
+  /**
+   * 扫描完成后的数据补全 + 渲染（缓存路径与全量路径共用）
+   */
+  async _enrichScannedFolders() {
+    const notes = await NotesService.loadNotes();
+    this.folders.forEach(folder => {
+      folder.note = notes[folder.id] || '';
+    });
+
+    this.emptyFolders = EmptyFolderDetector.detectFromList(this.folders);
+    this.duplicates = DuplicateDetector.detect(this.folders);
+
+    // 加载文件夹颜色
+    this.folderColors = await FolderColorService.loadColors();
+    this.folders.forEach(folder => {
+      folder._color = this.folderColors[folder.id] || '';
+    });
+
+    // 扫描重复书签
+    const bookmarkTree = await this.getBookmarkTree();
+    this.duplicateBookmarks = DuplicateBookmarkDetector.detect(bookmarkTree);
+
+    // 生成清理建议（传入已计算的 duplicates 和访问数据）
+    const accessData = await FolderAccessService.loadAccessData();
+    this.cleanupSuggestions = SmartCleanupSuggestions.generateSuggestions(this.folders, this.duplicates, accessData);
+
+    this.updateStats();
+    this.clearSelection();
+    this.renderCurrentPage();
+    this.updateColorFilterOptions();
+  }
+
+  /**
+   * 读取扫描缓存
+   * @returns {Promise<{folders: Array, stale: boolean}|null>}
+   */
+  async _loadScanCache() {
+    try {
+      const cached = await new Promise((resolve) => {
+        chrome.storage.local.get(STORAGE_KEYS.SCAN_RESULT, (result) => {
+          resolve(result[STORAGE_KEYS.SCAN_RESULT]);
+        });
+      });
+      if (!cached || cached.version !== 1 || !Array.isArray(cached.folders)) return null;
+      const stale = Date.now() - (cached.ts || 0) > 5 * 60 * 1000;
+      return { folders: cached.folders, stale };
+    } catch (e) {
+      console.warn('Load scan cache failed:', e);
+      return null;
+    }
+  }
+
+  /**
+   * 写入扫描缓存（去掉 children，避免存储重复的整棵子树）
+   */
+  async _saveScanCache(folders) {
+    try {
+      const slim = folders.map(({ children, ...rest }) => rest);
+      await new Promise((resolve) => {
+        chrome.storage.local.set({
+          [STORAGE_KEYS.SCAN_RESULT]: { version: 1, ts: Date.now(), folders: slim }
+        }, resolve);
+      });
+    } catch (e) {
+      console.warn('Save scan cache failed:', e);
     }
   }
   
@@ -2603,12 +2675,13 @@ class App {
       const folder = this.folders.find(f => f.id === folderId);
       if (!folder || folder.isRoot) continue;
       const snap = await UndoService.snapshot(folderId);
-      if (snap) snapshots.push({ snap, title: folder.title });
+      if (snap) snapshots.push({ id: folderId, snap, title: folder.title });
     }
 
     // 执行删除
     let success = 0;
     let failed = 0;
+    const successIds = new Set();
 
     for (const folderId of ids) {
       try {
@@ -2621,10 +2694,17 @@ class App {
           await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
         }
         success++;
+        successIds.add(folderId);
       } catch (error) {
         failed++;
         console.error('Delete failed for ' + folderId + ':', error);
       }
+    }
+
+    // 只把删除成功的写入回收站
+    const trashSnaps = snapshots.filter(item => successIds.has(item.id)).map(item => item.snap);
+    if (trashSnaps.length > 0) {
+      await TrashService.push(trashSnaps, `${trashSnaps.length} folders`);
     }
 
     // 删除图标和备注
@@ -2637,13 +2717,14 @@ class App {
       delete this.folderIcons[id];
     });
 
-    // 推入撤销栈并显示 Toast
-    if (snapshots.length > 0) {
+    // 推入撤销栈并显示 Toast（仅成功的）
+    const undoSnaps = snapshots.filter(item => successIds.has(item.id)).map(item => item.snap);
+    if (undoSnaps.length > 0) {
       UndoService.push(
-        snapshots.map(s => s.snap),
-        `${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders')
+        undoSnaps,
+        `${undoSnaps.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders')
       );
-      this.showUndoToast(`${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders'));
+      this.showUndoToast(`${undoSnaps.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders'));
     }
 
     if (failed > 0) {
@@ -3117,6 +3198,8 @@ class App {
       } else {
         await FolderOperations.deleteFolderTree(folderId, folder.isRoot);
       }
+      // 删除成功后写入回收站
+      if (snap) await TrashService.push([snap], folder.title);
       // 删除图标和备注
       await FolderIconService.deleteIcons([folderId]);
       await NotesService.deleteNotes([folderId]);
@@ -3246,8 +3329,244 @@ class App {
       });
     }
 
+    // 渲染相似文件夹
+    this.renderSimilarFolders();
+
     // 渲染重复书签
     this.renderDuplicateBookmarks();
+  }
+
+  /**
+   * 渲染相似文件夹建议（名称近似，可一键合并）
+   */
+  renderSimilarFolders() {
+    const container = document.getElementById('similarFoldersList');
+    if (!container) return;
+
+    const groups = this.findSimilarFolderGroups();
+    if (groups.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding: 16px;">
+          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-title" style="font-size: 12px;">${i18n.getMessage('similarNone') || 'No similar folders'}</div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = groups.map(group => {
+      const target = group.slice().sort((a, b) => b.bookmarkCount - a.bookmarkCount)[0];
+      const sources = group.filter(folder => folder.id !== target.id);
+      const mergeLabel = (i18n.getMessage('similarMergeTo') || 'Merge into "$1"')
+        .replace('$1', this.escapeHtml(target.title));
+      return `
+        <div class="duplicate-group">
+          <div class="duplicate-header">🔍 ${this.escapeHtml(target.title)}</div>
+          <div class="duplicate-count">${group.length} · ${i18n.getMessage('similarFolders') || 'Similar Folders'}</div>
+          <div class="duplicate-folders">
+            ${group.map(folder => `
+              <div class="duplicate-folder">
+                <span>${this.escapeHtml(this.translatePath(folder.path))} (${folder.bookmarkCount})</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="margin-top: 6px;">
+            <button class="btn btn-secondary btn-sm" data-action="merge-similar"
+              data-target="${target.id}" data-sources="${sources.map(folder => folder.id).join(',')}">
+              ${mergeLabel}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.querySelectorAll('[data-action="merge-similar"]').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sourceIds = button.dataset.sources.split(',').filter(Boolean);
+        this.mergeSimilarGroup(button.dataset.target, sourceIds);
+      });
+    });
+  }
+
+  /**
+   * 找出名称相似的文件夹分组（大小写/空格/标点归一 + 编辑距离/包含关系）
+   * @returns {Array<Array<Object>>}
+   */
+  findSimilarFolderGroups() {
+    const folders = (this.folders || []).filter(f => !f.isRoot && f.title && f.title.trim().length >= 2);
+    if (folders.length < 2) return [];
+
+    const parent = new Map();
+    const find = (id) => {
+      let p = parent.get(id);
+      if (p === undefined) {
+        parent.set(id, id);
+        return id;
+      }
+      if (p === id) return id;
+      const root = find(p);
+      parent.set(id, root);
+      return root;
+    };
+    const union = (a, b) => {
+      const ra = find(a);
+      const rb = find(b);
+      if (ra !== rb) parent.set(rb, ra);
+    };
+
+    folders.forEach(folder => find(folder.id));
+
+    // 1) 归一化后完全同名（大小写/空格/标点差异）
+    const byKey = new Map();
+    folders.forEach(folder => {
+      const key = this._normalizeFolderTitle(folder.title);
+      if (!key) return;
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(folder);
+    });
+    byKey.forEach(group => {
+      for (let i = 1; i < group.length; i++) union(group[0].id, group[i].id);
+    });
+
+    // 2) 模糊相似（按首字符 + 长度差预筛，避免 O(n²) 过大）
+    const list = folders.slice(0, 600)
+      .map(folder => ({ folder, key: this._normalizeFolderTitle(folder.title) }))
+      .filter(item => item.key);
+    for (let i = 0; i < list.length; i++) {
+      const a = list[i];
+      for (let j = i + 1; j < list.length; j++) {
+        const b = list[j];
+        if (Math.abs(a.key.length - b.key.length) > 2) continue;
+        if (a.key[0] !== b.key[0]) continue;
+        if (this._folderSimilarity(a.key, b.key) >= 0.82) union(a.folder.id, b.folder.id);
+      }
+    }
+
+    const groups = new Map();
+    folders.forEach(folder => {
+      const root = find(folder.id);
+      if (!groups.has(root)) groups.set(root, []);
+      groups.get(root).push(folder);
+    });
+
+    return [...groups.values()]
+      .filter(group => group.length >= 2)
+      .sort((a, b) => b.length - a.length);
+  }
+
+  /**
+   * 文件夹名归一化
+   */
+  _normalizeFolderTitle(title) {
+    return (title || '').toLowerCase()
+      .replace(/[\s\-_.,，、。·:：/\\()（）\[\]【】'"“”‘’]/g, '');
+  }
+
+  /**
+   * 编辑距离
+   */
+  _levenshtein(a, b) {
+    if (a === b) return 0;
+    const prev = new Array(b.length + 1);
+    const cur = new Array(b.length + 1);
+    for (let j = 0; j <= b.length; j++) prev[j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      cur[0] = i;
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+      }
+      for (let j = 0; j <= b.length; j++) prev[j] = cur[j];
+    }
+    return prev[b.length];
+  }
+
+  /**
+   * 两个归一化名称的相似度
+   */
+  _folderSimilarity(a, b) {
+    if (!a || !b) return 0;
+    if (a === b) return 1;
+    const shorter = a.length <= b.length ? a : b;
+    const longer = a.length > b.length ? a : b;
+    if (longer.includes(shorter) && shorter.length / longer.length >= 0.5) return 0.9;
+    const distance = this._levenshtein(a, b);
+    return 1 - distance / Math.max(a.length, b.length);
+  }
+
+  /**
+   * 把相似文件夹合并到目标文件夹
+   */
+  async mergeSimilarGroup(targetId, sourceIds) {
+    const target = this.folders.find(folder => folder.id === targetId);
+    const sources = sourceIds
+      .map(id => this.folders.find(folder => folder.id === id))
+      .filter(Boolean);
+    if (!target || sources.length === 0) return;
+
+    const message = (i18n.getMessage('confirmBatchMergeMessage') || 'Merge $1 selected folders into the target folder?')
+      .replace('$1', sources.length);
+
+    this.showConfirmModal(
+      i18n.getMessage('confirmBatchMerge') || 'Confirm Merge',
+      message,
+      async () => {
+        let moved = 0;
+        const pushed = [];
+
+        for (const source of sources) {
+          try {
+            const sourceInfo = (await BookmarkService.getNode(source.id))[0];
+            const children = await BookmarkService.getChildren(source.id);
+            const mergeData = {
+              title: sourceInfo.title,
+              parentId: sourceInfo.parentId,
+              index: sourceInfo.index,
+              childIds: children.map(child => child.id)
+            };
+            const result = await FolderOperations.moveAllBookmarks(source.id, targetId);
+            moved += result.moved;
+            if (result.errors && result.errors.length > 0) {
+              // 有内容没移走时不要删源文件夹，避免数据丢失
+              console.warn('Similar merge skipped deleting source folder:', result.errors);
+              continue;
+            }
+            await FolderOperations.deleteFolder(source.id);
+            pushed.push({ entry: UndoService.pushMerge(mergeData, sourceInfo.title), data: mergeData });
+          } catch (error) {
+            console.error('Similar folder merge failed:', error);
+          }
+        }
+
+        showNotification(
+          (i18n.getMessage('mergeSuccess') || 'Moved $1 bookmarks').replace('$1', moved),
+          'success',
+          5000,
+          {
+            text: i18n.getMessage('undo'),
+            callback: async () => {
+              try {
+                for (const item of pushed.reverse()) {
+                  UndoService.removeEntry(item.entry);
+                  await UndoService.undoMerge(item.data);
+                }
+                await this.scanBookmarks();
+                this.renderUndoHistory();
+                this.renderDuplicates();
+              } catch (error) {
+                showNotification(
+                  (i18n.getMessage('mergeFailed') || 'Merge failed: $1').replace('$1', error.message),
+                  'error'
+                );
+              }
+            }
+          }
+        );
+
+        await this.scanBookmarks();
+        this.renderDuplicates();
+      }
+    );
   }
 
   /**
@@ -4011,6 +4330,7 @@ class App {
       });
     }
     this.renderUndoHistory();
+    this.renderTrash();
   }
 
   /**
@@ -4063,6 +4383,10 @@ class App {
       for (const folder of this.emptyFolders) {
         const snap = await UndoService.snapshot(folder.id);
         if (snap) snapshots.push(snap);
+      }
+
+      if (snapshots.length > 0) {
+        await TrashService.push(snapshots, `${snapshots.length} ` + (i18n.getMessage('foldersDeletedDesc') || 'folders'));
       }
 
       const results = await EmptyFolderDetector.deleteAllEmptyFolders(this.emptyFolders);
@@ -4292,6 +4616,93 @@ class App {
         }
       });
     });
+  }
+
+  /**
+   * 渲染回收站列表
+   */
+  async renderTrash() {
+    const container = document.getElementById('trashList');
+    if (!container) return;
+
+    const entries = await TrashService.load();
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding: 16px;">
+          <div class="empty-state-icon">🗑️</div>
+          <div class="empty-state-title" style="font-size: 12px;">${i18n.getMessage('trashEmpty') || 'No deleted folders'}</div>
+        </div>
+      `;
+      return;
+    }
+
+    const formatTime = (timestamp) => {
+      const locale = { zh_CN: 'zh-CN', en: 'en-US', es: 'es-ES', ja: 'ja-JP', ko: 'ko-KR', ru: 'ru-RU', fr: 'fr-FR', tr: 'tr-TR' }[this.language] || 'en-US';
+      return new Date(timestamp).toLocaleString(locale, {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+    container.innerHTML = entries.map(entry => {
+      const count = entry.snapshots.length;
+      return `
+        <div class="trash-item">
+          <div class="trash-item-info">
+            <div class="trash-item-title">${this.escapeHtml(entry.description || `${count} folders`)}</div>
+            <div class="trash-item-meta">${count} · ${formatTime(entry.ts)}</div>
+          </div>
+          <button class="btn btn-secondary btn-xs" data-trash-restore="${entry.id}">${i18n.getMessage('trashRestore') || 'Restore'}</button>
+        </div>
+      `;
+    }).join('');
+
+    container.querySelectorAll('[data-trash-restore]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.restoreTrash(btn.dataset.trashRestore);
+      });
+    });
+  }
+
+  /**
+   * 从回收站还原
+   */
+  async restoreTrash(id) {
+    const result = await TrashService.restore(id);
+    if (result.restored > 0) {
+      showNotification(
+        (i18n.getMessage('trashRestoreSuccess') || 'Restored $1 folders').replace('$1', result.restored),
+        'success'
+      );
+    } else {
+      showNotification(
+        (i18n.getMessage('trashRestoreFailed') || 'Restore failed: $1').replace('$1', result.failed),
+        'error'
+      );
+    }
+    await this.scanBookmarks();
+    await this.renderTrash();
+  }
+
+  /**
+   * 清空回收站
+   */
+  async clearTrash() {
+    const entries = await TrashService.load();
+    if (entries.length === 0) return;
+
+    this.showConfirmModal(
+      i18n.getMessage('trashTitle') || 'Recently Deleted',
+      i18n.getMessage('trashClearConfirm') || 'Clear all deleted folders? This cannot be undone.',
+      async () => {
+        await TrashService.clear();
+        await this.renderTrash();
+        showNotification(i18n.getMessage('trashCleared') || 'Recycle bin cleared', 'success');
+      }
+    );
   }
 
   closeMergeModal() {

@@ -188,6 +188,12 @@
           </div>
         </div>
 
+        <!-- 相似文件夹 -->
+        <div class="page-header" style="margin-top: 24px;">
+          <h2 data-i18n="similarFolders">Similar Folders</h2>
+        </div>
+        <div id="similarFoldersList" class="duplicates-list"></div>
+
         <!-- 重复书签 -->
         <div class="page-header" style="margin-top: 24px;">
           <h2 data-i18n="duplicateBookmarks">Duplicate Bookmarks</h2>
@@ -508,6 +514,17 @@
             </div>
             <div id="undoHistoryList" class="undo-history-list">
               <!-- 动态渲染撤销历史 -->
+            </div>
+          </div>
+
+          <!-- 最近删除（回收站） -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <span data-i18n="trashTitle">Recently Deleted</span>
+              <button id="clearTrash" class="btn btn-danger btn-xs" data-i18n="trashClear">Clear</button>
+            </div>
+            <div id="trashList" class="trash-list">
+              <!-- 动态渲染回收站 -->
             </div>
           </div>
         </div>

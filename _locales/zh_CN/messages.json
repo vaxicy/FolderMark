@@ -904,6 +904,39 @@
   "filterNoColor": {
     "message": "无颜色"
   },
+  "trashTitle": {
+    "message": "最近删除"
+  },
+  "trashEmpty": {
+    "message": "暂无删除记录"
+  },
+  "trashRestore": {
+    "message": "还原"
+  },
+  "trashRestoreSuccess": {
+    "message": "已还原 $1 个文件夹"
+  },
+  "trashRestoreFailed": {
+    "message": "还原失败：$1"
+  },
+  "trashClear": {
+    "message": "清空"
+  },
+  "trashClearConfirm": {
+    "message": "清空回收站？此操作不可撤销。"
+  },
+  "trashCleared": {
+    "message": "回收站已清空"
+  },
+  "similarFolders": {
+    "message": "相似文件夹"
+  },
+  "similarNone": {
+    "message": "没有相似文件夹"
+  },
+  "similarMergeTo": {
+    "message": "合并到「$1」"
+  },
   "langEnglish": {
     "message": "英语"
   },

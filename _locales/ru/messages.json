@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "Без цвета"
   },
+  "trashTitle": {
+    "message": "Недавно удалённые"
+  },
+  "trashEmpty": {
+    "message": "Нет удалённых папок"
+  },
+  "trashRestore": {
+    "message": "Восстановить"
+  },
+  "trashRestoreSuccess": {
+    "message": "Восстановлено папок: $1"
+  },
+  "trashRestoreFailed": {
+    "message": "Не удалось восстановить: $1"
+  },
+  "trashClear": {
+    "message": "Очистить"
+  },
+  "trashClearConfirm": {
+    "message": "Очистить все удалённые папки? Это действие нельзя отменить."
+  },
+  "trashCleared": {
+    "message": "Корзина очищена"
+  },
+  "similarFolders": {
+    "message": "Похожие папки"
+  },
+  "similarNone": {
+    "message": "Похожих папок нет"
+  },
+  "similarMergeTo": {
+    "message": "Объединить в \"$1\""
+  },
   "langEnglish": {
     "message": "Английский"
   },

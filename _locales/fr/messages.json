@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "Aucune couleur"
   },
+  "trashTitle": {
+    "message": "Supprimés récemment"
+  },
+  "trashEmpty": {
+    "message": "Aucun dossier supprimé"
+  },
+  "trashRestore": {
+    "message": "Restaurer"
+  },
+  "trashRestoreSuccess": {
+    "message": "$1 dossiers restaurés"
+  },
+  "trashRestoreFailed": {
+    "message": "Échec de la restauration : $1"
+  },
+  "trashClear": {
+    "message": "Vider"
+  },
+  "trashClearConfirm": {
+    "message": "Vider tous les dossiers supprimés ? Cette action est irréversible."
+  },
+  "trashCleared": {
+    "message": "Corbeille vidée"
+  },
+  "similarFolders": {
+    "message": "Dossiers similaires"
+  },
+  "similarNone": {
+    "message": "Aucun dossier similaire"
+  },
+  "similarMergeTo": {
+    "message": "Fusionner dans « $1 »"
+  },
   "langEnglish": {
     "message": "Anglais"
   },

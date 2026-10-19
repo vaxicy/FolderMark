@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "色なし"
   },
+  "trashTitle": {
+    "message": "最近削除した項目"
+  },
+  "trashEmpty": {
+    "message": "削除されたフォルダーはありません"
+  },
+  "trashRestore": {
+    "message": "復元"
+  },
+  "trashRestoreSuccess": {
+    "message": "$1 個のフォルダーを復元しました"
+  },
+  "trashRestoreFailed": {
+    "message": "復元に失敗しました: $1"
+  },
+  "trashClear": {
+    "message": "消去"
+  },
+  "trashClearConfirm": {
+    "message": "削除したフォルダーをすべて消去しますか？この操作は元に戻せません。"
+  },
+  "trashCleared": {
+    "message": "ごみ箱を空にしました"
+  },
+  "similarFolders": {
+    "message": "類似フォルダー"
+  },
+  "similarNone": {
+    "message": "類似フォルダーはありません"
+  },
+  "similarMergeTo": {
+    "message": "「$1」に統合"
+  },
   "langEnglish": {
     "message": "英語"
   },

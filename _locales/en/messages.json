@@ -950,6 +950,39 @@
   "filterNoColor": {
     "message": "No Color"
   },
+  "trashTitle": {
+    "message": "Recently Deleted"
+  },
+  "trashEmpty": {
+    "message": "No deleted folders"
+  },
+  "trashRestore": {
+    "message": "Restore"
+  },
+  "trashRestoreSuccess": {
+    "message": "Restored $1 folders"
+  },
+  "trashRestoreFailed": {
+    "message": "Restore failed: $1"
+  },
+  "trashClear": {
+    "message": "Clear"
+  },
+  "trashClearConfirm": {
+    "message": "Clear all deleted folders? This cannot be undone."
+  },
+  "trashCleared": {
+    "message": "Recycle bin cleared"
+  },
+  "similarFolders": {
+    "message": "Similar Folders"
+  },
+  "similarNone": {
+    "message": "No similar folders"
+  },
+  "similarMergeTo": {
+    "message": "Merge into \"$1\""
+  },
   "langEnglish": {
     "message": "English"
   },
