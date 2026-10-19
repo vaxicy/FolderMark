@@ -191,6 +191,18 @@
   "themeSunrise": {
     "message": "Amanecer"
   },
+  "themeWatery": {
+    "message": "Acuoso"
+  },
+  "themeLime": {
+    "message": "Lima"
+  },
+  "themeParadise": {
+    "message": "Paraíso"
+  },
+  "themeDelusion": {
+    "message": "Delusión"
+  },
   "themeDark": {
     "message": "Oscuro"
   },

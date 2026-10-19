@@ -5,13 +5,15 @@
 
 ## 主题命名规则（与 daily-tracker 不同）
 - FolderMark 主题中文显示名**允许 2 个汉字**（不受 daily-tracker 的「3 字」规则限制）。
-- 主题系统为配置驱动：`data-theme` 值 + `popup.css` 变量块 + 下拉 `<option>` + `_locales` 的 `themeXxx` 键。加新主题只需四处改动。
-- 已加主题清单（2026-07-28）：
-  - 浅色 Light `light` / 暗色 Dark `dark`（默认内置）
-  - 腮粉 Blush `blush`、抹茶 Matcha `matcha`、拿铁 Latte `latte`、鸢尾 Iris `iris`、晴空 Sky `sky`、珊瑚 Coral `coral`、玫红 Rose `rose`、薄荷 Mint `mint`、银灰 Slate `slate`、湖青 Teal `teal`、薰紫 Lavender `lavender`、春雾 SpringMist `springmist`、藕荷 Mauve `mauve`（2026-08-17 新增，色值取自用户渐变图：藕荷紫#C599B6→烟粉#E6B2BA→蜜桃#FAD0C4→奶白#FFF7F3）
-  - 冬青 Holly `holly`（2026-09-13 新增，圣诞风味：暗酒红#6D0808 + 奶油#EEEAD7 + 灰绿#757D6F，主按钮浅灰绿呼应红配绿）
-  - 共 16 个主题（light/dark + 14 个彩色）
+- 主题系统为配置驱动：`data-theme` 值 + `popup.css` 变量块 + 下拉 `<option>` + `_locales` 的 `themeXxx` 键 + `THEME_LIST`（`src/utils/constants.js`，含 i18n key 与主色，驱动下拉预览点/色相分组）。加新主题需改这五处（静态 option 仅作降级兜底）。
+- 已加主题清单（`THEME_LIST` 为准）：light / dark / blush / matcha / latte / iris / sky / coral / rose / mint / slate / teal / lavender / springmist / mauve / holly / autumn / aqua / nebula / sunrise / **watery（水色，2026-10-19）** / **lime（青柠，2026-10-19）** / **paradise（乐园，2026-10-19）** / **delusion（幻境，2026-10-19）**，共 24 个。
+  - 水色 Watery `watery`：浅青#F2FAFB→灰青#94C9CE，主色 #2F7F8A，header #DFF6F8→#B5E9F0。
+  - 青柠 Lime `lime`：奶黄#F9F2B5→薄荷绿#A8EFC9，主色 #4F7A20，header #F9F2B5→#C9F5B4。
+  - 乐园 Paradise `paradise`：粉#F5ACC5→蜜桃#F7C5B4→奶油黄#F9F0BD，主色 #A8495F，header #F5ACC5→#F7C5B4。
+  - 幻境 Delusion `delusion`：天蓝#CCEDFC→长春花蓝#D1E2FD→丁香紫#EFDFFE，主色 #5F5AA8，header #CCEDFC→#D6D9FD。
+  - 四者均为浅色 pastel 主题，主按钮用「浅底 + 深字」，logo/stat-number 用更深同色系。
 - 通用无障碍做法：主按钮一律「浅色底 + 深色字」，logo/stat-number 用更深的同色系文字，确保 WCAG AA；`header` 有硬编码渐变需按主题覆盖。
+- **深色 header 主题**（holly `#6D0808`、autumn `#6F7F42`、dark `#292524`）内的 `.header .logo` / `.tagline` / `.icon-btn` 必须用浅色（奶油/白），否则继承 `--text-secondary` 的深色会看不清。holly：`#F3E6C8`，autumn：`#FFF9E2`；新增深色 header 主题时同样要补这三类文字色。
 
 ## 关于/维护区（2026-07-28 重构）
 - 原「关于」区已更名为「维护（Maintenance）」，内含「重新扫描书签」与「恢复默认设置」两个按钮（隐私按钮已删）。

@@ -191,6 +191,18 @@
   "themeSunrise": {
     "message": "Рассвет"
   },
+  "themeWatery": {
+    "message": "Водяной"
+  },
+  "themeLime": {
+    "message": "Лайм"
+  },
+  "themeParadise": {
+    "message": "Рай"
+  },
+  "themeDelusion": {
+    "message": "Иллюзия"
+  },
   "themeDark": {
     "message": "Тёмная"
   },

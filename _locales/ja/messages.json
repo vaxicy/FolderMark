@@ -191,6 +191,18 @@
   "themeSunrise": {
     "message": "サンライズ"
   },
+  "themeWatery": {
+    "message": "ウォータリー"
+  },
+  "themeLime": {
+    "message": "ライム"
+  },
+  "themeParadise": {
+    "message": "パラダイス"
+  },
+  "themeDelusion": {
+    "message": "ディルージョン"
+  },
   "themeDark": {
     "message": "ダーク"
   },

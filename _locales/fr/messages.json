@@ -191,6 +191,18 @@
   "themeSunrise": {
     "message": "Aube"
   },
+  "themeWatery": {
+    "message": "Aquatique"
+  },
+  "themeLime": {
+    "message": "Citron vert"
+  },
+  "themeParadise": {
+    "message": "Paradis"
+  },
+  "themeDelusion": {
+    "message": "Illusion"
+  },
   "themeDark": {
     "message": "Sombre"
   },

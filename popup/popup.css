@@ -780,6 +780,16 @@
   color: #E9D9B8;
 }
 
+/* 冬青主题 header 内的图标按钮（主题切换太阳）：深酒红底上用奶油色 */
+[data-theme="holly"] .header .icon-btn {
+  color: #F3E6C8;
+}
+
+[data-theme="holly"] .header .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
 /* 秋日主题（Autumn - 橄榄绿 + 奶油黄 + 金橙 + 陶土红，温暖秋收感） */
 [data-theme="autumn"] {
   --primary: #84994F;
@@ -836,6 +846,16 @@
 
 [data-theme="autumn"] .header .tagline {
   color: #F5E6B0;
+}
+
+/* 秋日主题 header 内的图标按钮（主题切换太阳）：深橄榄底上用奶油色 */
+[data-theme="autumn"] .header .icon-btn {
+  color: #FFF9E2;
+}
+
+[data-theme="autumn"] .header .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
 }
 
 /* 碧波主题（Aqua - 明亮水蓝 + 薄荷绿，清爽夏日感） */
@@ -999,6 +1019,210 @@
 [data-theme="sunrise"] .header .logo,
 [data-theme="sunrise"] .header .tagline {
   color: #5C2415;
+}
+
+/* 水色主题（Watery - 浅青 → 灰青，冷调清爽） */
+[data-theme="watery"] {
+  --primary: #2F7F8A;
+  --icon-glow: rgba(47, 127, 138, 0.22);
+  --primary-hover: #266B74;
+  --primary-light: #DFF6F8;
+
+  --danger: #C0504D;
+  --danger-hover: #A63F3C;
+  --danger-light: #FBE4E1;
+
+  --success: #2E8B6E;
+  --success-light: #DFF3EA;
+
+  --bg-primary: #F2FAFB;
+  --bg-secondary: #E4F6F8;
+  --bg-tertiary: #C9F1F5;
+
+  --text-primary: #123B40;
+  --text-secondary: #2E5A60;
+  --text-tertiary: #4E7278;
+
+  --border-color: #C9F1F5;
+  --shadow-sm: 0 1px 2px 0 rgba(18, 59, 64, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(18, 59, 64, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(18, 59, 64, 0.15);
+}
+
+/* 水色主题下的 header 渐变（浅青 → 灰青） */
+[data-theme="watery"] .header {
+  background: linear-gradient(135deg, #DFF6F8 0%, #B5E9F0 100%);
+}
+
+/* 水色主题下的主按钮：浅青底 + 深青字，保证 WCAG AA 对比度 */
+[data-theme="watery"] .btn-primary {
+  background: #B5E9F0;
+  color: #123B40;
+}
+
+[data-theme="watery"] .btn-primary:hover {
+  background: #9FDDE7;
+}
+
+/* 水色主题下的文字型强调（logo / 统计数字）：用更深的同色系文字 */
+[data-theme="watery"] .logo,
+[data-theme="watery"] .stat-number {
+  color: #1F6B75;
+}
+
+/* 青柠主题（Lime - 奶黄 → 薄荷绿，暖调清新） */
+[data-theme="lime"] {
+  --primary: #4F7A20;
+  --icon-glow: rgba(79, 122, 32, 0.22);
+  --primary-hover: #3F6618;
+  --primary-light: #E0F5B0;
+
+  --danger: #C0503C;
+  --danger-hover: #A63F2C;
+  --danger-light: #FBE6DF;
+
+  --success: #3F8F5E;
+  --success-light: #E3F5E9;
+
+  --bg-primary: #FAF9E6;
+  --bg-secondary: #F2F6CA;
+  --bg-tertiary: #E0F5B0;
+
+  --text-primary: #2C3A16;
+  --text-secondary: #4C5C2E;
+  --text-tertiary: #5F6E40;
+
+  --border-color: #DCEBB4;
+  --shadow-sm: 0 1px 2px 0 rgba(44, 58, 22, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(44, 58, 22, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(44, 58, 22, 0.15);
+}
+
+/* 青柠主题下的 header 渐变（奶黄 → 薄荷绿） */
+[data-theme="lime"] .header {
+  background: linear-gradient(135deg, #F9F2B5 0%, #C9F5B4 100%);
+}
+
+/* 青柠主题下的主按钮：浅绿底 + 深橄榄字，保证 WCAG AA 对比度 */
+[data-theme="lime"] .btn-primary {
+  background: #C9F5B4;
+  color: #2C3A16;
+}
+
+[data-theme="lime"] .btn-primary:hover {
+  background: #B5F2A0;
+}
+
+/* 青柠主题下的文字型强调（logo / 统计数字）：用更深的同色系文字 */
+[data-theme="lime"] .logo,
+[data-theme="lime"] .stat-number {
+  color: #3F6618;
+}
+
+/* 乐园主题（Paradise - 粉 → 蜜桃 → 奶油黄，暖调日落感） */
+[data-theme="paradise"] {
+  --primary: #A8495F;
+  --icon-glow: rgba(168, 73, 95, 0.22);
+  --primary-hover: #8F3B4F;
+  --primary-light: #F8DCB9;
+
+  --danger: #C2453F;
+  --danger-hover: #A63832;
+  --danger-light: #FBE3E0;
+
+  --success: #4E8F6A;
+  --success-light: #E3F3EA;
+
+  --bg-primary: #FEF8F4;
+  --bg-secondary: #FBEADD;
+  --bg-tertiary: #F8DCB9;
+
+  --text-primary: #4A2A2E;
+  --text-secondary: #6E4448;
+  --text-tertiary: #8A5E62;
+
+  --border-color: #F5D9BE;
+  --shadow-sm: 0 1px 2px 0 rgba(74, 42, 46, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(74, 42, 46, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(74, 42, 46, 0.15);
+}
+
+/* 乐园主题下的 header 渐变（粉 → 蜜桃） */
+[data-theme="paradise"] .header {
+  background: linear-gradient(135deg, #F5ACC5 0%, #F7C5B4 100%);
+}
+
+/* 乐园主题下的主按钮：浅蜜桃底 + 深棕字，保证 WCAG AA 对比度 */
+[data-theme="paradise"] .btn-primary {
+  background: #F7C5B4;
+  color: #4A2A2E;
+}
+
+[data-theme="paradise"] .btn-primary:hover {
+  background: #F6B0B3;
+}
+
+/* 乐园主题下的文字型强调（logo / 统计数字） */
+[data-theme="paradise"] .logo,
+[data-theme="paradise"] .stat-number {
+  color: #8E3450;
+}
+
+[data-theme="paradise"] .header .tagline {
+  color: #5A2E34;
+}
+
+/* 幻境主题（Delusion - 天蓝 → 长春花蓝 → 丁香紫，冷调梦幻） */
+[data-theme="delusion"] {
+  --primary: #5F5AA8;
+  --icon-glow: rgba(95, 90, 168, 0.22);
+  --primary-hover: #4E4A93;
+  --primary-light: #E2DAFE;
+
+  --danger: #C2453F;
+  --danger-hover: #A63832;
+  --danger-light: #FBE3E0;
+
+  --success: #3F8F7A;
+  --success-light: #E3F4EF;
+
+  --bg-primary: #F9F8FE;
+  --bg-secondary: #ECEAFB;
+  --bg-tertiary: #E2DAFE;
+
+  --text-primary: #2C2A4A;
+  --text-secondary: #4C4A70;
+  --text-tertiary: #6E6C90;
+
+  --border-color: #DCD8F2;
+  --shadow-sm: 0 1px 2px 0 rgba(44, 42, 74, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(44, 42, 74, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(44, 42, 74, 0.15);
+}
+
+/* 幻境主题下的 header 渐变（天蓝 → 丁香紫） */
+[data-theme="delusion"] .header {
+  background: linear-gradient(135deg, #CCEDFC 0%, #D6D9FD 100%);
+}
+
+/* 幻境主题下的主按钮：浅长春花蓝底 + 深靛字，保证 WCAG AA 对比度 */
+[data-theme="delusion"] .btn-primary {
+  background: #D6D9FD;
+  color: #2C2A4A;
+}
+
+[data-theme="delusion"] .btn-primary:hover {
+  background: #C7CBFA;
+}
+
+/* 幻境主题下的文字型强调（logo / 统计数字） */
+[data-theme="delusion"] .logo,
+[data-theme="delusion"] .stat-number {
+  color: #4E4A93;
+}
+
+[data-theme="delusion"] .header .tagline {
+  color: #3F3D63;
 }
 
 /* 深色主题下的特殊样式优化 */

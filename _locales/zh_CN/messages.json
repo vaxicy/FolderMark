@@ -148,6 +148,18 @@
   "themeSunrise": {
     "message": "晨曦"
   },
+  "themeWatery": {
+    "message": "水色"
+  },
+  "themeLime": {
+    "message": "青柠"
+  },
+  "themeParadise": {
+    "message": "乐园"
+  },
+  "themeDelusion": {
+    "message": "幻境"
+  },
   "themeDark": {
     "message": "深色"
   },

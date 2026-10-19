@@ -80,7 +80,11 @@ export const THEME_LIST = [
   { key: 'autumn',     i18n: 'themeAutumn',     primary: '#84994F' },
   { key: 'aqua',       i18n: 'themeAqua',       primary: '#30AFFF' },
   { key: 'nebula',     i18n: 'themeNebula',     primary: '#831C91' },
-  { key: 'sunrise',    i18n: 'themeSunrise',    primary: '#E86A3F' }
+  { key: 'sunrise',    i18n: 'themeSunrise',    primary: '#E86A3F' },
+  { key: 'watery',     i18n: 'themeWatery',     primary: '#2F7F8A' },
+  { key: 'lime',       i18n: 'themeLime',       primary: '#4F7A20' },
+  { key: 'paradise',   i18n: 'themeParadise',   primary: '#A8495F' },
+  { key: 'delusion',   i18n: 'themeDelusion',   primary: '#5F5AA8' }
 ];
 
 // 搜索类型
